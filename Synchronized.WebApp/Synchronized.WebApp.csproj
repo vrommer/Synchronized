@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <UserSecretsId>aspnet-Synchronized.WebApp-C40C8F57-F2E4-4934-B1DC-BB495B12AFDB</UserSecretsId>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Controllers\Synchronized.Controllers.csproj" />
+    <ProjectReference Include="..\SharedLib\SharedLib.csproj" />
+    <ProjectReference Include="..\Synchronized.Core\Synchronized.Core.csproj" />
+    <ProjectReference Include="..\Synchronized.DataModel\Synchronized.Model.csproj" />
+    <ProjectReference Include="..\Synchronized.Repository\Synchronized.Repository.csproj" />
+    <ProjectReference Include="..\Synchronized.ViewModel\Synchronized.ViewModel.csproj" />
+  </ItemGroup>
+
+</Project>
