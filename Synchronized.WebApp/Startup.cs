@@ -13,6 +13,7 @@ using Synchronized.Core;
 using UtilsLib.HtmlUtils.HtmlParser;
 using Synchronized.Data;
 using Microsoft.EntityFrameworkCore;
+using Synchronized.Repository;
 
 namespace Synchronized.WebApp
 {
@@ -38,6 +39,7 @@ namespace Synchronized.WebApp
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IDataRepository<Question>, DataRepository<Question>>();
+            services.AddTransient<IQuestionsRepository, QuestionsRepository>();
             services.AddTransient<IQuestionService, QuestionService>();
             services.AddTransient<HtmlParser>();
             services.AddTransient<DbContext, SynchronizedDbContext>();

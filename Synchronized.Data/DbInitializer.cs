@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Synchronized.Model;
 using System;
 using System.Collections.Generic;
@@ -21,6 +20,8 @@ namespace Synchronized.Data
             int numOfQuestions = 100;
             int numOfAnswers = 100;
             int numOfComments = 100;
+            int minimumTagsInQuestion = 1;
+            int maximumTagsInQuestion = 4;
 
             string[] userNames =
             {
@@ -30,14 +31,65 @@ namespace Synchronized.Data
                 "Sharon", "Hellen", "Hulio", "Enrique", "Darwin", "Stephan", "Joe", "Hillary", "Barak", "Benjamin", "Ashton", "Cameron", "Kventin", "Guy", "Ahmed", "Muhammad", "Gadir", "Kamila", "Polina", "Pola", "Marga", "Sandra"
             };
 
-            // UserIds
+            List<string> tagNames = new List<string>
+            {
+                "coffee-script",
+                "less",
+                "java",
+                "javascript",
+                "python",
+                "c#",
+                ".net",
+                "maven",
+                "gulp",
+                "grunt",
+                "c++",
+                "c",
+                "visual-basic",
+                "ant",
+                "react",
+                "shell-script",
+                "angular.js",
+                "docker",
+                "cheff",
+                "objective-c",
+                "php",
+                "jenkins",
+                "node.js",
+                "express.js",
+                "coa",
+                "terraform",
+                "assembly",
+                "html5",
+                "css3",
+                "jquery",
+                "jquery-ui",
+                "bootstrap",
+                "font-awesome",
+                "jenkins-pipline",
+                "groovy",
+                "grales",
+                "grape",
+                "ruby",
+                "entity-framework-core",
+                "entity-framework",
+                "asp.net-core"
+            };
+
+            // number of tags
+            int numOfTags = tagNames.Count();
+
+            // IDs of ApplicationUsers
             List<string> UserIds = new List<string>();
 
-            // QuestionIds
+            // IDs of Questions
             List<string> questionIds = new List<string>();
 
-            // AnswerIds
+            // IDs of Answers
             List<string> answerIds = new List<string>();
+
+            // IDs of tags
+            List<string> tagIds = new List<string>();
 
             if (context.Posts.Any())
             {
@@ -197,6 +249,36 @@ namespace Synchronized.Data
                 });
             }
             comments.ForEach(c => context.Posts.Add(c));
+            context.SaveChanges();
+            /***********************************************************************
+            * Tags
+            ***********************************************************************/
+            var tags = new List<Tag>();
+            for (int i = 0; i < tagNames.Count; i++)
+            {
+                var tag = new Tag
+                {
+                    Name = tagNames[i],
+                    Description = "Repurposing user stories with the possibility to be CMSable.",
+                    PublisherId = UserIds[rand.Next(UserIds.Count)]
+                };
+                //context.SaveChanges();
+                context.Tags.Add(tag);
+            }
+            context.SaveChanges();
+            context.Tags.ToList().ForEach(t => tagIds.Add(t.Id));
+
+            /***********************************************************************
+            * QuestionTags
+            ***********************************************************************/
+            context.Posts.OfType<Question>().ToList().ForEach(q => {
+                var numOfTagsForQuestion = rand.Next(minimumTagsInQuestion, maximumTagsInQuestion);
+                var questionTag = new QuestionTag {
+                    QuestionId = q.Id,
+                    TagId = tagIds[rand.Next(tagIds.Count)]
+                };
+                context.QusetionTags.Add(questionTag);
+            });
             context.SaveChanges();
         }
     }

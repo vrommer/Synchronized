@@ -15,7 +15,6 @@ namespace Synchronized.Data
         public DbSet<Post> Posts { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<QuestionTag> QusetionTags { get; set; }
-        public DbSet<UserTag> UserTags { get; set; }
         public DbSet<Vote> Votes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -51,9 +50,19 @@ namespace Synchronized.Data
 
             builder.Entity<QuestionTag>().HasKey(s => new { s.QuestionId, s.TagId });
 
-            builder.Entity<UserTag>().HasKey(s => new { s.UserId, s.TagId });
+            builder.Entity<QuestionTag>()
+                .HasOne(qt => qt.Question)
+                .WithMany(q => q.QuestionTags)
+                .HasForeignKey(qt => qt.QuestionId);
+
+            builder.Entity<QuestionTag>()
+                .HasOne(qt => qt.Tag)
+                .WithMany(t => t.QuestionTags)
+                .HasForeignKey(qt => qt.TagId);
 
             builder.Entity<Vote>().HasKey(s => new { s.VoterId, s.PostId });
+
+
 
             base.OnModelCreating(builder);
         }
