@@ -20,17 +20,13 @@ namespace Synchronized.Core
             this.parser = parser;
         }
 
-        public async Task<HomeViewModel> GetHomeViewModel(int pageIndex, int pageSize)
+        public async Task<PaginatedList<Question>> GetQuestionsPage(int pageIndex, int pageSize)
         {
             var questions = await questionsRepo.GetQuestionsPageWithTagsAsync(pageIndex, pageSize);
             int count = await repo.GetCount();
             Utils.MinimizeContent(parser, questions);
             var paginatedList = new PaginatedList<Question>(questions, count, pageIndex, pageSize);
-            var homeViewModel = new HomeViewModel
-            {
-                Questions = paginatedList
-            };
-            return homeViewModel;
+            return paginatedList;
         }
     }
 }

@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using Synchronized.Data;
 using Microsoft.AspNetCore.Identity;
 using Synchronized.Model;
+using Synchronized.Data;
 
 namespace Synchronized.WebApp
 {
@@ -17,7 +22,7 @@ namespace Synchronized.WebApp
 
             using (var scope = host.Services.CreateScope())
             {
-                var services = scope.ServiceProvider;                
+                var services = scope.ServiceProvider;
                 try
                 {
                     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();

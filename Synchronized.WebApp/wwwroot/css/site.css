@@ -1,6 +1,10 @@
-﻿body {
+body {
     padding-top: 50px;
     padding-bottom: 20px;
+}
+
+.container{
+    border: 1px solid black;
 }
 
 /* Wrapping element */
@@ -8,6 +12,17 @@
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
+}
+
+#app-main-header {
+    width: 190px;
+    border: 1px solid red;
+    margin: 0 auto;
+}
+
+#app-page-message {
+    float: left;
+    font-size: 1.5em;
 }
 
 /* Carousel */

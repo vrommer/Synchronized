@@ -24,7 +24,6 @@ namespace Synchronized.Repository
 
             var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
 
-
             items.ForEach(i => i.QuestionTags = _questionTags.AsNoTracking().Where(t => t.QuestionId == i.Id).Include(qt => qt.Question).Include(qt => qt.Tag).ToList() as ICollection<QuestionTag>);
             return items;
         }

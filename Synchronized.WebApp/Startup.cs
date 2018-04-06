@@ -1,19 +1,19 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Synchronized.WebApp.Services;
-using Synchronized.Model;
 using Synchronized.Repository.Repositories;
 using Synchronized.Core.Repositories;
 using Synchronized.Repository.Interfaces;
+using Synchronized.Model;
+using Synchronized.Repository;
 using Synchronized.Core.Interfaces;
 using Synchronized.Core;
 using UtilsLib.HtmlUtils.HtmlParser;
 using Synchronized.Data;
-using Microsoft.EntityFrameworkCore;
-using Synchronized.Repository;
 
 namespace Synchronized.WebApp
 {
@@ -29,22 +29,37 @@ namespace Synchronized.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<SynchronizedDbContext>();
-
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddUserStore<UsersRepository>()
                 .AddRoleStore<RolesRepository>()
                 .AddDefaultTokenProviders();
 
             // Add application services.
-            services.AddTransient<IEmailSender, EmailSender>();
+            //services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IDataRepository<Question>, DataRepository<Question>>();
             services.AddTransient<IQuestionsRepository, QuestionsRepository>();
             services.AddTransient<IQuestionService, QuestionService>();
             services.AddTransient<HtmlParser>();
             services.AddTransient<DbContext, SynchronizedDbContext>();
 
-            services.AddMvc();
+
+            //services.AddDbContext<ApplicationDbContext>(options =>
+            //    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            //services.AddIdentity<ApplicationUser, IdentityRole>()
+            //    .AddEntityFrameworkStores<ApplicationDbContext>()
+            //    .AddDefaultTokenProviders();
+
+            services.AddMvc()
+                .AddRazorPagesOptions(options =>
+                {
+                    options.Conventions.AuthorizeFolder("/Account/Manage");
+                    options.Conventions.AuthorizePage("/Account/Logout");
+                });
+
+            // Register no-op EmailSender used by account confirmation and password reset during development
+            // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=532713
+            services.AddSingleton<IEmailSender, EmailSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,7 +73,7 @@ namespace Synchronized.WebApp
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
             }
 
             app.UseStaticFiles();
@@ -69,7 +84,7 @@ namespace Synchronized.WebApp
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller}/{action=Index}/{id?}");
             });
         }
     }

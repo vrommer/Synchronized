@@ -19,6 +19,8 @@ namespace Synchronized.WebApp.Controllers
         {
             _questionService = questionService;
             _logger = logger;
+            ViewBag.Title = "Welcome!";
+
         }
 
         public async Task<IActionResult> Index(int? page, int? pageNumber)
@@ -26,7 +28,7 @@ namespace Synchronized.WebApp.Controllers
             ViewBag.maxPage = ViewBag.maxPage == null ? 1 : ViewBag.maxPage;      
             var currentPage = pageNumber ?? (page ?? 1 );
             int pageSize = 20;
-            var homeViewModel = await _questionService.GetHomeViewModel(currentPage, pageSize);
+            var homeViewModel = await _questionService.GetQuestionsPage(currentPage, pageSize);
 
             return View(homeViewModel);
         }

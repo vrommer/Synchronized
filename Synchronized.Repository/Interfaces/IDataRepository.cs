@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Synchronized.Repository.Interfaces
 {
-    public interface IDataRepository<TModel> : IDisposable where TModel : class
+    public interface IDataRepository<TModel> where TModel : class
     {
         IEnumerable<TModel> GetAll();
         Task<List<TModel>> GetPage(int pageIndex, int pageSize);
