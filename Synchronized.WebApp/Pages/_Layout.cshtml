@@ -33,12 +33,13 @@
                 </div>
                 <div class="navbar-collapse collapse">
                     @await Html.PartialAsync("_LoginPartial")
+                    @await Html.PartialAsync("_SearchPartial")
                 </div>
             </div>
         </nav>
 
         <div id="app-main-header">
-            <h1>@ViewData["Title"]</h1>
+            <h1><a asp-page="/Index"> @ViewData["Title"]</a></h1>
         </div>
 
         <div class="container">

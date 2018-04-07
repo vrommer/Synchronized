@@ -85,6 +85,11 @@ namespace Synchronized.WebApp
                 routes.MapRoute(
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "page-routes",
+                    template: "{page}/{pageNumber?}"
+                );
             });
         }
     }
