@@ -4,9 +4,6 @@
     <UserSecretsId>aspnet-Synchronized.WebApp-2CBB3719-601E-411E-82D0-F82060605697</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Conventions\MustBeInRouteParameterQueryConvention.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" PrivateAssets="All" />
@@ -22,6 +19,5 @@
     <ProjectReference Include="..\Synchronized.DataModel\Synchronized.Model.csproj" />
     <ProjectReference Include="..\Synchronized.Data\Synchronized.Data.csproj" />
     <ProjectReference Include="..\Synchronized.Repository\Synchronized.Repository.csproj" />
-    <ProjectReference Include="..\Synchronized.ViewModel\Synchronized.ViewModel.csproj" />
   </ItemGroup>
 </Project>

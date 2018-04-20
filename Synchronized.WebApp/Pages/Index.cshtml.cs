@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Synchronized.Core.Interfaces;
 using Synchronized.Model;
 using Synchronized.SharedLib.Utilities;
 using Synchronized.WebApp.Conventions;
-//using Synchronized.WebApp.Conventions;
 using System.Threading.Tasks;
 
 namespace Synchronized.WebApp.Pages
@@ -15,13 +13,15 @@ namespace Synchronized.WebApp.Pages
         public PaginatedList<Question> Questions { get; set; }
 
         public int CurrentPage { get; set; }
+        public string SearchString { get; set; }
+        public string SortOrder { get; set; }
 
-        private const int PAGE_SIZE = 20; 
-        private readonly IQuestionService _service;
+        private const int PAGE_SIZE = 15; 
+        private readonly IQuestionsService _service;
         private readonly ILogger<IndexModel> _logger;
 
         public IndexModel(
-            IQuestionService service, 
+            IQuestionsService service, 
             ILogger<IndexModel> logger
             )
         {
@@ -30,10 +30,10 @@ namespace Synchronized.WebApp.Pages
             CurrentPage = 1;
         }
 
-        public async Task OnGetAsync([MustBeInRouteParameterQueryConvention]int? pageNumber, [MustBeInRouteParameterQueryConvention]string sortOrder = null)
+        public async Task OnGetAsync([MustBeInQueryParameterConvention]int? pageNumber, [MustBeInQueryParameterConvention]string sortOrder = null)
         {
             CurrentPage = pageNumber ?? 1;
-            Questions = await _service.GetQuestionsPage(CurrentPage, PAGE_SIZE);
+            Questions = await _service.GetQuestionsPageAsync(CurrentPage, PAGE_SIZE);
         }
     }
 }

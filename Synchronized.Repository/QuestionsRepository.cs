@@ -17,15 +17,88 @@ namespace Synchronized.Repository
             _questionTags = context.Set<QuestionTag>();
         }
 
-        public async Task<List<Question>> GetQuestionsPageWithTagsAsync(int pageIndex, int pageSize)
+        public List<Question> GetQuestionsPageWithUsersAsync(int pageIndex, int pageSize)
         {
-            var source = _dbSet.AsNoTracking()
-                .Include(q => q.QuestionTags);
+            var questions = GetQuestionsQueryWithUsers(pageIndex, pageSize).ToList();
+            AddTagsToQuestions(questions);
+            return questions;
+        }
 
-            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+        public List<Question> GetQuestionsPageWithUsersAsync(int pageIndex, int pageSize, string sortOrder)
+        {
+            var questions = GetQuestionsQueryWithUsers(pageIndex, pageSize);          
 
-            items.ForEach(i => i.QuestionTags = _questionTags.AsNoTracking().Where(t => t.QuestionId == i.Id).Include(qt => qt.Question).Include(qt => qt.Tag).ToList() as ICollection<QuestionTag>);
-            return items;
+            switch (sortOrder)
+            {
+                case "Date":
+                    questions = questions.OrderBy(q => q.DatePosted);
+                    break;
+                case "date_desc":
+                    questions = questions.OrderByDescending(q => q.DatePosted);
+                    break;
+                case "Answers":
+                    questions = questions.OrderBy(q => q.Answers.Count);
+                    break;
+                case "answers_desc":
+                    questions = questions.OrderByDescending(q => q.Answers.Count);
+                    break;
+                case "Views":
+                    questions = questions.OrderBy(q => q.Views);
+                    break;
+                case "views_desc":
+                    questions = questions.OrderByDescending(q => q.Views);
+                    break;
+                case "Points":
+                    questions = questions.OrderBy(q => q.Points);
+                    break;
+                case "points_desc":
+                    questions = questions.OrderByDescending(q => q.Points);
+                    break;
+                default:
+                    questions = questions.OrderByDescending(q => q.Answers.Count);
+                    break;
+            }
+
+            var questionsList = questions.ToList();
+            AddTagsToQuestions(questionsList);
+            return questionsList;
+        }
+
+        public async Task<List<Question>> GetQuestionsPageAsync(int pageIndex, int pageSize)
+        {
+            var questions = await GetQuestionsQuery(pageIndex, pageSize).ToListAsync();
+            AddTagsToQuestions(questions);
+            return questions;
+        }
+
+        private IQueryable<Question> GetQuestionsQuery(int pageIndex, int pageSize)
+        {
+            return GetPage(pageIndex, pageSize)
+                .Include(q => q.QuestionTags)
+                .Include(q => q.Answers);
+        }
+
+        private IQueryable<Question> GetQuestionsQueryWithUsers(int pageIndex, int pageSize)
+        {
+            //return GetPage(pageIndex, pageSize)
+            //    .Include(q => q.QuestionTags)
+            //    .Include(q => q.Publisher)
+            //    .Include(q => q.Answers);
+
+            return GetQuestionsQuery(pageIndex, pageSize).Include(q => q.Publisher);
+        }
+
+        private void AddTagsToQuestions(List<Question> questions)
+        {
+            questions.ForEach(q => q.QuestionTags = _questionTags.AsNoTracking().Where(t => t.QuestionId == q.Id).Include(qt => qt.Question).Include(qt => qt.Tag).ToList() as ICollection<QuestionTag>);
+        }
+
+        public Question FindQuestionById(string questionId)
+        {
+            return _dbSet.Include(q => q.Answers)
+                .Include(q => q.Comments)
+                .Include(q => q.Publisher)
+                .SingleOrDefault(e => e.Id.Equals(questionId));
         }
     }
 }

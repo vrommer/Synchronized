@@ -9,11 +9,11 @@ namespace Synchronized.WebApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IQuestionService _questionService;
+        private readonly IQuestionsService _questionService;
         private readonly ILogger _logger;
 
         public HomeController(
-            IQuestionService questionService,
+            IQuestionsService questionService,
             ILogger<HomeController> logger
             )
         {
@@ -28,7 +28,7 @@ namespace Synchronized.WebApp.Controllers
             ViewBag.maxPage = ViewBag.maxPage == null ? 1 : ViewBag.maxPage;      
             var currentPage = pageNumber ?? (page ?? 1 );
             int pageSize = 20;
-            var homeViewModel = await _questionService.GetQuestionsPage(currentPage, pageSize);
+            var homeViewModel = await _questionService.GetQuestionsPageAsync(currentPage, pageSize);
 
             return View(homeViewModel);
         }

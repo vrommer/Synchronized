@@ -1,8 +1,6 @@
-﻿@{
-    <div class="app-search collapse navbar-collapse navbar-right" id="navbarSupportedContent">
-        <form asp-page=@ViewData["CurrentPage"] class="form-inline my-2 my-lg-0">
-            @Html.TextBox("QuestionsSearch")
-            <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
-        </form>
-    </div>
-}
+﻿@{string searchString = null;}
+
+<form asp-page="/Questions" method="get" class="form-inline my-2 my-lg-0">
+    <input asp-for="@searchString" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+    <button class="btn btn-light my-2 my-sm-0" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+</form>

@@ -5,6 +5,7 @@ using Synchronized.Repository.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Synchronized.Core
 {
@@ -20,6 +21,11 @@ namespace Synchronized.Core
         public void Add(TEntity item)
         {
             repo.Add(item);
+        }
+
+        public async Task CreateAsync(TEntity entity)
+        {
+            await repo.AddAsync(entity);
         }
 
         public void Delete(string itemId)

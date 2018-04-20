@@ -1,29 +1,139 @@
+
+/* Page Header 
+-----------------*/
+
+#synched-header {
+    background-color: lightblue;
+}
+
+#synched-title {
+    text-align: center;
+}
+
+#synched-title a,
+#synched-title a:hover {
+    text-decoration: none;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+#synched-message-container {   
+    margin-top: 40px;
+    background-color: #eaeaea;
+}
+
+#synched-message {
+    font-size: 1.5em;
+}
+
+/* Register
+-------------*/
+#synched-register {
+    margin: 40px;
+    padding: 30px;
+    border-radius: 5px;
+    background-color: #E8E8E8;
+    box-shadow: 10px 10px 30px grey;
+}
+
+/* Ask
+---------*/
+
+#synched-ask {
+    margin: 40px;
+    padding: 30px;
+    border-radius: 5px;
+    background-color: #E8E8E8;
+    box-shadow: 10px 10px 30px grey;
+}
+
+#synched-ask .tagsinput {
+    overflow-y: hidden;
+}
+
+#synched-ask .jqte_tool_label {
+    box-sizing: unset;
+}
+
+#synched-ask .jqte_editor {
+    height: 300px;
+}
+
+#synched-ask .jqte {
+    border: none;
+}
+
+/* Tags 
+---------------*/
+.synched-tag-card {
+    margin-top: 40px;
+}
+
+.synched-tag-card .tagsinput {
+    overflow-y: hidden;
+}
+
+/* Users 
+---------------*/
+.synched-user-card {
+    margin-top: 40px;
+}
+
+/* Questions 
+---------------*/
+.synched-home-content {
+    text-align: center;
+    margin: 40px 0;
+}
+
+.synched-question-title, 
+.synched-tags {
+    text-align: left;
+}
+
+input.synched-tags {
+    display: none;
+}
+
+article.question {
+    margin-top: 30px;
+}
+
+.synched-question-title a,
+.synched-question-title a:hover {
+    text-decoration: none;
+    color: #5f5f5f;
+}
+
+/* General
+-------------*/
+
 body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+    /*padding-top: 50px;
+    padding-bottom: 20px;*/
+    color: #727272;
 }
 
-.container{
-    border: 1px solid black;
+.synched-sort a {
+    color: rgba(0, 0, 0, 0.5);
 }
 
-/* Wrapping element */
-/* Set some basic padding to keep content from hitting the edges */
+.synched-sort a:hover {
+    animation-name: hover-in;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+.synched-sort a.active {
+    color: #727272 !important;
+    animation-name: active;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards !important;
+    /*background-color: #add8e6 !important;*/
+}
+
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
-}
-
-#app-main-header {
-    width: 190px;
-    border: 1px solid red;
-    margin: 0 auto;
-}
-
-#app-page-message {
-    float: left;
-    font-size: 16px;
-    padding-top: 15px;
 }
 
 /* Carousel */
@@ -49,3 +159,22 @@ body {
         display: none;
     }
 }
+
+/* Animations
+---------------*/
+
+@keyframes hover-in {
+    to {
+        background-color: white;
+    }
+}
+
+@keyframes active {
+    from {
+        background-color: #eaeaea;
+    }
+    to {
+        background-color: #add8e6;
+    }
+}
+

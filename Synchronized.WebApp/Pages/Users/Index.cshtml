@@ -1,0 +1,104 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Users";
+}
+
+@{
+    var modelArray = Model.Users.ToArray();
+    var counter = 0;
+    var j = 1;
+    string tagsInputName = "";
+    while (counter < modelArray.Length)
+    {
+        <div class="row">
+            @{
+                for (int i = 0; i < 4; i++)
+                {
+                    if (counter < modelArray.Length)
+                    {
+
+                        @*<div class="col-md-3">
+                            <article>
+                                <div class="card synched-tag-card">
+                                    <div class="card-body">
+                                        <a asp-page="/Tags/Details" asp-route-id="@modelArray[counter].Id" class="card-link">
+                                            <input name=@tagsInputName id=@tagsInputName value=@modelArray[counter].Name />
+                                        </a>
+                                        <p class="card-text">@modelArray[counter].Description</p>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>*@
+                        <div class="col-md-3">
+                            <article>
+                                <div class="card synched-user-card" style="height: 10rem;">
+                                    <div class="card-block user-card">
+                                        <img class="app-user-image" src=@modelArray[counter].ImageUri alt="user image"/>
+                                        <div class="user-header-details">
+                                            @*<h6 class="app-user-header">@modelArray[counter].UserName</h6>*@
+                                            <a href="/Users/Details/@modelArray[counter].Id">@modelArray[counter].UserName</a>
+                                            <p>@modelArray[counter].Address</p>
+                                        </div>
+                                        <p>@modelArray[counter].Points</p>
+                                        @if (modelArray[counter].Tags.Count > 0)
+                                        {
+                                            <div class="synched-tags">
+                                                @{
+                                                    var first = true;
+                                                    var tagNames = "";
+                                                    var name = "synched-tags-" + j;
+                                                    j++;
+                                                    foreach (var tag in modelArray[counter].Tags)
+                                                    {
+                                                        if (!first)
+                                                        {
+                                                            tagNames += "," + tag.Name;
+                                                        }
+                                                        else
+                                                        {
+                                                            tagNames += tag.Name;
+                                                            first = false;
+                                                        }
+                                                    }
+                                                    first = true;
+                                                }
+                                                <input class="synched-tags" name=@name id=@name value=@tagNames />                                                
+                                            </div>
+                                         }
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                        counter++;
+                    }
+                }
+            }
+        </div>
+    }
+}   
+
+@{
+    var prevDisabled = !Model.Users.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Users.HasNextPage ? "disabled" : "";
+}
+<a asp-page="/Users/Index" asp-route-pageNumber="@(Model.Users.PageIndex - 1)"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+@*TODO: Add the "maxPages" with a setter and getter to the Questions page object*@
+@for (var i = 1; i <= Model.CurrentPage; i++)
+{
+    <a asp-page="/Users/Index" asp-route-pageNumber="@i"
+       class="btn btn-default">
+        @i
+    </a>
+}
+<a asp-page="/Users/Index" asp-route-pageNumber="@(Model.Users.PageIndex + 1)"
+   class="btn btn-default">
+    Next
+</a>
+
+@section Scripts {
+    <script src="~/js/users.js"></script>
+}

@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using Synchronized.Data;
 using System.Linq;
 using System;
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Synchronized.Repository.Repositories
 {
@@ -18,6 +20,11 @@ namespace Synchronized.Repository.Repositories
         private readonly UserStore<ApplicationUser> _userStore = new UserStore<ApplicationUser>(new SynchronizedDbContext());
 
         public IQueryable<ApplicationUser> Users => ((IQueryableUserStore<ApplicationUser>)_userStore).Users;
+
+        public void Add(ApplicationUser item)
+        {
+            throw new NotImplementedException();
+        }
 
         public Task AddLoginAsync(ApplicationUser user, UserLoginInfo login, CancellationToken cancellationToken)
         {
@@ -34,6 +41,11 @@ namespace Synchronized.Repository.Repositories
             return ((IUserStore<ApplicationUser>)_userStore).CreateAsync(user, cancellationToken);
         }
 
+        public void Delete(string itemId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IdentityResult> DeleteAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
             return ((IUserStore<ApplicationUser>)_userStore).DeleteAsync(user, cancellationToken);
@@ -42,6 +54,11 @@ namespace Synchronized.Repository.Repositories
         public void Dispose()
         {
             _userStore.Dispose();
+        }
+
+        public IEnumerable<ApplicationUser> FindBy(Expression<Func<ApplicationUser, bool>> predicate)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<ApplicationUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
@@ -244,9 +261,43 @@ namespace Synchronized.Repository.Repositories
             return _userStore.SetUserNameAsync(user, userName, cancellationToken);
         }
 
+        public void Update(ApplicationUser item)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IdentityResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
             return ((IUserStore<ApplicationUser>)_userStore).UpdateAsync(user, cancellationToken);
         }
+
+        #region IDataRepository implementation
+        public IQueryable<ApplicationUser> GetPage(int pageIndex, int pageSize)
+        {
+            return _userStore.Users.AsNoTracking().Skip((pageIndex - 1) * pageSize).Take(pageSize);
+        }
+    
+        public ApplicationUser FindById(string userId)
+        {
+            return _userStore.Users.AsNoTracking().Include(u => u.Tags).SingleOrDefault(u => u.Id.Equals(userId));
+        }
+        #endregion
+
+        #region IUSersRepository implementation
+        public async Task<int> GetCount()
+        {
+            return await _userStore.Users.CountAsync();
+        }
+
+        public async Task<List<ApplicationUser>> GetUsersPageAsync(int pageIndex, int pageSize)
+        {
+            return await GetPage(pageIndex, pageSize).Include(u => u.Tags).ToListAsync();
+        }
+
+        public async Task AddAsync(ApplicationUser entity)
+        {
+            await _userStore.CreateAsync(entity);
+        }
+        #endregion
     }
 }

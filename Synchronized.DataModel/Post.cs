@@ -7,7 +7,7 @@ namespace Synchronized.Model
         public string Id { get; set; }
         public DateTime DatePosted { get; set; }
         public string PublisherId { get; set; }
-        public string Content { get; set; }
+        public string Body { get; set; }
 
         public ApplicationUser Publisher { get; set; }
     }

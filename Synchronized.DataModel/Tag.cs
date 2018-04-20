@@ -7,7 +7,7 @@ using System.Web;
 
 namespace Synchronized.Model
 {
-    public class Tag
+    public class Tag: IEntity
     {
         public string Id { get; set; }
         public string Name { get; set; }

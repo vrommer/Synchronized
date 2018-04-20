@@ -149,7 +149,7 @@ namespace Synchronized.Data
                 questions.Add(new Question
                 {
                     Title = "The title of the Question",
-                    Content = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
+                    Body = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
                     "Fusce massa libero, hendrerit non risus a, sollicitudin venenatis tellus. Cras in enim lectus. " +
                     "Nunc nisi metus, condimentum vel urna eget, rutrum feugiat est. Curabitur eget dui eu sapien " +
                     "dictum vulputate vitae eu diam. Suspendisse iaculis, lorem in semper pharetra, felis dui ultrices " +
@@ -205,7 +205,7 @@ namespace Synchronized.Data
                 Question target = context.Posts.OfType<Question>().Where(q => q.Id == questionIds[pointer]).Include(q => q.Answers).ToArray()[0];
                 Answer a = new Answer
                 {
-                    Content = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
+                    Body = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
                     "Fusce massa libero, hendrerit non risus a, sollicitudin venenatis tellus. Cras in enim lectus. " +
                     "Nunc nisi metus, condimentum vel urna eget, rutrum feugiat est. Curabitur eget dui eu sapien " +
                     "dictum vulputate vitae eu diam. Suspendisse iaculis, lorem in semper pharetra, felis dui ultrices " +
@@ -239,7 +239,7 @@ namespace Synchronized.Data
             {
                 comments.Add(new Comment
                 {
-                    Content = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
+                    Body = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
                     "Fusce massa libero, hendrerit non risus a, sollicitudin venenatis tellus. Cras in enim lectus. " +
                     "Nunc nisi metus, condimentum vel urna eget, rutrum feugiat est. Curabitur eget dui eu sapien " +
                     "dictum vulputate vitae eu diam. Suspendisse iaculis, lorem in semper pharetra, felis dui ultrices " +
@@ -274,13 +274,17 @@ namespace Synchronized.Data
             ***********************************************************************/
             context.Posts.OfType<Question>().ToList().ForEach(q => {
                 var numOfTagsForQuestion = rand.Next(minimumTagsInQuestion, maximumTagsInQuestion);
-                var questionTag = new QuestionTag {
-                    QuestionId = q.Id,
-                    TagId = tagIds[rand.Next(tagIds.Count)]
-                };
-                context.QusetionTags.Add(questionTag);
+                for (int j = 1; j <= numOfTagsForQuestion; j++)
+                {
+                    var questionTag = new QuestionTag
+                    {
+                        QuestionId = q.Id,
+                        TagId = tagIds[rand.Next(tagIds.Count)]
+                    };
+                    context.QusetionTags.Add(questionTag);
+                    context.SaveChanges();
+                }
             });
-            context.SaveChanges();
         }
     }
 }

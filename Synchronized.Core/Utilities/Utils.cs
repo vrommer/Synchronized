@@ -11,9 +11,9 @@ namespace Synchronized.Core.Utilites
         {
             foreach (Question q in questions)
             {
-                int contentLength = q.Content.Length;
+                int contentLength = q.Body.Length;
                 int substringLength = Math.Min(512, contentLength);
-                q.Content = parser.UtilizeHtml(q.Content.Substring(0, substringLength));
+                q.Body = parser.UtilizeHtml(q.Body.Substring(0, substringLength));
             }
         }
     }

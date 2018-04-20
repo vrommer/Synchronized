@@ -1,0 +1,120 @@
+﻿@page "{id}"
+@model Synchronized.WebApp.Pages.Questions.DetailsModel
+@{
+    ViewData["Title"] = "Details";
+}
+
+<section class="app-question">
+    <h2>@Html.DisplayFor(model => model.Question.Title)</h2>
+    <div class="row">
+        <div class="app-stats col-md-1">
+            <div id="q-points">
+                @Html.DisplayFor(model => model.Question.Points)
+            </div>
+            <div class="app-btn"><i class="fa fa-plus-square"></i></div>
+            <div class="app-btn"><i class="fa fa-minus-square"></i></div>
+        </div>
+        <div id="question-content" class="col-md-10">
+            <div class="app-qcontent">
+                <div class="app-content-data">
+                    @Html.Raw(Model.Question.Body)
+                </div>
+            </div>
+            @Html.DisplayFor(model => model.Question.Publisher.UserName)
+            @Html.DisplayFor(model => model.Question.DatePosted)
+            <div class="app-qactions">
+                <a href="#">Edit</a><a href="#">Flag</a><a href="#">Close</a><a href="#">Delete</a>
+            </div>
+            @if (Model.Question.Comments != null && Model.Question.Comments.Count() > 0)
+            {                
+                <div class="comments">
+                    @foreach (var comment in Model.Question.Comments)
+                    {
+                        if (comment != null)
+                        {
+                            <hr />
+                            <div class="comment-content">
+                                <div>@Html.Raw(comment.Body)</div>
+                            </div>
+                            <div class="comment-nav">
+                                <a href="#">Flag</a><a href="#">Edit</a>
+                            </div>
+                        }
+                    }
+                </div>                
+            }
+            else
+            {
+                <hr />
+            }
+            <a href="#">Leave a comment</a>
+        </div>
+    </div>
+    @if (Model.Question.Answers.Count != 0)
+    {
+        <div id="app-answers-header">
+            <div class="container">
+                <div class="site-message">
+                    @Html.DisplayNameFor(model => model.Question.Answers)
+                </div>
+            </div>
+        </div>
+    }
+    <div id="app-answers">
+        @{ 
+            int counter = 1;
+            foreach (var answer in Model.Question.Answers)
+            {
+            <div class="row">
+                <div class="app-stats col-md-1">
+                    <div class="answer-number">@counter.</div>
+                    @{ counter++; }
+                    <div class="a-points">@answer.Points.</div>
+                    <div class="app-btn"><i class="fa fa-plus-square"></i></div>
+                    <div class="app-btn"><i class="fa fa-minus-square"></i></div>
+                </div>
+                <div class="col-md-10">
+                    @Html.Raw(answer.Body)
+                    @if (answer.Comments != null && answer.Comments.Count() > 0)
+                    {
+                        <div class="comments">
+                            @foreach (var comment in answer.Comments)
+                            {
+                                <hr />
+                                <div class="comment-content">@Html.Raw(comment.Body)</div>
+                                <div class="comment-nav">
+                                    <a href="#">Edit</a><a href="#">Flag</a>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <hr />
+                    }                    
+                </div>
+            </div>
+            }
+        }
+        @if (Model.Question.Answers.Count > 0)
+        {
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <a href="#" id="answers-leave-comment">Leave a comment</a>
+                </div>
+            </div>
+
+        }        
+    </div>
+    <div id="app-answers-header">
+            <div class="site-message">
+                Your answer
+            </div>
+            <div class="user-answer">
+                <textarea></textarea>                
+            </div>      
+            <div class="app-submit-btn">
+                <input type="button" value="Submit" class="btn btn-default" />
+            </div>
+    </div>
+</section>

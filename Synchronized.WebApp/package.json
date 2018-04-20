@@ -1,0 +1,15 @@
+{
+  "name": "synchronized-webapp",
+  "version": "1.0.0",
+  "description": "Synchronized web application",
+  "main": "index.js",
+  "author": "Vadim Rommer",
+  "license": "MIT",
+  "dependencies": {
+    "bootstrap": "^4.1.0",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.3.1",
+    "less": "^3.0.1",
+    "popper": "^1.0.1"
+  }
+}

@@ -1,8 +1,7 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
-    ViewData["Message"] = "Welcome!";
+    ViewData["Title"] = "Welcome!";
     ViewData["CurrentPage"] = "/Index";
 }
 
@@ -10,54 +9,53 @@
     var counter = 1;
     foreach (var item in Model.Questions)
     {
-        <div class="app-question-link row">
-            <div class="app-data app-question-points col-sm-2">
-                <div class="app-points">
-                    <h4>@item.Points</h4><i class="fa fa-star-o" aria-hidden="true"></i>
-                </div>
+        <article class="row synched-home-content">
+            <div class="col-sm">
+                <h4>@item.Points</h4>
+                <h5>pts</h5>
             </div>
-            <div class="app-data col-sm-8">
-                <div class="app-question-title">
-                    <h3><a asp-page="/Questions/Details/@item.Id">@item.Title</a></h3>
-                    <div class="app-labels">
-                        @{
-                            var first = true;
-                            var tagNames = "";
-                            var name = "tags-" + counter;
-                            counter++;
-                            foreach (var questionTag in item.QuestionTags)
+            <div class="col-sm">
+                <div class="synched-question-title">
+                    <h4><a asp-page="/Questions/Details/@item.Id">@item.Title</a></h4>
+                </div>
+                <div class="synched-tags">
+                    @{
+                        var first = true;
+                        var tagNames = "";
+                        var name = "tags-" + counter;
+                        counter++;
+                        foreach (var questionTag in item.QuestionTags)
+                        {
+                            if (!first)
                             {
-                                if (!first)
-                                {
-                                    tagNames += "," + questionTag.Tag.Name;
-                                }
-                                else
-                                {
-                                    tagNames += questionTag.Tag.Name;
-                                    first = false;
-                                }
+                                tagNames += "," + questionTag.Tag.Name;
                             }
-                            first = true;
+                            else
+                            {
+                                tagNames += questionTag.Tag.Name;
+                                first = false;
+                            }
                         }
-                        <input class="app-tags" name=@name id=@name value=@tagNames />
-                    </div>
+                        first = true;
+                    }
+                    <input class="synched-tags" name=@name id=@name value=@tagNames />
                 </div>
             </div>
-            <div class="app-data app-question-status col-sm-2">
+            <div class="col-sm">
                 @if (item.Answers == null || item.Answers.Count() == 0)
-                    {
-                        <img src="~/Content/images/x_mark_grey.png" />
-                    }
-                    else if (item.Answered())
-                    {
-                        <img src="~/Content/images/GreenV.png" />
-                    }
-                    else
-                    {
-                        <img src="~/Content/images/YellowV.png" />
-                    }
+                {
+                    <img src="~/pictures/x_mark_grey.png" height="30"/>
+                }
+                else if (item.Answered())
+                {
+                    <img src="~/pictures/GreenV.png" height="40"/>
+                }
+                else
+                {
+                    <img src="~/pictures/YellowV.png" height="40"/>
+                }
             </div>
-        </div>
+        </article>
     }
 }
 
@@ -78,6 +76,10 @@
     </a>
 }
 <a asp-page="/Index" asp-route-pageNumber="@(Model.Questions.PageIndex + 1)" 
-   class="btn btn-default">
+   class="btn btn-default @nextDisabled">
     Next
 </a>
+
+@section Scripts {
+    <script src="~/js/questions.js" asp-append-version="true"></script>
+}

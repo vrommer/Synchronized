@@ -65,11 +65,15 @@ namespace Synchronized.Repository.Repositories
             _context.Entry(item).State = EntityState.Modified;
         }
 
-        public async Task<List<TModel>> GetPage(int pageIndex, int pageSize)
+        public IQueryable<TModel> GetPage(int pageIndex, int pageSize)
         {
-            var source = _dbSet.AsNoTracking();
-            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
-            return items;
+            return _dbSet.AsNoTracking().Skip((pageIndex - 1) * pageSize).Take(pageSize);
+        }
+
+        public async Task AddAsync(TModel model)
+        {
+            await _dbSet.AddAsync(model);
+            await _context.SaveChangesAsync();
         }
     }
 }

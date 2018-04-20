@@ -1,0 +1,5 @@
+About to remove:
+  <ItemGroup>
+    <Compile Include="Conventions\MustBeInRouteParameterQueryConvention.cs" />
+  </ItemGroup>
+ from Synchronized.WebApp configuration

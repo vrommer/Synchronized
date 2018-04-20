@@ -1,0 +1,36 @@
+﻿@page
+@model Synchronized.WebApp.Pages.Questions.AskModel
+@{
+    ViewData["Title"] = "Ask";
+}
+
+<div class="row">
+    <div class="offset-md-2 col-md-8">
+        <section>
+            <div asp-validation-summary="All"></div>
+            <form method="POST" id="synched-ask">
+                <h4>Ask your question.</h4>
+                <hr />
+                <div class="form-group">
+                    <input asp-for="Question.Title" type="text" class="form-control" aria-describedby="questionTitle" placeholder="Title">
+                </div>
+                <div class="form-group">
+                    <textarea asp-for="Question.Body"></textarea>
+                </div>
+                <div class="form-group">
+                    <input asp-for="TagNames" type="text" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-secondary">Submit</button>
+            </form>
+        </section>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/lib/jQuery-TE_v.1.4.0/jquery-te-1.4.0.css" rel="stylesheet" />
+}
+
+@section Scripts {    
+    <script src="~/lib/jQuery-TE_v.1.4.0/uncompressed/jquery-te-1.4.0.js"></script>
+    <script src="~/js/ask.js"></script>
+}

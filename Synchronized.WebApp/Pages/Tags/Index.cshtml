@@ -1,0 +1,65 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Tags";
+}
+
+@{
+    var modelArray = Model.Tags.ToArray();
+    var counter = 0;
+    string tagsInputName = "";
+    while (counter < modelArray.Length)
+    {
+        <div class="row">
+            @{
+                for (int i = 0; i < 4; i++)
+                {
+                    if (counter < modelArray.Length)
+                    {
+                        tagsInputName = "synched-tags-" + counter;
+                        <div class="col-md-3">
+                            <article>
+                                <div class="card synched-tag-card" style="height: 8rem;">
+                                    <div class="card-body">
+                                        <a asp-page="/Tags/Details" asp-route-name="@modelArray[counter].Name" class="card-link">
+                                            <input class="synched-tags" name=@tagsInputName id=@tagsInputName value=@modelArray[counter].Name />
+                                        </a>
+                                        <p class="card-text">@modelArray[counter].Description</p>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+
+                        counter++;
+                    }
+                }
+            }
+        </div>
+    }
+}
+
+@{
+    var prevDisabled = !Model.Tags.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Tags.HasNextPage ? "disabled" : "";
+}
+<a asp-page="/Tags/Index" asp-route-pageNumber="@(Model.Tags.PageIndex - 1)"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+@*TODO: Add the "maxPages" with a setter and getter to the Questions page object*@
+@for (var i = 1; i <= Model.CurrentPage; i++)
+{
+    <a asp-page="/Tags/Index" asp-route-pageNumber="@i"
+       class="btn btn-default">
+        @i
+    </a>
+}
+<a asp-page="/Tags/Index" asp-route-pageNumber="@(Model.Tags.PageIndex + 1)"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
+
+
+@section Scripts {
+    <script src="~/js/tags.js"></script>
+}

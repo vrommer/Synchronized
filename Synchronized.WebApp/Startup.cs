@@ -38,7 +38,11 @@ namespace Synchronized.WebApp
             //services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IDataRepository<Question>, DataRepository<Question>>();
             services.AddTransient<IQuestionsRepository, QuestionsRepository>();
-            services.AddTransient<IQuestionService, QuestionService>();
+            services.AddTransient<IQuestionsService, QuestionsService>();
+            services.AddTransient<ITagsRepository, TagsRepository>();
+            services.AddTransient<ITagsService, TagsService>();
+            services.AddTransient<IUsersRepository, UsersRepository>();
+            services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<HtmlParser>();
             services.AddTransient<DbContext, SynchronizedDbContext>();
 
@@ -78,6 +82,8 @@ namespace Synchronized.WebApp
 
             app.UseStaticFiles();
 
+            app.UseNodeModules(env.ContentRootPath);
+
             app.UseAuthentication();
 
             app.UseMvc(routes =>
@@ -85,11 +91,6 @@ namespace Synchronized.WebApp
                 routes.MapRoute(
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");
-
-                routes.MapRoute(
-                    name: "page-routes",
-                    template: "{page}/{pageNumber?}"
-                );
             });
         }
     }

@@ -1,0 +1,116 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Questions";
+}
+
+@section Sort {
+    <nav class="nav nav-pills flex-column flex-sm-row synched-sort">
+        <a class="flex-sm-fill text-sm-center nav-link" asp-page="/Questions/Index" asp-route-sortOrder="@Model.DateSort">Date posted</a>
+        <a class="flex-sm-fill text-sm-center nav-link" asp-page="/Questions/Index" asp-route-sortOrder="@Model.AnswersSort">Answers</a>
+        <a class="flex-sm-fill text-sm-center nav-link" asp-page="/Questions/Index" asp-route-sortOrder="@Model.ViewsSort">Views</a>
+        <a class="flex-sm-fill text-sm-center nav-link" asp-page="/Questions/Index" asp-route-sortOrder="@Model.PointsSort">Points</a>
+    </nav>
+}
+
+@{
+    var prevDisabled = !Model.Questions.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Questions.HasNextPage ? "disabled" : "";
+}
+
+<section>
+    <div class="container">
+        @{
+            var counter = 1;
+            foreach (var item in Model.Questions)
+            {
+                <article class="question">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="question-title">
+                                <h3><a asp-page="/Questions/Details" asp-route-id="/@item.Id">@item.Title</a></h3>
+                            </div>
+                            <div class="question-content">
+                                @Html.Raw(item.Body)
+                                <div>
+                                    <a href="/Users/Details/@item.PublisherId">@item.Publisher.UserName</a>
+                                </div>
+                                @if (item.QuestionTags.Count > 0)
+                                {
+                                    <div class="synched-tags">
+                                        @{
+                                            var first = true;
+                                            var tagNames = "";
+                                            var name = "tags-" + counter;
+                                            counter++;
+                                            foreach (var questionTag in item.QuestionTags)
+                                            {
+                                                if (!first)
+                                                {
+                                                    tagNames += "," + questionTag.Tag.Name;
+                                                }
+                                                else
+                                                {
+                                                    tagNames += questionTag.Tag.Name;
+                                                    first = false;
+                                                }
+                                            }
+                                            first = true;
+                                        }
+                                        <input class="synched-tags" name=@name id=@name value=@tagNames />
+                                    </div>
+                                 }
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="question-date">
+                                @String.Format("{0:dd/MM/yyyy}", item.DatePosted)
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            @if (item.Answered())
+                            {
+                                <div class="answers answered">@item.Answers.Count</div>
+                            }
+                            else
+                            {
+                                <div class="answers">@item.Answers.Count</div>
+                            }
+                            <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                        </div>
+                        <div class="question col-md-1">
+                            <div class="views">@item.Views</div><i class="fa fa-eye" aria-hidden="true"></i>
+                        </div>
+                        <div class="question col-md-1">
+                            <div class="points">@item.Points</div><i class="fa fa-star-o" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </article>
+            }
+        }
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/questions.js" asp-append-version="true"></script>
+}
+
+<a asp-page="/Questions/Index" asp-route-pageNumber="@(Model.Questions.PageIndex - 1)"
+   asp-route-sortOrder="@Model.SortOrder" class="btn btn-default @prevDisabled">
+    Previous
+</a>
+@*TODO: Add the "maxPages" with a setter and getter to the Questions page object*@
+@for (var i = 1; i <= Model.CurrentPage; i++)
+{
+    <a asp-page="/Questions/Index" asp-route-pageNumber="@i"
+        asp-route-sortOrder="@Model.SortOrder" class="btn btn-default">
+        @i
+    </a>
+}
+<a asp-page="/Questions/Index" asp-route-pageNumber="@(Model.Questions.PageIndex + 1)"
+   asp-route-sortOrder="@Model.SortOrder" class="btn btn-default">
+    Next
+</a>
