@@ -27,17 +27,14 @@
                 <article class="question">
                     <div class="row">
                         <div class="col-md-7">
-                            <div class="question-title">
+                            <div class="synched-question-title">
                                 <h3><a asp-page="/Questions/Details" asp-route-id="/@item.Id">@item.Title</a></h3>
                             </div>
                             <div class="question-content">
                                 @Html.Raw(item.Body)
-                                <div>
-                                    <a href="/Users/Details/@item.PublisherId">@item.Publisher.UserName</a>
-                                </div>
                                 @if (item.QuestionTags.Count > 0)
                                 {
-                                    <div class="synched-tags">
+                                    <div>
                                         @{
                                             var first = true;
                                             var tagNames = "";
@@ -58,33 +55,35 @@
                                             first = true;
                                         }
                                         <input class="synched-tags" name=@name id=@name value=@tagNames />
+                                        <div class="synched-publisher">
+                                            <a href="/Users/Details/@item.PublisherId">@item.Publisher.UserName</a>
+                                        </div>
                                     </div>
                                  }
                             </div>
-
                         </div>
 
                         <div class="col-md-2">
-                            <div class="question-date">
+                            <div class="synched-question-date">
                                 @String.Format("{0:dd/MM/yyyy}", item.DatePosted)
                             </div>
                         </div>
                         <div class="col-md-1">
                             @if (item.Answered())
                             {
-                                <div class="answers answered">@item.Answers.Count</div>
+                                <div class="synched-answers answered">@item.Answers.Count</div>
                             }
                             else
                             {
-                                <div class="answers">@item.Answers.Count</div>
+                                <div class="synched-answers">@item.Answers.Count</div>
                             }
                             <i class="fa fa-envelope-o" aria-hidden="true"></i>
                         </div>
-                        <div class="question col-md-1">
+                        <div class="synched-views col-md-1">
                             <div class="views">@item.Views</div><i class="fa fa-eye" aria-hidden="true"></i>
                         </div>
-                        <div class="question col-md-1">
-                            <div class="points">@item.Points</div><i class="fa fa-star-o" aria-hidden="true"></i>
+                        <div class="points col-md-1">
+                            <div class="synched-points">@item.Points</div><i class="fa fa-star-o" aria-hidden="true"></i>
                         </div>
                     </div>
                 </article>

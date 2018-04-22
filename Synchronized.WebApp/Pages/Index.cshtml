@@ -10,11 +10,11 @@
     foreach (var item in Model.Questions)
     {
         <article class="row synched-home-content">
-            <div class="col-sm">
+            <div class="col-md-3">
                 <h4>@item.Points</h4>
                 <h5>pts</h5>
             </div>
-            <div class="col-sm">
+            <div class="col-md-8">
                 <div class="synched-question-title">
                     <h4><a asp-page="/Questions/Details/@item.Id">@item.Title</a></h4>
                 </div>
@@ -41,7 +41,7 @@
                     <input class="synched-tags" name=@name id=@name value=@tagNames />
                 </div>
             </div>
-            <div class="col-sm">
+            <div class="col-md-1">
                 @if (item.Answers == null || item.Answers.Count() == 0)
                 {
                     <img src="~/pictures/x_mark_grey.png" height="30"/>

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Synchronized.Model
 {
-    public class Question : Post
+    public class Question : CommentedPost
     {
 
         public string Title { get; set; }
@@ -11,7 +11,7 @@ namespace Synchronized.Model
         public int Views { get; set; }
 
         public ICollection<Answer> Answers { get; set; }
-        public ICollection<Comment> Comments { get; set; }
+        //public ICollection<Comment> Comments { get; set; }
         public ICollection<QuestionTag> QuestionTags { get; set; }
 
         public bool Answered() {

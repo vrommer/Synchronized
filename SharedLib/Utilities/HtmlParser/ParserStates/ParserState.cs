@@ -40,11 +40,11 @@ namespace UtilsLib.HtmlUtils.HtmlParser.ParserStates
          *********************************************/
         public override int GetHashCode()
         {
-            return (int)this._stateType.GetHashCode();
+            return _stateType.GetHashCode();
         }
         public override bool Equals(object obj)
         {
-            return ((int)this._stateType == int.Parse(obj.GetType().GetMember("_stateType")[0].ToString()));
+            return ((int)_stateType == int.Parse(obj.GetType().GetMember("_stateType")[0].ToString()));
         }
         /**
          * Parse HTML file. 

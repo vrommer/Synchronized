@@ -28,20 +28,23 @@ namespace Synchronized.Data
             builder.Entity<Post>()
                 .Property(p => p.Id)
                 .ValueGeneratedOnAdd();
+
             builder.Entity<Post>()
                 .Property(p => p.DatePosted)
                 .ValueGeneratedOnAdd()
                 .HasDefaultValueSql("GETDATE()");
 
-            builder.Entity<Question>().HasBaseType<Post>();
+            builder.Entity<Question>().HasBaseType<CommentedPost>();
 
-            builder.Entity<Answer>()
-                .HasBaseType<Post>()
+            builder.Entity<Answer>().HasBaseType<CommentedPost>()
                 .HasOne(a => a.Question)
                 .WithMany(q => q.Answers)
                 .HasForeignKey(a => a.QuestionId);
 
-            builder.Entity<Comment>().HasBaseType<Post>();
+            builder.Entity<Comment>().HasBaseType<Post>()
+                .HasOne(c => c.DataPost)
+                .WithMany(d => d.Comments)
+                .HasForeignKey(c => c.PostId);
 
             builder.Entity<ApplicationUser>()
                 .Property(u => u.JoiningDate)

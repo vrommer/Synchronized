@@ -44,15 +44,13 @@
         </div>
     </header>
 
-    <div id="synched-message-container">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-2 site-message" id="synched-message">@ViewData["Title"]</div>                
-                <div class="col-md-5 filtering">@RenderSection("Filter", required: false)</div>
-                <div class="col-md-5 sorting">@RenderSection("Sort", required: false)</div>
-            </div>
+    <div class="container synched-message-container">
+        <div class="row">
+            <div class="col-md-2 synched-message">@ViewData["Title"]</div>                
+            <div class="col-md-5 filtering">@RenderSection("Filter", required: false)</div>
+            <div class="col-md-5 sorting">@RenderSection("Sort", required: false)</div>
         </div>
-    </div>    
+    </div> 
 
     <section id="cast-page-contant">
         <div class="container">

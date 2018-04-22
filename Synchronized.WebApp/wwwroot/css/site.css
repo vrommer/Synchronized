@@ -16,12 +16,12 @@
     color: rgba(0, 0, 0, 0.5);
 }
 
-#synched-message-container {   
+.synched-message-container {   
     margin-top: 40px;
     background-color: #eaeaea;
 }
 
-#synched-message {
+.synched-message {
     font-size: 1.5em;
 }
 
@@ -99,18 +99,62 @@ article.question {
 }
 
 .synched-question-title a,
-.synched-question-title a:hover {
+.synched-question-title a:hover,
+.question .synched-publisher a,
+.question .synched-publisher a:hover 
+{
     text-decoration: none;
     color: #5f5f5f;
 }
 
+.question > div.row > div:nth-child(n+2) {
+    font-size: 18px;
+    color: #6a9bd4;
+    /*color: #5f5f5f;*/
+    text-align: center;
+}
+
+.question .synched-publisher {
+    color: #566c73;
+    float: right;
+}
+
+.answered,
+.answered + i {
+    color: #7bcf00;
+}
+
+/* Single question
+---------------*/
+
+#synched-answers-header {
+    margin-top: 40px;
+    background-color: #eaeaea;
+}
+
+.answers-header {
+    padding: 0 15px;
+}
+
+.comment-content {
+    font-size: 0.9em;
+    margin-left: 30px;
+}
+
 /* General
 -------------*/
+.vote-btn {
+    display: inline;
+}
 
+/* General
+-------------*/
 body {
-    /*padding-top: 50px;
-    padding-bottom: 20px;*/
     color: #727272;
+}
+
+.tagsinput {
+    display: inline-block;
 }
 
 .synched-sort a {
@@ -123,13 +167,12 @@ body {
     animation-fill-mode: forwards;
 }
 
-.synched-sort a.active {
+/*.synched-sort a.active {
     color: #727272 !important;
     animation-name: active;
     animation-duration: 0.5s;
-    animation-fill-mode: forwards !important;
-    /*background-color: #add8e6 !important;*/
-}
+    animation-fill-mode: forwards !important;    
+}*/
 
 .body-content {
     padding-left: 15px;
@@ -165,16 +208,16 @@ body {
 
 @keyframes hover-in {
     to {
-        background-color: white;
+        background-color: #add8e6;
     }
 }
 
-@keyframes active {
+/*@keyframes active {
     from {
         background-color: #eaeaea;
     }
     to {
         background-color: #add8e6;
     }
-}
+}*/
 

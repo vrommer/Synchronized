@@ -1,4 +1,9 @@
-﻿$("textarea").jqte();
+﻿$("textarea").jqte({
+    formats: [
+        ["p", "Normal"],
+        ["pre", "Code"]
+    ]
+});
 
 $('input[id=TagNames]').tagsInput({
     'height': '44px',

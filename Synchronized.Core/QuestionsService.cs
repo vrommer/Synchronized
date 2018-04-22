@@ -41,6 +41,12 @@ namespace Synchronized.Core
             return await CreatePage(questions, pageIndex, pageSize);
         }
 
+        public async Task<PaginatedList<Question>> GetQuestionsPageWithUsersAsync(int pageIndex, int pageSize, string sortOrder, string filter)
+        {
+            var questions = ((IQuestionsRepository)repo).GetQuestionsPageWithUsersAsync(pageIndex, pageSize, sortOrder, filter);
+            return await CreatePage(questions, pageIndex, pageSize);
+        }
+
         private async Task<PaginatedList<Question>> CreatePage(List<Question> questions, int pageIndex, int pageSize)
         {
             int count = await repo.GetCount();

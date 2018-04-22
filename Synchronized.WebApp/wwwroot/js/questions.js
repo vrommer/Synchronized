@@ -2,7 +2,7 @@
 $(function () {
     $('input[id^=tags]').tagsInput({
         'height': '50px',
-        'width': '300px',
+        'width': '400px',
         'interactive': false,
     });
 
@@ -14,8 +14,8 @@ $(function () {
         $('.synched-sort a').removeClass('active');
         $(this).addClass('active');
 
-    }).on('mouseleave', function () {
-        // TODO: Doesn't work. Try jQuery UI?'
+    // TODO: Doesn't work. Try jQuery UI?'
+    }).on('mouseleave', function () {        
         $(this).animate({ backgroundColor: "#eaeaea", }, 500);
     });
 

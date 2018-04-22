@@ -36,7 +36,8 @@ namespace Synchronized.WebApp.Pages.Questions
         public async Task OnGetAsync([MustBeInQueryParameterConvention]int? pageNumber, [MustBeInQueryParameterConvention]string sortOrder = null,
             [MustBeInQueryParameterConvention]string searchString = null)
         {
-            SortOrder = sortOrder == null ? "" : sortOrder;
+            SearchString = searchString ?? "";
+            SortOrder = sortOrder ?? "";
             DateSort = sortOrder == "Date" ? "date_desc" : "Date";
             AnswersSort = sortOrder == "Answers" ? "answers_desc" : "Answers";
             ViewsSort = sortOrder == "Views" ? "views_desc" : "Views";
@@ -44,7 +45,7 @@ namespace Synchronized.WebApp.Pages.Questions
 
             CurrentPage = pageNumber ?? (CurrentPage == 0 ? 1 : CurrentPage);
 
-            Questions = await _service.GetQuestionsPageWithUsersAsync(CurrentPage, PAGE_SIZE, sortOrder);
+            Questions = await _service.GetQuestionsPageWithUsersAsync(CurrentPage, PAGE_SIZE, sortOrder, SearchString);
         }
     }
 }

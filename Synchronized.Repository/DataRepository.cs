@@ -36,10 +36,10 @@ namespace Synchronized.Repository.Repositories
             _dbSet.Remove(item);
         }
 
-        public IEnumerable<TModel> FindBy(Expression<Func<TModel, bool>> predicate)
+        public IQueryable<TModel> FindBy(Expression<Func<TModel, bool>> predicate)
         {
-            IEnumerable<TModel> results = _dbSet.AsNoTracking()
-                .Where(predicate).ToList();
+            IQueryable<TModel> results = _dbSet.AsNoTracking()
+                .Where(predicate);
             return results;
         }
 

@@ -56,11 +56,6 @@ namespace Synchronized.Repository.Repositories
             _userStore.Dispose();
         }
 
-        public IEnumerable<ApplicationUser> FindBy(Expression<Func<ApplicationUser, bool>> predicate)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<ApplicationUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
         {
             return ((IUserEmailStore<ApplicationUser>)_userStore).FindByEmailAsync(normalizedEmail, cancellationToken);
@@ -272,6 +267,11 @@ namespace Synchronized.Repository.Repositories
         }
 
         #region IDataRepository implementation
+        public IQueryable<ApplicationUser> FindBy(Expression<Func<ApplicationUser, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
         public IQueryable<ApplicationUser> GetPage(int pageIndex, int pageSize)
         {
             return _userStore.Users.AsNoTracking().Skip((pageIndex - 1) * pageSize).Take(pageSize);

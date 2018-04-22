@@ -1,10 +1,8 @@
-﻿using Synchronized.SharedLib.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Synchronized.Model;
 
 namespace Synchronized.Repository.Interfaces
 {
@@ -18,6 +16,6 @@ namespace Synchronized.Repository.Interfaces
         void Add(TModel item);
         void Delete(string itemId);
         void Update(TModel item);
-        IEnumerable<TModel> FindBy(Expression<Func<TModel, bool>> predicate);        
+        IQueryable<TModel> FindBy(Expression<Func<TModel, bool>> predicate);        
     }
 }

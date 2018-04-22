@@ -17,9 +17,9 @@ namespace Synchronized.Data
             Random rand = new Random();
             int maxPoints = 1000;
             int maxViews = 100;
-            int numOfQuestions = 100;
-            int numOfAnswers = 100;
-            int numOfComments = 100;
+            int numOfQuestions = 5;
+            int numOfAnswers = 5;
+            int numOfComments = 5;
             int minimumTagsInQuestion = 1;
             int maximumTagsInQuestion = 4;
 
@@ -245,7 +245,8 @@ namespace Synchronized.Data
                     "dictum vulputate vitae eu diam. Suspendisse iaculis, lorem in semper pharetra, felis dui ultrices " +
                     "massa, volutpat rutrum sem nisi nec velit. Donec interdum convallis massa at interdum. Mauris luctus " +
                     "tellus arcu, vitae porttitor leo finibus sed.",
-                    PostId = rand.Next(2) > 0 ? questionIds[rand.Next(numOfQuestions)]: answerIds[rand.Next(numOfAnswers)]
+                    PostId = rand.Next(2) > 0 ? questionIds[rand.Next(numOfQuestions)]: answerIds[rand.Next(numOfAnswers)], 
+                    PublisherId = UserIds[rand.Next(UserIds.Count)]
                 });
             }
             comments.ForEach(c => context.Posts.Add(c));
@@ -272,14 +273,23 @@ namespace Synchronized.Data
             /***********************************************************************
             * QuestionTags
             ***********************************************************************/
+            HashSet<int> integers;
+            int questionsListPointer;
             context.Posts.OfType<Question>().ToList().ForEach(q => {
-                var numOfTagsForQuestion = rand.Next(minimumTagsInQuestion, maximumTagsInQuestion);
+                int numOfTagsForQuestion = rand.Next(minimumTagsInQuestion, maximumTagsInQuestion);
+                integers = new HashSet<int>();
                 for (int j = 1; j <= numOfTagsForQuestion; j++)
                 {
+                    questionsListPointer = rand.Next(tagIds.Count);
+                    while (integers.Contains(questionsListPointer))
+                    {
+                        questionsListPointer = rand.Next(tagIds.Count);
+                    }
+                    integers.Add(questionsListPointer);
                     var questionTag = new QuestionTag
                     {
                         QuestionId = q.Id,
-                        TagId = tagIds[rand.Next(tagIds.Count)]
+                        TagId = tagIds[questionsListPointer]
                     };
                     context.QusetionTags.Add(questionTag);
                     context.SaveChanges();
