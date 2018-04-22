@@ -30,7 +30,7 @@ namespace Synchronized.WebApp.Pages.Questions
         [BindProperty]
         public Answer Answer { get; set; }
 
-        public IActionResult OnPost()
+        public IActionResult OnPost(int? id, int? points)
         {
             if (!ModelState.IsValid)
             {

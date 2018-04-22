@@ -16,9 +16,10 @@
     color: rgba(0, 0, 0, 0.5);
 }
 
-.synched-message-container {   
+.synched-message-container {
     margin-top: 40px;
-    background-color: #eaeaea;
+    padding-bottom: 10px;
+    background: linear-gradient(#eaeaea, white);
 }
 
 .synched-message {
@@ -139,6 +140,41 @@ article.question {
 .comment-content {
     font-size: 0.9em;
     margin-left: 30px;
+}
+
+.app-stats {
+    text-align: center;
+}
+
+.synched-points {
+    font-size: 1.8em;
+}
+
+.synched-vote-btn {
+    font-size: 1.5em;
+    border: none;
+    padding: 0;
+    background-color: white;
+    color: #727272;
+    width: 1.2em;
+}
+
+.synched-vote-btn:hover {
+    cursor: pointer;
+}
+
+.answer-number {
+    font-size: 1.7em;
+    background: linear-gradient(#eaeaea, white);
+}
+
+.synched-answer {
+    margin-top: 40px;
+}
+
+.answer-header-container {
+    margin-top: 40px;
+    padding-bottom: 10px;
 }
 
 /* General

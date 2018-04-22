@@ -16,7 +16,7 @@
             </div>
             <div class="col-md-8">
                 <div class="synched-question-title">
-                    <h4><a asp-page="/Questions/Details/@item.Id">@item.Title</a></h4>
+                    <h4><a asp-page="/Questions/Details" asp-route-id="/@item.Id">@item.Title</a></h4>
                 </div>
                 <div class="synched-tags">
                     @{

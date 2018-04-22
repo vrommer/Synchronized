@@ -8,13 +8,15 @@
     <h2>@Html.DisplayFor(model => model.Question.Title)</h2>
     <div class="row">
         <div class="app-stats col-md-1">
-            <div id="q-points">
+            <div class="synched-points">
                 @Html.DisplayFor(model => model.Question.Points)
             </div>
-            <div class="vote-btn"><i class="fa fa-plus-square"></i></div>
-            <div class="vote-btn"><i class="fa fa-minus-square"></i></div>
+            <div class="synched-vote-buttons">
+                <button class="synched-vote-btn"><i class="fa fa-plus-square"></i></button>
+                <button class="synched-vote-btn"><i class="fa fa-minus-square"></i></button>
+            </div>
         </div>
-        <div id="question-content" class="col-md-10">
+        <div id="question-content" class="col-md-11">
             <div class="app-qcontent">
                 <div class="app-content-data">
                     @Html.Raw(Model.Question.Body)
@@ -26,6 +28,7 @@
                 <a class="nav-link" href="#">Edit</a>
                 <a class="nav-link" href="#">Flag</a>
                 <a class="nav-link" href="#">Close</a>
+                <a class="nav-link" href="#">Delete</a>
             </nav>
             @if (Model.Question.Comments != null && Model.Question.Comments.Count() > 0)
             {                
@@ -64,16 +67,22 @@
             int counter = 1;
             foreach (var answer in Model.Question.Answers)
             {
-            <div class="row">
+            <div class="row synched-answer">
                 <div class="app-stats col-md-1">
                     <div class="answer-number">@counter.</div>
                     @{ counter++; }
-                    <div class="a-points">@answer.Points</div>
-                    <div class="vote-btn"><i class="fa fa-plus-square"></i></div>
-                    <div class="vote-btn"><i class="fa fa-minus-square"></i></div>
+                    <div class="synched-points">@answer.Points</div>
+                    <button class="synched-vote-btn"><i class="fa fa-plus-square"></i></button>
+                    <button class="synched-vote-btn"><i class="fa fa-minus-square"></i></button>
                 </div>
                 <div class="col-md-10">
-                    @Html.Raw(answer.Body)
+                    <div>@Html.Raw(answer.Body)</div>
+                    <nav class="nav">
+                        <a class="nav-link" href="#">Edit</a>
+                        <a class="nav-link" href="#">Flag</a>
+                        <a class="nav-link" href="#">Close</a>
+                        <a class="nav-link" href="#">Delete</a>
+                    </nav>
                     @if (answer.Comments != null && answer.Comments.Count() > 0)
                     {
                         <div class="comments">
@@ -81,33 +90,29 @@
                             {
                                 <hr />
                                 <div class="comment-content">@Html.Raw(comment.Body)</div>
-                                <div class="comment-nav">
-                                    <a href="#">Edit</a><a href="#">Flag</a>
-                                </div>
+                                <nav class="nav">
+                                    <a class="nav-link" href="#">Edit</a>
+                                    <a class="nav-link" href="#">Flag</a>
+                                </nav>
                             }
                         </div>
                     }
                     else
                     {
                         <hr />
-                    }                    
+                    }   
+                    @if (Model.Question.Answers.Count > 0)
+                    {
+                        <a href="#" id="answers-leave-comment">Leave a comment</a>
+                    }  
                 </div>
             </div>
             }
-        }
-        @if (Model.Question.Answers.Count > 0)
-        {
-            <div class="row">
-                <div class="col-md-10 col-md-offset-1">
-                    <a href="#" id="answers-leave-comment">Leave a comment</a>
-                </div>
-            </div>
-
-        }        
+        }      
     </div>
 
     <form method="POST" id="synched-ask">
-        <div class="synched-message-container">
+        <div class="answer-header-container">
             <div class="synched-message answers-header">Your answer</div>
         </div>
         <div class="form-group">
