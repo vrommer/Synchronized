@@ -53,5 +53,10 @@ namespace Synchronized.Core
             Utils.MinimizeContent(parser, questions);
             return new PaginatedList<Question>(questions, count, pageIndex, pageSize);
         }
+
+        public Task Vote()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

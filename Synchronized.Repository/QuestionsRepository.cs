@@ -147,15 +147,5 @@ namespace Synchronized.Repository
             return GetQuestionsQuery(pageIndex, pageSize)
                 .Include(q => q.Publisher);
         }
-
-        public void AddComment()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AddCommentToAnswer()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

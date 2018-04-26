@@ -13,6 +13,6 @@ namespace Synchronized.Model
         public DateTime JoiningDate { get; set; }
         public string Address { get; set; }
 
-        public ICollection<Tag> Tags { get; set; }
+        public ICollection<Vote> Votes { get; set; }
     }
 }

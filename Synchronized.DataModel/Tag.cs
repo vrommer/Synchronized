@@ -16,6 +16,6 @@ namespace Synchronized.Model
         public string Description { get; set; }
 
         public ApplicationUser Publisher { get; set; }
-        public ICollection<QuestionTag>QuestionTags{ get; set; }
+        public ICollection<QuestionTag> QuestionTags{ get; set; }
     }
 }

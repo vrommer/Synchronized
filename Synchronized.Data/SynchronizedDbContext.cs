@@ -65,6 +65,16 @@ namespace Synchronized.Data
 
             builder.Entity<Vote>().HasKey(s => new { s.VoterId, s.PostId });
 
+            builder.Entity<Vote>()
+                .HasOne(v => v.Post)
+                .WithMany(p => p.Votes)
+                .HasForeignKey(v => v.PostId);
+
+            builder.Entity<Vote>()
+                .HasOne(v => v.Voter)
+                .WithMany(p => p.Votes)
+                .HasForeignKey(v => v.VoterId);
+
 
 
             base.OnModelCreating(builder);

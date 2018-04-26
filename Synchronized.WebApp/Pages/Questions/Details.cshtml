@@ -4,16 +4,21 @@
     ViewData["Title"] = "Details";
 }
 
+<script>
+    var questionId = @Html.Raw(Json.Serialize(Model.Question.Id))
+    var question = @Html.Raw(Json.Serialize(Model.Question))
+</script>
+
 <section class="app-question">
     <h2>@Html.DisplayFor(model => model.Question.Title)</h2>
-    <div class="row">
+    <div class="row" id="synched-quetion">
         <div class="app-stats col-md-1">
             <div class="synched-points">
                 @Html.DisplayFor(model => model.Question.Points)
             </div>
             <div class="synched-vote-buttons">
-                <button class="synched-vote-btn"><i class="fa fa-plus-square"></i></button>
-                <button class="synched-vote-btn"><i class="fa fa-minus-square"></i></button>
+                <button class="synched-vote-btn vote-up-btn"><i class="fa fa-plus-square"></i></button>
+                <button class="synched-vote-btn vote-down-btn"><i class="fa fa-minus-square"></i></button>
             </div>
         </div>
         <div id="question-content" class="col-md-11">
@@ -62,7 +67,7 @@
             <div class="synched-message answers-header">@Html.DisplayNameFor(model => model.Question.Answers)</div>
         </div>
     }
-    <div id="app-answers">
+    <div id="synched-answers">
         @{ 
             int counter = 1;
             foreach (var answer in Model.Question.Answers)
@@ -72,8 +77,8 @@
                     <div class="answer-number">@counter.</div>
                     @{ counter++; }
                     <div class="synched-points">@answer.Points</div>
-                    <button class="synched-vote-btn"><i class="fa fa-plus-square"></i></button>
-                    <button class="synched-vote-btn"><i class="fa fa-minus-square"></i></button>
+                    <button class="synched-vote-btn vote-up-btn"><i class="fa fa-plus-square"></i></button>
+                    <button class="synched-vote-btn vote-down-btn"><i class="fa fa-minus-square"></i></button>
                 </div>
                 <div class="col-md-10">
                     <div>@Html.Raw(answer.Body)</div>

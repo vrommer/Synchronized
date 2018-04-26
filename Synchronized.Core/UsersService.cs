@@ -23,6 +23,11 @@ namespace Synchronized.Core
             throw new NotImplementedException();
         }
 
+        public Task<bool> CanVote()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task CreateAsync(ApplicationUser entity)
         {
             throw new NotImplementedException();

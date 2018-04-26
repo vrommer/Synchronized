@@ -10,6 +10,7 @@ namespace Synchronized.Core.Interfaces
         Task<PaginatedList<Question>> GetQuestionsPageWithUsersAsync(int pageIndex, int pageSize);
         Task<PaginatedList<Question>> GetQuestionsPageWithUsersAsync(int pageIndex, int pageSize, string sortOrder);
         Task<PaginatedList<Question>> GetQuestionsPageWithUsersAsync(int pageIndex, int pageSize, string sortOrder, string filter);
+        Task Vote();
         Question FindQuestionById(string questionId);
     }
 }

@@ -279,7 +279,8 @@ namespace Synchronized.Repository.Repositories
     
         public ApplicationUser FindById(string userId)
         {
-            return _userStore.Users.AsNoTracking().Include(u => u.Tags).SingleOrDefault(u => u.Id.Equals(userId));
+            //return _userStore.Users.AsNoTracking().Include(u => u.Tags).SingleOrDefault(u => u.Id.Equals(userId));
+            return _userStore.Users.AsNoTracking().SingleOrDefault(u => u.Id.Equals(userId));
         }
         #endregion
 
@@ -291,7 +292,8 @@ namespace Synchronized.Repository.Repositories
 
         public async Task<List<ApplicationUser>> GetUsersPageAsync(int pageIndex, int pageSize)
         {
-            return await GetPage(pageIndex, pageSize).Include(u => u.Tags).ToListAsync();
+            //return await GetPage(pageIndex, pageSize).Include(u => u.Tags).ToListAsync();
+            return await GetPage(pageIndex, pageSize).ToListAsync();
         }
 
         public async Task AddAsync(ApplicationUser entity)

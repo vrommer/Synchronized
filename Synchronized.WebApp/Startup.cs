@@ -14,6 +14,8 @@ using Synchronized.Core.Interfaces;
 using Synchronized.Core;
 using UtilsLib.HtmlUtils.HtmlParser;
 using Synchronized.Data;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace Synchronized.WebApp
 {
@@ -59,6 +61,10 @@ namespace Synchronized.WebApp
                 {
                     options.Conventions.AuthorizeFolder("/Account/Manage");
                     options.Conventions.AuthorizePage("/Account/Logout");
+                })
+                .AddJsonOptions(options => {
+                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
 
             // Register no-op EmailSender used by account confirmation and password reset during development
@@ -91,6 +97,10 @@ namespace Synchronized.WebApp
                 routes.MapRoute(
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "api",
+                    template: "api/{controller}/{action}");
             });
         }
     }
