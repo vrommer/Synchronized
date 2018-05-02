@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Synchronized.Core.Interfaces;
+using Synchronized.Domain;
 using Synchronized.Model;
 using System.Threading.Tasks;
 
@@ -31,8 +32,9 @@ namespace Synchronized.WebApp.Controllers
 
         // POST: /api/Questions/VoteUpQuestion
         [HttpPost]
-        public IActionResult VoteUpQuestion([FromBody]Question question)
+        public IActionResult VoteUpQuestion([FromBody]string questionId)
         {
+            var question = _questionsService.FindQuestionById(questionId);
             question.Points++;
             _questionsService.UpdateQuestion(question);
             return new ObjectResult(question);
@@ -40,8 +42,9 @@ namespace Synchronized.WebApp.Controllers
 
         // POST: api/Voter/VoteDownQuestion
         [HttpPost]
-        public IActionResult VoteDownQuestion([FromBody]Question question)
+        public IActionResult VoteDownQuestion([FromBody]string questionId)
         {
+            var question = _questionsService.FindQuestionById(questionId);
             question.Points--;
             _questionsService.UpdateQuestion(question);
             return new ObjectResult(question);
@@ -69,7 +72,7 @@ namespace Synchronized.WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> SubmitQuestionComment([FromBody]Comment comment)
         {
-            Question question = _questionsService.FindQuestionById(comment.PostId);
+            var question = _questionsService.FindQuestionById(comment.PostId);
             ApplicationUser usr = await GetCurrentUserAsync();
             comment.PublisherId = usr.Id;
             question.Comments.Add(comment);
@@ -88,28 +91,50 @@ namespace Synchronized.WebApp.Controllers
             return new ObjectResult(comment);
         }
 
-        //// POST: api/Voter/FlagQuestion
-        //public IActionResult FlagQuestion([FromBody]Question question)
-        //{
-        //    _questionsService.UpdateQuestion(question);
-        //    return new ObjectResult(question);
-        //}
-
-        //// POST: api/Voter/DeleteQuestion
-        //public IActionResult DeleteQuestion([FromBody]Question question)
-        //{
-        //    _questionsService.UpdateQuestion(question);
-        //    return new ObjectResult(question);
-        //}
-
         [HttpPost]
-        public IActionResult SaveChanges([FromBody]Question question)
+        public async Task<IActionResult> DeleteQuestion([FromBody]string questionId)
         {
-            _dataService.Update(question);
+            var question = _questionsService.FindQuestionById(questionId);
+            var user = await GetCurrentUserAsync();
+            if (!question.DeleteVotes.Contains(new DeleteVote
+            {
+                UserId = user.Id,
+                QuestionId = question.Id
+            }))
+            {
+                // EF Core will not track new entity with key
+                question.DeleteVotes.Add(new DeleteVote
+                {
+                    Question = question,
+                    User = user
+                });
+                _questionsService.UpdateQuestion(question);
+            }
             return new ObjectResult(question);
         }
 
-        [HttpGet]
+        [HttpPost]
+        public async Task<IActionResult> FlagQuestion([FromBody]string questionId)
+        {
+            var question = _questionsService.FindQuestionById(questionId);
+            var user = await GetCurrentUserAsync();
+            if (!question.QuestionFlags.Contains(new QuestionFlag
+            {
+                UserId = user.Id,
+                QuestionId = question.Id
+            }))
+            {
+                // EF Core will not track new entity with key
+                question.QuestionFlags.Add(new QuestionFlag
+                {
+                    Question = question,
+                    User = user
+                });
+                _questionsService.UpdateQuestion(question);
+            }
+            return new ObjectResult(question);
+        }
+
         public async Task<IActionResult> GetCurrentUser()
         {           
             return new ObjectResult(await GetCurrentUserAsync());

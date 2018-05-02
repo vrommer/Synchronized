@@ -86,6 +86,7 @@ namespace Synchronized.Repository
                 .Include(q => q.Publisher)
                 .Include(q => q.QuestionViews)
                 .Include(q => q.QuestionFlags)
+                .Include(q => q.DeleteVotes)
                 .AsNoTracking()
                 .SingleOrDefault(e => e.Id.Equals(questionId));
 

@@ -1,22 +1,24 @@
 ﻿var answers = {};
 
 $(function () {
+
     $("#synched-quetion .vote-up-btn").on("click", VoteUpQuestion)
     $("#synched-quetion .vote-down-btn").on("click", VoteDownQuestion)
 
     $("#synched-quetion .submit-comment").on("click", submitQuestionComment);
 
-    $("#synched-quetion .synched-flag").on("click", flag.bind(question));
+    $("#synched-quetion .synched-flag").on("click", flagQuestion);
+
+    $("#synched-quetion .synched-delete").on("click", deleteQuestion);
+
 
     question.answers.forEach(function (answer) {
         answers[answer.id] = answer;
-        var answerId = {
-            id: answer.id
-        }
-        $(`#${answer.id} .vote-up-btn`).on("click", VoteUpAnswer.bind(answerId))
-        $(`#${answer.id} .vote-down-btn`).on("click", VoteDownAnswer.bind(answerId))
 
-        $(`#${answer.id} .submit-comment`).on("click", submitAnswerComment.bind(answerId));
+        $(`#${answer.id} .vote-up-btn`).on("click", VoteUpAnswer.bind(answer))
+        $(`#${answer.id} .vote-down-btn`).on("click", VoteDownAnswer.bind(answer))
+
+        $(`#${answer.id} .submit-comment`).on("click", submitAnswerComment.bind(answer));
     });
 
 
@@ -83,13 +85,13 @@ $(function () {
     }
 
     function VoteUpQuestion() {
-        ajaxRequest("POST", "/api/Questions/VoteUpQuestion", question)
+        ajaxRequest("POST", "/api/Questions/VoteUpQuestion", question.id)
             .then(updateQuestionPoints)
             .catch(function (xhr) { console.log(xhr); });
     }
 
     function VoteDownQuestion() {
-        ajaxRequest("POST", "/api/Questions/VoteDownQuestion", question)
+        ajaxRequest("POST", "/api/Questions/VoteDownQuestion", question.id)
             .then(updateQuestionPoints);
     }
 
@@ -123,18 +125,13 @@ $(function () {
             .then(updateAnswerComments);
     }
 
-    function flag() {
-        var questionFlag = {
-            question: this
-        };
-        ajaxRequest("GET", "/api/Questions/GetCurrentUser")
-            .then(function (data) { questionFlag.user = data; return questionFlag; })
-            .then(function (data) { question.questionFlags.push(data) })
-            .then(ajaxRequest("POST", "/api/Questions/SaveChanges", question))
-            .then(console.log("Success!"))
-            .catch(function (xhr) {
-                console.log(xhr);
+    function flagQuestion() {
+        return ajaxRequest("POST", "/api/Questions/FlagQuestion", question.id)
+            .then(() => { console.log("success!") });
+    }
 
-            });
+    function deleteQuestion() {
+        return ajaxRequest("POST", "/api/Questions/DeleteQuestion", question.id)
+            .then(() => { console.log("success!") });
     }
 });
