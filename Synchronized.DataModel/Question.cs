@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Synchronized.Domain;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Synchronized.Model
@@ -8,10 +9,14 @@ namespace Synchronized.Model
 
         public string Title { get; set; }
         public int Points { get; set; }
-        public int Views { get; set; }
+        public int Deleted { get; set; }
 
         public ICollection<Answer> Answers { get; set; }
         public ICollection<QuestionTag> QuestionTags { get; set; }
+        public ICollection<QuestionView> QuestionViews { get; set; }
+        public ICollection<QuestionFlag> QuestionFlags { get; set; }
+        public ICollection<DeleteVote> DeleteVotes { get; set; }
+
 
         public bool Answered() {
             if (Answers == null)

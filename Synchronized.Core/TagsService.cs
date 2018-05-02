@@ -15,6 +15,11 @@ namespace Synchronized.Core
             _tagsRepo = repo;
         }
 
+        public async Task<Tag> FindTagByName(string name)
+        {
+            return await _tagsRepo.FindTagByName(name);
+        }
+
         public async Task<PaginatedList<Tag>> GetTagsPageAsync(int pageIndex, int pageSize)
         {
             var tags = await _tagsRepo.GetTagsPageAsync(pageIndex, pageSize);

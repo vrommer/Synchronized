@@ -14,9 +14,10 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Controllers\Synchronized.Controllers.csproj" />
     <ProjectReference Include="..\SharedLib\SharedLib.csproj" />
     <ProjectReference Include="..\Synchronized.Core\Synchronized.Core.csproj" />
-    <ProjectReference Include="..\Synchronized.DataModel\Synchronized.Model.csproj" />
+    <ProjectReference Include="..\Synchronized.DataModel\Synchronized.Domain.csproj" />
     <ProjectReference Include="..\Synchronized.Data\Synchronized.Data.csproj" />
     <ProjectReference Include="..\Synchronized.Repository\Synchronized.Repository.csproj" />
   </ItemGroup>

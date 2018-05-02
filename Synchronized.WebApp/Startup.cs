@@ -41,6 +41,8 @@ namespace Synchronized.WebApp
             services.AddTransient<IDataRepository<Question>, DataRepository<Question>>();
             services.AddTransient<IQuestionsRepository, QuestionsRepository>();
             services.AddTransient<IQuestionsService, QuestionsService>();
+            services.AddTransient<IDataService<CommentedPost>, DataService<CommentedPost>>();
+            services.AddTransient<IDataRepository<CommentedPost>, DataRepository<CommentedPost>>();
             services.AddTransient<ITagsRepository, TagsRepository>();
             services.AddTransient<ITagsService, TagsService>();
             services.AddTransient<IUsersRepository, UsersRepository>();

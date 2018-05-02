@@ -13,6 +13,11 @@ namespace Synchronized.Repository
         {
         }
 
+        public async Task<Tag> FindTagByName(string name)
+        {
+            return await FindBy(t => t.Name.Equals(name)).FirstOrDefaultAsync();
+        }
+
         public async Task<List<Tag>> GetTagsPageAsync(int pageIndex, int pageSize)
         {
             return await GetPage(pageIndex, pageSize)

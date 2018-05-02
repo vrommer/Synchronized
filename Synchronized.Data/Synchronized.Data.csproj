@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SharedLib\SharedLib.csproj" />
-    <ProjectReference Include="..\Synchronized.DataModel\Synchronized.Model.csproj" />
+    <ProjectReference Include="..\Synchronized.DataModel\Synchronized.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -256,11 +256,6 @@ namespace Synchronized.Repository.Repositories
             return _userStore.SetUserNameAsync(user, userName, cancellationToken);
         }
 
-        public void Update(ApplicationUser item)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<IdentityResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
             return ((IUserStore<ApplicationUser>)_userStore).UpdateAsync(user, cancellationToken);
@@ -300,6 +295,12 @@ namespace Synchronized.Repository.Repositories
         {
             await _userStore.CreateAsync(entity);
         }
+
+        public void Update(ApplicationUser user)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

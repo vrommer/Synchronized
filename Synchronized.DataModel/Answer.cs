@@ -13,6 +13,5 @@ namespace Synchronized.Model {
         public bool IsAccepted { get; set; }
 
         public Question Question { get; set; }
-        //public ICollection<Comment> Comments { get; set; }
     }
 }

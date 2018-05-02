@@ -39,7 +39,8 @@
 /* Ask
 ---------*/
 
-#synched-ask {
+#synched-ask,
+#synched-answer {
     margin: 40px;
     padding: 30px;
     border-radius: 5px;
@@ -47,19 +48,23 @@
     box-shadow: 10px 10px 30px grey;
 }
 
-#synched-ask .tagsinput {
+#synched-ask .tagsinput,
+#synched-answer .jqte_tool_label {
     overflow-y: hidden;
 }
 
-#synched-ask .jqte_tool_label {
+#synched-ask .jqte_tool_label,
+#synched-answer .jqte_tool_label{
     box-sizing: unset;
 }
 
-#synched-ask .jqte_editor {
+#synched-ask .jqte_editor,
+#synched-answer .jqte_editor{
     height: 300px;
 }
 
-#synched-ask .jqte {
+#synched-ask .jqte,
+#synched-answer .jqte{
     border: none;
 }
 
@@ -177,10 +182,20 @@ article.question {
     padding-bottom: 10px;
 }
 
-/* General
--------------*/
 .vote-btn {
     display: inline;
+}
+
+.synched-comment-form {
+    display: none;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.synched-meta {
+    float: right;
+    padding: 7px 13px;
 }
 
 /* General

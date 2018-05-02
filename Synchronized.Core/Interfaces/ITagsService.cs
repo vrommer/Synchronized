@@ -7,5 +7,7 @@ namespace Synchronized.Core.Interfaces
     public interface ITagsService: IDataService<Tag>
     {
         Task<PaginatedList<Tag>> GetTagsPageAsync(int currentPage, int pageSize);
+
+        Task<Tag> FindTagByName(string name);
     }
 }

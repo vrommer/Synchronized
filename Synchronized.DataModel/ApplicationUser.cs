@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Synchronized.Domain;
 using System;
 using System.Collections.Generic;
 
@@ -14,5 +15,8 @@ namespace Synchronized.Model
         public string Address { get; set; }
 
         public ICollection<Vote> Votes { get; set; }
+        public ICollection<QuestionFlag> Flags { get; set; }
+        public ICollection<QuestionView> QuestionViews { get; set; }
+        public ICollection<DeleteVote> DeleteVotes { get; set; }
     }
 }

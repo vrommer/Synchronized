@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Synchronized.Core.Interfaces;
+using Synchronized.Domain;
 using Synchronized.Model;
+using System.Threading.Tasks;
 
 namespace Synchronized.WebApp.Pages.Questions
 {
@@ -10,35 +13,60 @@ namespace Synchronized.WebApp.Pages.Questions
     {
         public Question Question { get; set; }
 
-        private readonly IQuestionsService _service;
-        private readonly ILogger<IndexModel> _logger;
+        private IQuestionsService _questionsService;
+        private readonly ILogger<DetailsModel> _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public DetailsModel(
-            IQuestionsService service,
-            ILogger<IndexModel> logger
+            IQuestionsService questionsService,
+            ILogger<DetailsModel> logger,
+            UserManager<ApplicationUser> userManager
             )
         {
-            _service = service;
+            _questionsService = questionsService;
             _logger = logger;
+            _userManager = userManager;
         }
 
-        public void OnGet(string id)
+        public async Task OnGetAsync(string id)
         {
-            Question = _service.FindQuestionById(id);
+            ApplicationUser usr = await GetCurrentUserAsync();
+            Question = _questionsService.FindQuestionById(id);
+
+            if (!Question.QuestionViews.Contains(new QuestionView
+            {
+                UserId = usr.Id,
+                QuestionId = Question.Id
+            }))
+            {
+                // EF Core will not track entity with key
+                Question.QuestionViews.Add(new QuestionView {
+                    Question = Question,
+                    User = usr
+                });
+            }
+            _questionsService.UpdateQuestion(Question);
         }
 
         [BindProperty]
         public Answer Answer { get; set; }
 
-        public IActionResult OnPost(int? id, int? points)
+        public async Task<IActionResult> OnPostAsync(string id)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
+            Question = _questionsService.FindQuestionById(id);
+            ApplicationUser usr = await GetCurrentUserAsync();
+            Answer.PublisherId = usr.Id;
 
-            //_service.Update(Question);
+            Question.Answers.Add(Answer);
+
+            _questionsService.UpdateQuestion(Question);
             return RedirectToPage("/Index");
         }
+
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
     }
 }

@@ -21,36 +21,32 @@
                 <button class="synched-vote-btn vote-down-btn"><i class="fa fa-minus-square"></i></button>
             </div>
         </div>
-        <div id="question-content" class="col-md-11">
+        <div id="question-content" class="col-md-10">
             <div class="app-qcontent">
                 <div class="app-content-data">
                     @Html.Raw(Model.Question.Body)
                 </div>
             </div>
-            @Html.DisplayFor(model => model.Question.Publisher.UserName)
-            @Html.DisplayFor(model => model.Question.DatePosted)
-            <nav class="nav">
-                <a class="nav-link" href="#">Edit</a>
-                <a class="nav-link" href="#">Flag</a>
-                <a class="nav-link" href="#">Close</a>
-                <a class="nav-link" href="#">Delete</a>
-            </nav>
+            <button type="button" class="btn btn-link synched-edit">Edit</button>
+            <button type="button" class="btn btn-link synched-flag">Flag</button>
+            <button type="button" class="btn btn-link synched-close">Close</button>
+            <button type="button" class="btn btn-link synched-delete">Delete</button>
+            <div class="synched-meta">
+                @Html.DisplayFor(model => model.Question.Publisher.UserName)
+                @Html.DisplayFor(model => model.Question.DatePosted)
+            </div>
             @if (Model.Question.Comments != null && Model.Question.Comments.Count() > 0)
             {                
-                <div class="comments">
+                <div class="synched-comments">
                     @foreach (var comment in Model.Question.Comments)
                     {
-                        if (comment != null)
-                        {
-                            <hr />
-                            <div class="comment-content">
-                                <div>@Html.Raw(comment.Body)</div>
-                                <nav class="nav">
-                                    <a class="nav-link" href="#">Edit</a>
-                                    <a class="nav-link" href="#">Flag</a>
-                                </nav>
-                            </div>
-                        }
+                        <hr />
+                        <div class="comment-content">
+                            <div>@comment.Body</div>
+                            <button type="button" class="btn btn-link synched-edit">Edit</button>
+                            <button type="button" class="btn btn-link synched-flag">Flag</button>
+                            <button type="button" class="btn btn-link synched-delete">Delete</button>
+                        </div>
                     }
                 </div>                
             }
@@ -58,7 +54,13 @@
             {
                 <hr />
             }
-            <a href="#">Leave a comment</a>
+            <button type="button" class="btn btn-link synched-question-comment">Leave a comment</button>
+            <div class="synched-comment-form">
+                <div class="form-group">
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="2"></textarea>
+                </div>
+                <button class="btn btn-secondary submit-comment">Submit</button>
+            </div>
         </div>
     </div>
     @if (Model.Question.Answers.Count != 0)
@@ -72,7 +74,7 @@
             int counter = 1;
             foreach (var answer in Model.Question.Answers)
             {
-            <div class="row synched-answer">
+            <div class="row synched-answer" id="@answer.Id">
                 <div class="app-stats col-md-1">
                     <div class="answer-number">@counter.</div>
                     @{ counter++; }
@@ -82,23 +84,25 @@
                 </div>
                 <div class="col-md-10">
                     <div>@Html.Raw(answer.Body)</div>
-                    <nav class="nav">
-                        <a class="nav-link" href="#">Edit</a>
-                        <a class="nav-link" href="#">Flag</a>
-                        <a class="nav-link" href="#">Close</a>
-                        <a class="nav-link" href="#">Delete</a>
-                    </nav>
+                    <button type="button" class="btn btn-link synched-accept">Accept Answer</button>
+                    <button type="button" class="btn btn-link synched-edit">Edit</button>
+                    <button type="button" class="btn btn-link synched-flag">Flag</button>
+                    <button type="button" class="btn btn-link synched-close">Close</button>
+                    <button type="button" class="btn btn-link synched-delete">Delete</button>
+                    <div class="synched-meta">
+                        @answer.Publisher.UserName
+                        @answer.DatePosted
+                    </div>
                     @if (answer.Comments != null && answer.Comments.Count() > 0)
                     {
-                        <div class="comments">
+                        <div class="synched-comments">
                             @foreach (var comment in answer.Comments)
                             {
                                 <hr />
-                                <div class="comment-content">@Html.Raw(comment.Body)</div>
-                                <nav class="nav">
-                                    <a class="nav-link" href="#">Edit</a>
-                                    <a class="nav-link" href="#">Flag</a>
-                                </nav>
+                                <div class="comment-content">@comment.Body</div>
+                                <button type="button" class="btn btn-link synched-edit">Edit</button>
+                                <button type="button" class="btn btn-link synched-flag">Flag</button>
+                                <button type="button" class="btn btn-link synched-delete">Delete</button>
                             }
                         </div>
                     }
@@ -108,20 +112,27 @@
                     }   
                     @if (Model.Question.Answers.Count > 0)
                     {
-                        <a href="#" id="answers-leave-comment">Leave a comment</a>
+                        <button type="button" class="btn btn-link synched-question-comment">Leave a comment</button>
+                        <div class="synched-comment-form">
+                            <div class="form-group">
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="2"></textarea>
+                            </div>
+                            <button class="btn btn-secondary submit-comment">Submit</button>
+                        </div>
                     }  
                 </div>
             </div>
+            <hr />
             }
         }      
     </div>
 
-    <form method="POST" id="synched-ask">
+    <form method="POST" id="synched-answer" asp-route-id="@Model.Question.Id">
         <div class="answer-header-container">
             <div class="synched-message answers-header">Your answer</div>
         </div>
         <div class="form-group">
-            <textarea asp-for="Answer"></textarea>
+            <textarea asp-for="Answer.Body"></textarea>
         </div>
         <button type="submit" class="btn btn-secondary">Submit</button>
     </form>

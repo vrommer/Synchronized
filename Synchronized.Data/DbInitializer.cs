@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Synchronized.Domain;
 using Synchronized.Model;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace Synchronized.Data
             context.Database.EnsureCreated();
             Random rand = new Random();
             int maxPoints = 1000;
-            int maxViews = 100;
+            int totalViews = 15;
             int numOfQuestions = 5;
             int numOfAnswers = 5;
             int numOfComments = 5;
@@ -184,8 +185,7 @@ namespace Synchronized.Data
                     "est nec dapibus euismod, turpis magna tristique leo, in lobortis ligula metus nec metus. " +
                     "Nam libero turpis, ultricies quis leo at, dictum fermentum diam.</p>",
                     Points = rand.Next(maxPoints),
-                    PublisherId = UserIds[rand.Next(UserIds.Count)],
-                    Views = rand.Next(maxViews)
+                    PublisherId = UserIds[rand.Next(UserIds.Count)]
                 });
             }
 
@@ -295,6 +295,43 @@ namespace Synchronized.Data
                     context.SaveChanges();
                 }
             });
+
+            /***********************************************************************
+            * QuestionViews
+            ***********************************************************************/
+            var questionViews = new HashSet<QuestionView>();
+
+            for (int i = 0; i < totalViews; i++)
+            {
+                var questionView = new QuestionView
+                {
+                    QuestionId = questionIds[rand.Next(questionIds.Count)],
+                    UserId = UserIds[rand.Next(UserIds.Count)]
+                };
+                while (questionViews.Contains(questionView))
+                {
+                    questionView = new QuestionView
+                    {
+                        QuestionId = questionIds[rand.Next(questionIds.Count)],
+                        UserId = UserIds[rand.Next(UserIds.Count)]
+                    };
+                }
+                questionViews.Add(questionView);
+            }
+            foreach (QuestionView qv in questionViews)
+            {
+                context.QuestionViews.Add(qv);
+            }
+
+            context.SaveChanges();
+
+            /***********************************************************************
+            * QuestionFlags
+            ***********************************************************************/
+
+            /***********************************************************************
+            * DeleteVotes
+            ***********************************************************************/
         }
     }
 }

@@ -63,6 +63,7 @@ namespace Synchronized.Repository.Repositories
         {
             _dbSet.Attach(item);
             _context.Entry(item).State = EntityState.Modified;
+            _context.SaveChanges();
         }
 
         public IQueryable<TModel> GetPage(int pageIndex, int pageSize)

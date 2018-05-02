@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Synchronized.Domain;
 using Synchronized.Model;
 
 namespace Synchronized.Data
@@ -15,6 +16,7 @@ namespace Synchronized.Data
         public DbSet<Post> Posts { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<QuestionTag> QusetionTags { get; set; }
+        public DbSet<QuestionView> QuestionViews { get; set; }
         public DbSet<Vote> Votes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -51,6 +53,46 @@ namespace Synchronized.Data
                 .ValueGeneratedOnAdd()
                 .HasDefaultValueSql("GETDATE()");
 
+            // Many to many relationship between users and questio views
+            builder.Entity<QuestionView>().HasKey(s => new { s.QuestionId, s.UserId });
+
+            builder.Entity<QuestionView>()
+                .HasOne(s => s.Question)
+                .WithMany(q => q.QuestionViews)
+                .HasForeignKey(s => s.QuestionId);
+
+            builder.Entity<QuestionView>()
+                .HasOne(s => s.User)
+                .WithMany(u => u.QuestionViews)
+                .HasForeignKey(s => s.UserId);
+
+            // Many to many relationship between users and flags
+            builder.Entity<QuestionFlag>().HasKey(s => new { s.QuestionId, s.UserId });
+
+            builder.Entity<QuestionFlag>()
+                .HasOne(s => s.Question)
+                .WithMany(q => q.QuestionFlags)
+                .HasForeignKey(s => s.QuestionId);
+
+            builder.Entity<QuestionFlag>()
+                .HasOne(s => s.User)
+                .WithMany(u => u.Flags)
+                .HasForeignKey(s => s.UserId);
+
+            // Many to many relationship between users and delete votes
+            builder.Entity<DeleteVote>().HasKey(s => new { s.QuestionId, s.UserId });
+
+            builder.Entity<DeleteVote>()
+                .HasOne(s => s.Question)
+                .WithMany(q => q.DeleteVotes)
+                .HasForeignKey(s => s.QuestionId);
+
+            builder.Entity<DeleteVote>()
+                .HasOne(s => s.User)
+                .WithMany(u => u.DeleteVotes)
+                .HasForeignKey(s => s.UserId);
+
+            // Many to many relationship between users and tags
             builder.Entity<QuestionTag>().HasKey(s => new { s.QuestionId, s.TagId });
 
             builder.Entity<QuestionTag>()
@@ -63,6 +105,7 @@ namespace Synchronized.Data
                 .WithMany(t => t.QuestionTags)
                 .HasForeignKey(qt => qt.TagId);
 
+            // Many to many relationship between users and votes
             builder.Entity<Vote>().HasKey(s => new { s.VoterId, s.PostId });
 
             builder.Entity<Vote>()

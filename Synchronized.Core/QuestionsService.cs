@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace Synchronized.Core
 {
-    public class QuestionsService : DataService<Question>, IQuestionsService
+    public class QuestionsService : DataService<Question>, IQuestionsService, IViewQuestions
     {
         private readonly HtmlParser parser;
 
@@ -35,12 +35,6 @@ namespace Synchronized.Core
             return ((IQuestionsRepository)repo).FindQuestionById(questionId);
         }
 
-        public async Task<PaginatedList<Question>> GetQuestionsPageWithUsersAsync(int pageIndex, int pageSize, string sortOrder)
-        {
-            var questions = ((IQuestionsRepository)repo).GetQuestionsPageWithUsersAsync(pageIndex, pageSize, sortOrder);
-            return await CreatePage(questions, pageIndex, pageSize);
-        }
-
         public async Task<PaginatedList<Question>> GetQuestionsPageWithUsersAsync(int pageIndex, int pageSize, string sortOrder, string filter)
         {
             var questions = ((IQuestionsRepository)repo).GetQuestionsPageWithUsersAsync(pageIndex, pageSize, sortOrder, filter);
@@ -54,7 +48,25 @@ namespace Synchronized.Core
             return new PaginatedList<Question>(questions, count, pageIndex, pageSize);
         }
 
-        public Task Vote()
+        public Answer FindAnswerById(string answerId)
+        {
+            return ((IQuestionsRepository)repo).FindAnswerById(answerId);
+        }
+
+        public void UpdateQuestion(Question question)
+        {
+            ((IQuestionsRepository)repo).UpdateQuestion(question);
+            //repo.Update();
+        }
+
+        public void UpdateAnswer(Answer answer)
+        {
+            // TODO: Use something like: ((IQuestionsRepository)repo).UpdateAnswer(answer);
+            ((IQuestionsRepository)repo).UpdateAnswer(answer);
+            //repo.Update();
+        }
+
+        public Task ViewQuestion(string UserId, string questionId)
         {
             throw new System.NotImplementedException();
         }

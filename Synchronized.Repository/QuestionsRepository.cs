@@ -26,51 +26,6 @@ namespace Synchronized.Repository
             return questions;
         }
 
-        public List<Question> GetQuestionsPageWithUsersAsync(int pageIndex, int pageSize, string sortOrder)
-        {
-            var questions = _dbSet.AsNoTracking();
-
-            switch (sortOrder)
-            {
-                case "Date":
-                    questions = questions.OrderBy(q => q.DatePosted);
-                    break;
-                case "date_desc":
-                    questions = questions.OrderByDescending(q => q.DatePosted);
-                    break;
-                case "Answers":
-                    questions = questions.OrderBy(q => q.Answers.Count);
-                    break;
-                case "answers_desc":
-                    questions = questions.OrderByDescending(q => q.Answers.Count);
-                    break;
-                case "Views":
-                    questions = questions.OrderBy(q => q.Views);
-                    break;
-                case "views_desc":
-                    questions = questions.OrderByDescending(q => q.Views);
-                    break;
-                case "Points":
-                    questions = questions.OrderBy(q => q.Points);
-                    break;
-                case "points_desc":
-                    questions = questions.OrderByDescending(q => q.Points);
-                    break;
-                default:
-                    questions = questions.OrderByDescending(q => q.Answers.Count);
-                    break;
-            }
-
-            questions = questions.Skip((pageIndex - 1) * pageSize).Take(pageSize)
-                .Include(q => q.QuestionTags)
-                    .ThenInclude(qt => qt.Tag)
-                .Include(q => q.Publisher)
-                .Include(q => q.Answers);
-
-            var questionsList = questions.ToList();
-            return questionsList;
-        }
-
         public List<Question> GetQuestionsPageWithUsersAsync(int pageIndex, int pageSize, string sortOrder, string filter)
         {
             var questions = FindBy(q => q.Title.Contains(filter) || q.Body.Contains(filter));
@@ -78,10 +33,10 @@ namespace Synchronized.Repository
             switch (sortOrder)
             {
                 case "Date":
-                    questions = questions.OrderBy(q => q.DatePosted);
+                    questions = questions.OrderBy(q => q.DatePosted.ToString());
                     break;
                 case "date_desc":
-                    questions = questions.OrderByDescending(q => q.DatePosted);
+                    questions = questions.OrderByDescending(q => q.DatePosted.ToString());
                     break;
                 case "Answers":
                     questions = questions.OrderBy(q => q.Answers.Count);
@@ -90,10 +45,10 @@ namespace Synchronized.Repository
                     questions = questions.OrderByDescending(q => q.Answers.Count);
                     break;
                 case "Views":
-                    questions = questions.OrderBy(q => q.Views);
+                    questions = questions.OrderBy(q => q.QuestionViews.Count);
                     break;
                 case "views_desc":
-                    questions = questions.OrderByDescending(q => q.Views);
+                    questions = questions.OrderByDescending(q => q.QuestionViews.Count);
                     break;
                 case "Points":
                     questions = questions.OrderBy(q => q.Points);
@@ -107,6 +62,7 @@ namespace Synchronized.Repository
             }
 
             questions = questions.Skip((pageIndex - 1) * pageSize).Take(pageSize)
+                .Include(q => q.QuestionViews)
                 .Include(q => q.QuestionTags)
                     .ThenInclude(qt => qt.Tag)
                 .Include(q => q.Publisher)
@@ -126,12 +82,33 @@ namespace Synchronized.Repository
         {
             var question = _dbSet
                 .Include(q => q.Answers)
-                    .ThenInclude(a => a.Comments)
+                    .ThenInclude(a => a.Publisher)
                 .Include(q => q.Publisher)
-                .Include(q => q.Comments)
+                .Include(q => q.QuestionViews)
+                .Include(q => q.QuestionFlags)
+                .AsNoTracking()
                 .SingleOrDefault(e => e.Id.Equals(questionId));
 
+            // Add sorted comments to question           
+            question.Comments = _context.Set<Comment>().Where(c => c.PostId == question.Id).OrderBy(c => c.DatePosted).ToList();
+
+            // Add sorted comments to each answer
+            foreach (Answer a in question.Answers)
+            {
+                a.Comments = _context.Set<Comment>()
+                    .Where(c => c.PostId == a.Id)
+                    .OrderBy(c => c.DatePosted).ToList();
+            }
             return question;
+        }
+
+        public Answer FindAnswerById(string answerId)
+        {
+            var answer = _context.Set<Answer>()
+                .Include(a => a.Comments)
+                .SingleOrDefault(a => a.Id.Equals(answerId));
+
+            return answer;
         }
 
         private IQueryable<Question> GetQuestionsQuery(int pageIndex, int pageSize)
@@ -146,6 +123,20 @@ namespace Synchronized.Repository
         {
             return GetQuestionsQuery(pageIndex, pageSize)
                 .Include(q => q.Publisher);
+        }
+
+        public void UpdateQuestion(Question question)
+        {
+            _dbSet.Attach(question);
+            _context.Entry(question).State = EntityState.Modified;
+            _context.SaveChanges();
+        }
+
+        public void UpdateAnswer(Answer answer)
+        {
+            _context.Set<Answer>().Attach(answer);
+            _context.Entry(answer).State = EntityState.Modified;
+            _context.SaveChanges();
         }
     }
 }
