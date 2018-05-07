@@ -8,7 +8,7 @@
     var modelArray = Model.Users.ToArray();
     var counter = 0;
     var j = 1;
-    string tagsInputName = "";
+    //string tagsInputName = "";
     while (counter < modelArray.Length)
     {
         <div class="row">
@@ -40,33 +40,9 @@
                                             <a href="/Users/Details/@modelArray[counter].Id">@modelArray[counter].UserName</a>
                                             <p>@modelArray[counter].Address</p>
                                         </div>
-                                        <p>@modelArray[counter].Points</p>
-                                        @if (modelArray[counter].Tags.Count > 0)
-                                        {
-                                            <div class="synched-tags">
-                                                @{
-                                                    var first = true;
-                                                    var tagNames = "";
-                                                    var name = "synched-tags-" + j;
-                                                    j++;
-                                                    foreach (var tag in modelArray[counter].Tags)
-                                                    {
-                                                        if (!first)
-                                                        {
-                                                            tagNames += "," + tag.Name;
-                                                        }
-                                                        else
-                                                        {
-                                                            tagNames += tag.Name;
-                                                            first = false;
-                                                        }
-                                                    }
-                                                    first = true;
-                                                }
-                                                <input class="synched-tags" name=@name id=@name value=@tagNames />                                                
-                                            </div>
-                                         }
+                                        <p>@modelArray[counter].Points</p>                                              
                                     </div>
+                                    }
                                 </div>
                             </article>
                         </div>

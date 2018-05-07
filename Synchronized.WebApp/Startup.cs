@@ -4,18 +4,18 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Synchronized.WebApp.Services;
 using Synchronized.Repository.Repositories;
 using Synchronized.Core.Repositories;
-using Synchronized.Repository.Interfaces;
 using Synchronized.Model;
 using Synchronized.Repository;
-using Synchronized.Core.Interfaces;
 using Synchronized.Core;
-using UtilsLib.HtmlUtils.HtmlParser;
 using Synchronized.Data;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using System;
+using StructureMap;
+using Synchronized.Core.Infrastructure;
+using Synchronized.Repository.Infrastructure;
 
 namespace Synchronized.WebApp
 {
@@ -29,34 +29,17 @@ namespace Synchronized.WebApp
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddUserStore<UsersRepository>()
                 .AddRoleStore<RolesRepository>()
                 .AddDefaultTokenProviders();
 
-            // Add application services.
-            //services.AddTransient<IEmailSender, EmailSender>();
-            services.AddTransient<IDataRepository<Question>, DataRepository<Question>>();
-            services.AddTransient<IQuestionsRepository, QuestionsRepository>();
-            services.AddTransient<IQuestionsService, QuestionsService>();
-            services.AddTransient<IDataService<CommentedPost>, DataService<CommentedPost>>();
-            services.AddTransient<IDataRepository<CommentedPost>, DataRepository<CommentedPost>>();
-            services.AddTransient<ITagsRepository, TagsRepository>();
-            services.AddTransient<ITagsService, TagsService>();
-            services.AddTransient<IUsersRepository, UsersRepository>();
-            services.AddTransient<IUsersService, UsersService>();
-            services.AddTransient<HtmlParser>();
-            services.AddTransient<DbContext, SynchronizedDbContext>();
-
-
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            //services.AddIdentity<ApplicationUser, IdentityRole>()
-            //    .AddEntityFrameworkStores<ApplicationDbContext>()
-            //    .AddDefaultTokenProviders();
+            services.AddDbContext<SynchronizedDbContext>(b =>
+            {
+                b.UseSqlServer(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true");
+            });
 
             services.AddMvc()
                 .AddRazorPagesOptions(options =>
@@ -69,9 +52,12 @@ namespace Synchronized.WebApp
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
 
+
             // Register no-op EmailSender used by account confirmation and password reset during development
             // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=532713
-            services.AddSingleton<IEmailSender, EmailSender>();
+            //services.AddSingleton<IEmailSender, EmailSender>();
+
+            return ConfigureIoC(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -104,6 +90,28 @@ namespace Synchronized.WebApp
                     name: "api",
                     template: "api/{controller}/{action}");
             });
+        }
+        
+        private IServiceProvider ConfigureIoC(IServiceCollection services)
+        {
+            var registry = new Registry();
+            registry.IncludeRegistry<ServiceRegistry>();
+            registry.IncludeRegistry<RepositoryRegistry>();
+
+            var container = new Container(registry);
+
+            container.Configure(_ =>
+            {
+                _.Scan(x =>
+                {
+                    x.TheCallingAssembly();
+                    x.AssemblyContainingType<QuestionsRepository>();
+                    x.AssemblyContainingType<QuestionsService>();
+                    x.WithDefaultConventions();
+                });
+                _.Populate(services);
+            });
+            return container.GetInstance<IServiceProvider>();
         }
     }
 }

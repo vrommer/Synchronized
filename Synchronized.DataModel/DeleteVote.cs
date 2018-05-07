@@ -7,10 +7,10 @@ namespace Synchronized.Domain
 {
     public class DeleteVote
     {
-        public string QuestionId { get; set; }
+        public string PostId { get; set; }
         public string UserId { get; set; }
 
-        public Question Question { get; set; }
+        public Post Post{ get; set; }
         public ApplicationUser User { get; set; }
 
         public override int GetHashCode()
@@ -32,7 +32,7 @@ namespace Synchronized.Domain
                 .Append("User id: ")
                 .Append(UserId)
                 .Append("\nQuestion id: ")
-                .Append(QuestionId)
+                .Append(PostId)
                 .ToString());
         }
 

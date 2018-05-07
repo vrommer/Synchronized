@@ -23,7 +23,7 @@ namespace Synchronized.Core
         public async Task<PaginatedList<Tag>> GetTagsPageAsync(int pageIndex, int pageSize)
         {
             var tags = await _tagsRepo.GetTagsPageAsync(pageIndex, pageSize);
-            int count = await repo.GetCount();
+            int count = await _repo.GetCount();
             return new PaginatedList<Tag>(tags, count, pageIndex, pageSize);
         }
     }

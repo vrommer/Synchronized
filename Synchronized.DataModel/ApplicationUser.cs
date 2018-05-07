@@ -15,7 +15,7 @@ namespace Synchronized.Model
         public string Address { get; set; }
 
         public ICollection<Vote> Votes { get; set; }
-        public ICollection<QuestionFlag> Flags { get; set; }
+        public ICollection<PostFlag> Flags { get; set; }
         public ICollection<QuestionView> QuestionViews { get; set; }
         public ICollection<DeleteVote> DeleteVotes { get; set; }
     }

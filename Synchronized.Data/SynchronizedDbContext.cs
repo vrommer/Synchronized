@@ -14,6 +14,7 @@ namespace Synchronized.Data
         public SynchronizedDbContext() : base() { }
 
         public DbSet<Post> Posts { get; set; }
+        //public DbSet<CommentedPost> CommentedPosts { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<QuestionTag> QusetionTags { get; set; }
         public DbSet<QuestionView> QuestionViews { get; set; }
@@ -67,25 +68,25 @@ namespace Synchronized.Data
                 .HasForeignKey(s => s.UserId);
 
             // Many to many relationship between users and flags
-            builder.Entity<QuestionFlag>().HasKey(s => new { s.QuestionId, s.UserId });
+            builder.Entity<PostFlag>().HasKey(s => new { s.PostId, s.UserId });
 
-            builder.Entity<QuestionFlag>()
-                .HasOne(s => s.Question)
-                .WithMany(q => q.QuestionFlags)
-                .HasForeignKey(s => s.QuestionId);
+            builder.Entity<PostFlag>()
+                .HasOne(s => s.Post)
+                .WithMany(q => q.PostFlags)
+                .HasForeignKey(s => s.PostId);
 
-            builder.Entity<QuestionFlag>()
+            builder.Entity<PostFlag>()
                 .HasOne(s => s.User)
                 .WithMany(u => u.Flags)
                 .HasForeignKey(s => s.UserId);
 
             // Many to many relationship between users and delete votes
-            builder.Entity<DeleteVote>().HasKey(s => new { s.QuestionId, s.UserId });
+            builder.Entity<DeleteVote>().HasKey(s => new { s.PostId, s.UserId });
 
             builder.Entity<DeleteVote>()
-                .HasOne(s => s.Question)
+                .HasOne(s => s.Post)
                 .WithMany(q => q.DeleteVotes)
-                .HasForeignKey(s => s.QuestionId);
+                .HasForeignKey(s => s.PostId);
 
             builder.Entity<DeleteVote>()
                 .HasOne(s => s.User)
@@ -117,8 +118,6 @@ namespace Synchronized.Data
                 .HasOne(v => v.Voter)
                 .WithMany(p => p.Votes)
                 .HasForeignKey(v => v.VoterId);
-
-
 
             base.OnModelCreating(builder);
         }

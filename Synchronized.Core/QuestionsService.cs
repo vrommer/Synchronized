@@ -20,49 +20,49 @@ namespace Synchronized.Core
 
         public async Task<PaginatedList<Question>> GetQuestionsPageAsync(int pageIndex, int pageSize)
         {
-            var questions = await ((IQuestionsRepository)repo).GetQuestionsPageAsync(pageIndex, pageSize);
+            var questions = await ((IQuestionsRepository)_repo).GetQuestionsPageAsync(pageIndex, pageSize);
             return await CreatePage(questions, pageIndex, pageSize);
         }
 
         public async Task<PaginatedList<Question>> GetQuestionsPageWithUsersAsync(int pageIndex, int pageSize)
         {
-            var questions = ((IQuestionsRepository)repo).GetQuestionsPageWithUsersAsync(pageIndex, pageSize);
+            var questions = ((IQuestionsRepository)_repo).GetQuestionsPageWithUsersAsync(pageIndex, pageSize);
             return await CreatePage(questions, pageIndex, pageSize);
         }
 
         public Question FindQuestionById(string questionId)
         {
-            return ((IQuestionsRepository)repo).FindQuestionById(questionId);
+            return ((IQuestionsRepository)_repo).FindQuestionById(questionId);
         }
 
         public async Task<PaginatedList<Question>> GetQuestionsPageWithUsersAsync(int pageIndex, int pageSize, string sortOrder, string filter)
         {
-            var questions = ((IQuestionsRepository)repo).GetQuestionsPageWithUsersAsync(pageIndex, pageSize, sortOrder, filter);
+            var questions = ((IQuestionsRepository)_repo).GetQuestionsPageWithUsersAsync(pageIndex, pageSize, sortOrder, filter);
             return await CreatePage(questions, pageIndex, pageSize);
         }
 
         private async Task<PaginatedList<Question>> CreatePage(List<Question> questions, int pageIndex, int pageSize)
         {
-            int count = await repo.GetCount();
+            int count = await _repo.GetCount();
             Utils.MinimizeContent(parser, questions);
             return new PaginatedList<Question>(questions, count, pageIndex, pageSize);
         }
 
         public Answer FindAnswerById(string answerId)
         {
-            return ((IQuestionsRepository)repo).FindAnswerById(answerId);
+            return ((IQuestionsRepository)_repo).FindAnswerById(answerId);
         }
 
         public void UpdateQuestion(Question question)
         {
-            ((IQuestionsRepository)repo).UpdateQuestion(question);
+            ((IQuestionsRepository)_repo).UpdateQuestion(question);
             //repo.Update();
         }
 
         public void UpdateAnswer(Answer answer)
         {
             // TODO: Use something like: ((IQuestionsRepository)repo).UpdateAnswer(answer);
-            ((IQuestionsRepository)repo).UpdateAnswer(answer);
+            ((IQuestionsRepository)_repo).UpdateAnswer(answer);
             //repo.Update();
         }
 

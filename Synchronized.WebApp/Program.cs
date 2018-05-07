@@ -27,7 +27,8 @@ namespace Synchronized.WebApp
                 {
                     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
                     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                    DbInitializer.Initialize(userManager, roleManager).Wait();
+                    var dbContext = scope.ServiceProvider.GetRequiredService<SynchronizedDbContext>();
+                    DbInitializer.Initialize(userManager, roleManager, dbContext).Wait();
                 }
                 catch (Exception ex)
                 {

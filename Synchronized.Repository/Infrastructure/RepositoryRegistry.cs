@@ -1,0 +1,24 @@
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using StructureMap;
+using Synchronized.Data;
+using Synchronized.Model;
+using Synchronized.Repository.Interfaces;
+using Synchronized.Repository.Repositories;
+
+namespace Synchronized.Repository.Infrastructure
+{
+    public class RepositoryRegistry: Registry
+    {
+        public RepositoryRegistry()
+        {
+            //var options = new DbContextOptions<IdentityDbContext<ApplicationUser>>();
+            //services.AddDbContext<SynchronizedDbContext>(b =>
+            //{
+            //    b.UseSqlServer(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true");
+            //});            
+            For(typeof(IDataRepository<>)).Use(typeof(DataRepository<>));
+            For<DbContext>().Use<SynchronizedDbContext>();
+        }
+    }
+}

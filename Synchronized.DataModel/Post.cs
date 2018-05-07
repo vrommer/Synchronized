@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Synchronized.Domain;
+using System;
+using System.Collections.Generic;
 
 namespace Synchronized.Model
 {
@@ -8,6 +10,10 @@ namespace Synchronized.Model
         public DateTime DatePosted { get; set; }
         public string PublisherId { get; set; }
         public string Body { get; set; }
+
+        public ICollection<PostFlag> PostFlags { get; set; }
+        public ICollection<DeleteVote> DeleteVotes { get; set; }
+        //public ICollection<Vote> Votes { get; set; }
 
         public ApplicationUser Publisher { get; set; }
     }

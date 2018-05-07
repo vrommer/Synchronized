@@ -51,10 +51,10 @@ namespace Synchronized.Repository
                     questions = questions.OrderByDescending(q => q.QuestionViews.Count);
                     break;
                 case "Points":
-                    questions = questions.OrderBy(q => q.Points);
+                    questions = questions.OrderBy(q => q.Votes.Count);
                     break;
                 case "points_desc":
-                    questions = questions.OrderByDescending(q => q.Points);
+                    questions = questions.OrderByDescending(q => q.Votes.Count);
                     break;
                 default:
                     questions = questions.OrderByDescending(q => q.Answers.Count);
@@ -62,6 +62,7 @@ namespace Synchronized.Repository
             }
 
             questions = questions.Skip((pageIndex - 1) * pageSize).Take(pageSize)
+                .Include(q => q.Votes)
                 .Include(q => q.QuestionViews)
                 .Include(q => q.QuestionTags)
                     .ThenInclude(qt => qt.Tag)
@@ -84,8 +85,9 @@ namespace Synchronized.Repository
                 .Include(q => q.Answers)
                     .ThenInclude(a => a.Publisher)
                 .Include(q => q.Publisher)
+                .Include(q => q.Votes)
                 .Include(q => q.QuestionViews)
-                .Include(q => q.QuestionFlags)
+                .Include(q => q.PostFlags)
                 .Include(q => q.DeleteVotes)
                 .AsNoTracking()
                 .SingleOrDefault(e => e.Id.Equals(questionId));
@@ -128,15 +130,17 @@ namespace Synchronized.Repository
 
         public void UpdateQuestion(Question question)
         {
-            _dbSet.Attach(question);
-            _context.Entry(question).State = EntityState.Modified;
+            //_dbSet.Attach(question);
+            //_context.Entry(question).State = EntityState.Modified;
+            _context.Update(question);
             _context.SaveChanges();
         }
 
         public void UpdateAnswer(Answer answer)
         {
-            _context.Set<Answer>().Attach(answer);
-            _context.Entry(answer).State = EntityState.Modified;
+            //_context.Set<Answer>().Attach(answer);
+            //_context.Entry(answer).State = EntityState.Modified;
+            _context.Update(answer);
             _context.SaveChanges();
         }
     }

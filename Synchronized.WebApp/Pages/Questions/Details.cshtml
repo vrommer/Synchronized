@@ -3,18 +3,17 @@
 @{
     ViewData["Title"] = "Details";
 }
-
 <script>
-    var questionId = @Html.Raw(Json.Serialize(Model.Question.Id))
-    var question = @Html.Raw(Json.Serialize(Model.Question))
+    var questionId = @Html.Raw(Json.Serialize(Model.Question.Id));
+    var question = @Html.Raw(Json.Serialize(Model.Question));
+    var questionViewModel = new ViewModel(@Html.Raw(Json.Serialize(Model.QuestionViewModel)));
 </script>
-
 <section class="app-question">
     <h2>@Html.DisplayFor(model => model.Question.Title)</h2>
-    <div class="row" id="synched-quetion">
+    <div class="row" id="@Model.Question.Id">
         <div class="app-stats col-md-1">
             <div class="synched-points">
-                @Html.DisplayFor(model => model.Question.Points)
+                @Html.DisplayFor(model => model.Question.Votes.Count)
             </div>
             <div class="synched-vote-buttons">
                 <button class="synched-vote-btn vote-up-btn"><i class="fa fa-plus-square"></i></button>
@@ -40,10 +39,9 @@
                     @foreach (var comment in Model.Question.Comments)
                     {
                         <hr />
-                        <div class="comment-content">
+                        <div class="comment-content" id="@comment.Id">
                             <div>@comment.Body</div>
                             <button type="button" class="btn btn-link synched-edit">Edit</button>
-                            <button type="button" class="btn btn-link synched-flag">Flag</button>
                             <button type="button" class="btn btn-link synched-delete">Delete</button>
                         </div>
                     }
@@ -56,9 +54,8 @@
             <button type="button" class="btn btn-link synched-question-comment">Leave a comment</button>
             <div class="synched-comment-form">
                 <div class="form-group">
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="2"></textarea>
+                    <textarea class="form-control comment-body" rows="2"></textarea>
                 </div>
-                <button class="btn btn-secondary submit-comment">Submit</button>
             </div>
         </div>
     </div>
@@ -96,14 +93,15 @@
                         <div class="synched-comments">
                             @foreach (var comment in answer.Comments)
                             {
-                                <hr />
-                                <div class="comment-content">@comment.Body</div>
-                                <button type="button" class="btn btn-link synched-edit">Edit</button>
-                                <button type="button" class="btn btn-link synched-flag">Flag</button>
-                                <button type="button" class="btn btn-link synched-delete">Delete</button>
+                                <div class="comment-content" id="@comment.Id">
+                                    <hr />
+                                    <div>@comment.Body</div>
+                                    <button type="button" class="btn btn-link synched-edit">Edit</button>
+                                    <button type="button" class="btn btn-link synched-delete">Delete</button>
+                                </div>
+                                    }
+                                </div>
                             }
-                        </div>
-                    }
                     else
                     {
                         <hr />
@@ -113,9 +111,8 @@
                         <button type="button" class="btn btn-link synched-question-comment">Leave a comment</button>
                         <div class="synched-comment-form">
                             <div class="form-group">
-                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="2"></textarea>
+                                <textarea class="form-control comment-body" rows="2"></textarea>
                             </div>
-                            <button class="btn btn-secondary submit-comment">Submit</button>
                         </div>
                     }  
                 </div>

@@ -14,8 +14,6 @@ namespace Synchronized.Model
         public ICollection<Answer> Answers { get; set; }
         public ICollection<QuestionTag> QuestionTags { get; set; }
         public ICollection<QuestionView> QuestionViews { get; set; }
-        public ICollection<QuestionFlag> QuestionFlags { get; set; }
-        public ICollection<DeleteVote> DeleteVotes { get; set; }
 
 
         public bool Answered() {

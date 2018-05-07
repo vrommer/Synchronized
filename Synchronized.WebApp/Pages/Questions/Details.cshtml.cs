@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Synchronized.Core.Interfaces;
 using Synchronized.Domain;
 using Synchronized.Model;
+using Synchronized.ViewModel;
 using System.Threading.Tasks;
 
 namespace Synchronized.WebApp.Pages.Questions
@@ -12,6 +13,7 @@ namespace Synchronized.WebApp.Pages.Questions
     public class DetailsModel : PageModel
     {
         public Question Question { get; set; }
+        public QuestionViewModel QuestionViewModel{ get; set; }
 
         private IQuestionsService _questionsService;
         private readonly ILogger<DetailsModel> _logger;
@@ -30,19 +32,20 @@ namespace Synchronized.WebApp.Pages.Questions
 
         public async Task OnGetAsync(string id)
         {
-            ApplicationUser usr = await GetCurrentUserAsync();
+            ApplicationUser user = await GetCurrentUserAsync();
             Question = _questionsService.FindQuestionById(id);
+            QuestionViewModel = new QuestionViewModel(Question);
 
-            if (!Question.QuestionViews.Contains(new QuestionView
+            if ( user!=null && !Question.QuestionViews.Contains(new QuestionView
             {
-                UserId = usr.Id,
+                UserId = user.Id,
                 QuestionId = Question.Id
             }))
             {
                 // EF Core will not track entity with key
                 Question.QuestionViews.Add(new QuestionView {
                     Question = Question,
-                    User = usr
+                    User = user
                 });
             }
             _questionsService.UpdateQuestion(Question);
@@ -57,14 +60,15 @@ namespace Synchronized.WebApp.Pages.Questions
             {
                 return Page();
             }
+            var usr = await GetCurrentUserAsync();
+
             Question = _questionsService.FindQuestionById(id);
-            ApplicationUser usr = await GetCurrentUserAsync();
             Answer.PublisherId = usr.Id;
 
             Question.Answers.Add(Answer);
 
             _questionsService.UpdateQuestion(Question);
-            return RedirectToPage("/Index");
+            return RedirectToPage("/Questions/Details", new { id = id });
         }
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);

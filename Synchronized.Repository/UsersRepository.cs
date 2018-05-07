@@ -17,7 +17,12 @@ namespace Synchronized.Repository.Repositories
         IUserSecurityStampStore<ApplicationUser>, IUserEmailStore<ApplicationUser>, IQueryableUserStore<ApplicationUser>, 
         IUserLoginStore<ApplicationUser>, IUserTwoFactorStore<ApplicationUser>, IUserLockoutStore<ApplicationUser>, IUserPhoneNumberStore<ApplicationUser>
     {
-        private readonly UserStore<ApplicationUser> _userStore = new UserStore<ApplicationUser>(new SynchronizedDbContext());
+        private readonly UserStore<ApplicationUser> _userStore;
+
+        public UsersRepository(DbContext context)
+        {
+            _userStore = new UserStore<ApplicationUser>(context);
+        }
 
         public IQueryable<ApplicationUser> Users => ((IQueryableUserStore<ApplicationUser>)_userStore).Users;
 

@@ -11,4 +11,8 @@
     <ProjectReference Include="..\Synchronized.ViewModel\Synchronized.ViewModel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="StructureMap.Microsoft.DependencyInjection" Version="1.4.0" />
+  </ItemGroup>
+
 </Project>

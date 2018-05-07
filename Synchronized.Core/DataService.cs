@@ -10,46 +10,46 @@ namespace Synchronized.Core
 {
     public class DataService<TEntity> : IDataService<TEntity> where TEntity : class, IEntity
     {
-        protected readonly IDataRepository<TEntity> repo;
+        protected readonly IDataRepository<TEntity> _repo;
 
         public DataService(IDataRepository<TEntity> repo)
         {
-            this.repo = repo;
+            this._repo = repo;
         }
 
         public void Add(TEntity item)
         {
-            repo.Add(item);
+            _repo.Add(item);
         }
 
         public async Task CreateAsync(TEntity entity)
         {
-            await repo.AddAsync(entity);
+            await _repo.AddAsync(entity);
         }
 
         public void Delete(string itemId)
         {
-            repo.Delete(itemId);
+            _repo.Delete(itemId);
         }
 
         public IEnumerable<TEntity> FindBy(Expression<Func<TEntity, bool>> predicate)
         {
-            return repo.FindBy(predicate);
+            return _repo.FindBy(predicate);
         }
 
         public TEntity FindById(string itemId)
         {
-            return repo.FindById(itemId);
+            return _repo.FindById(itemId);
         }
 
         public IEnumerable<TEntity> GetAll()
         {
-            return repo.GetAll();
+            return _repo.GetAll();
         }
 
         public void Update(TEntity item)
         {
-            repo.Update(item);
+            _repo.Update(item);
         }
     }
 }

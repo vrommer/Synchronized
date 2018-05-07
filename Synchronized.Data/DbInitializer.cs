@@ -11,18 +11,35 @@ namespace Synchronized.Data
 {
     public class DbInitializer
     {
-        public static async Task Initialize(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        // number of tags
+        static int numOfTags;
+
+        // IDs of ApplicationUsers
+        static List<string> UserIds = new List<string>();
+
+        // IDs of Questions
+        static List<string> questionIds = new List<string>();
+
+        // IDs of Answers
+        static List<string> answerIds = new List<string>();
+
+        // IDs of tags
+        static List<string> tagIds = new List<string>();
+
+        static SynchronizedDbContext context;
+        static Random rand = new Random();
+        static int maxPoints = 1000;
+        static int totalViews = 15;
+        static int numOfQuestions = 5;
+        static int numOfAnswers = 5;
+        static int numOfComments = 5;
+        static int minimumTagsInQuestion = 1;
+        static int maximumTagsInQuestion = 4;
+
+        public static async Task Initialize(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, SynchronizedDbContext Context)
         {
-            SynchronizedDbContext context = new SynchronizedDbContext();
+            context = Context;
             context.Database.EnsureCreated();
-            Random rand = new Random();
-            int maxPoints = 1000;
-            int totalViews = 15;
-            int numOfQuestions = 5;
-            int numOfAnswers = 5;
-            int numOfComments = 5;
-            int minimumTagsInQuestion = 1;
-            int maximumTagsInQuestion = 4;
 
             string[] userNames =
             {
@@ -78,19 +95,7 @@ namespace Synchronized.Data
             };
 
             // number of tags
-            int numOfTags = tagNames.Count();
-
-            // IDs of ApplicationUsers
-            List<string> UserIds = new List<string>();
-
-            // IDs of Questions
-            List<string> questionIds = new List<string>();
-
-            // IDs of Answers
-            List<string> answerIds = new List<string>();
-
-            // IDs of tags
-            List<string> tagIds = new List<string>();
+            numOfTags = tagNames.Count();
 
             if (context.Posts.Any())
             {
@@ -125,19 +130,20 @@ namespace Synchronized.Data
             var users = new List<ApplicationUser>();
             for (int i = 0; i < userNames.Length; i++)
             {
-                users.Add(new ApplicationUser {
-                    Email = "mail" + i + "@example.com", UserName = userNames[i], Points = rand.Next(maxPoints)
-                });
-            }
+                var user = new ApplicationUser
+                {
+                    Email = "mail" + i + "@example.com",
+                    UserName = userNames[i],
+                    Points = rand.Next(maxPoints)
+                };
+                users.Add(user);
 
-            users.ForEach(async item =>
-            {
-                result = await userManager.CreateAsync(item, password);
+                result = await userManager.CreateAsync(user, password);
                 if (result.Succeeded)
                 {
-                    UserIds.Add(item.Id);
+                    UserIds.Add(user.Id);
                 }
-            });
+            }
 
             /***********************************************************************
              * Questions
@@ -332,6 +338,57 @@ namespace Synchronized.Data
             /***********************************************************************
             * DeleteVotes
             ***********************************************************************/
+        }
+
+        public static async Task<List<ApplicationUser>> CreateUsers(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        {
+            string[] userNames =
+            {
+                "Viktoriya \u2764", "Vadim", "Yossi", "Nati", "Isaac", "Oren", "Allen \u2764", "Nir", "Netta", "Katty", "Soffi", "Ira", "Marina", "Igal", "Juli", "Aprana", "Prasana", "Tigran", "Anton", "Sergey", "Dima", "Michael",
+                "Alex", "Kostya", "Max", "Lee", "Keren", "Dina", "Maayan", "Idan", "Adam", "Ari", "Arik", "Yariv", "Naor", "Oron", "Yevgeni", "Bruce", "Kim", "Joseph", "Ido", "Jack", "John", "Romeo",
+                "Roman", "Rita", "Irena", "Vladislav", "Rostislav", "Josh", "Kevin", "Devin", "Miika", "Luca", "Fabio", "Fredd", "Leon", "Arthur", "Boris", "David", "Eithan", "Stephany", "Christine", "Alon", "Alona", "Olga",
+                "Sharon", "Hellen", "Hulio", "Enrique", "Darwin", "Stephan", "Joe", "Hillary", "Barak", "Benjamin", "Ashton", "Cameron", "Kventin", "Guy", "Ahmed", "Muhammad", "Gadir", "Kamila", "Polina", "Pola", "Marga", "Sandra"
+            };
+            string roleName = "Moderator";
+            string password = "Abcd@1234";
+
+            bool roleExists = await roleManager.RoleExistsAsync(roleName);
+
+            if (!roleExists)
+            {
+                var roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+            }
+
+            var joseph = new ApplicationUser { Email = "mail1@example.com", EmailConfirmed = true, UserName = "joseph" };
+
+            var result = await userManager.CreateAsync(joseph, password);
+
+            bool userIsInRole = await userManager.IsInRoleAsync(joseph, roleName);
+
+            if (result.Succeeded && !userIsInRole)
+            {
+                result = await userManager.AddToRoleAsync(joseph, roleName);
+            }
+            var users = new List<ApplicationUser>();
+            for (int i = 0; i < userNames.Length; i++)
+            {
+                users.Add(new ApplicationUser
+                {
+                    Email = "mail" + i + "@example.com",
+                    UserName = userNames[i],
+                    Points = rand.Next(maxPoints)
+                });
+            }
+
+            users.ForEach(async item =>
+            {
+                result = await userManager.CreateAsync(item, password);
+                if (result.Succeeded)
+                {
+                    UserIds.Add(item.Id);
+                }
+            });
+            return users;
         }
     }
 }

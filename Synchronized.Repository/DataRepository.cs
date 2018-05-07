@@ -61,8 +61,9 @@ namespace Synchronized.Repository.Repositories
 
         public void Update(TModel item)
         {
-            _dbSet.Attach(item);
-            _context.Entry(item).State = EntityState.Modified;
+            //_dbSet.Attach(item);
+            //_context.Entry(item).State = EntityState.Modified;
+            _context.Update(item);
             _context.SaveChanges();
         }
 

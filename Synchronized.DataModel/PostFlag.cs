@@ -3,12 +3,12 @@ using System.Text;
 
 namespace Synchronized.Domain
 {
-    public class QuestionFlag
+    public class PostFlag
     {
         public string UserId { get; set; }
-        public string QuestionId { get; set; }
+        public string PostId { get; set; }
 
-        public Question Question { get; set; }
+        public Post Post { get; set; }
         public ApplicationUser User { get; set; }
 
         public override int GetHashCode()
@@ -20,7 +20,7 @@ namespace Synchronized.Domain
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
-            QuestionFlag questionFlag = obj as QuestionFlag;
+            PostFlag questionFlag = obj as PostFlag;
             if (questionFlag == null) return false;
             else return Equals(questionFlag);
         }
@@ -31,11 +31,11 @@ namespace Synchronized.Domain
                 .Append("User id: ")
                 .Append(UserId)
                 .Append("\nQuestion id: ")
-                .Append(QuestionId)
+                .Append(PostId)
                 .ToString());
         }
 
-        public bool Equals(QuestionFlag other)
+        public bool Equals(PostFlag other)
         {
             if (other == null) return false;
             return (GetHashCode() == other.GetHashCode());
