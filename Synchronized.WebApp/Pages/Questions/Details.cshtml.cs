@@ -47,8 +47,8 @@ namespace Synchronized.WebApp.Pages.Questions
                     Question = Question,
                     User = user
                 });
+                _questionsService.UpdateQuestion(Question);
             }
-            _questionsService.UpdateQuestion(Question);
         }
 
         [BindProperty]

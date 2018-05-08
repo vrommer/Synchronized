@@ -14,8 +14,8 @@ using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using System;
 using StructureMap;
-using Synchronized.Core.Infrastructure;
-using Synchronized.Repository.Infrastructure;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Synchronized.WebApp.Services;
 
 namespace Synchronized.WebApp
 {
@@ -36,10 +36,10 @@ namespace Synchronized.WebApp
                 .AddRoleStore<RolesRepository>()
                 .AddDefaultTokenProviders();
 
-            services.AddDbContext<SynchronizedDbContext>(b =>
-            {
-                b.UseSqlServer(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true");
-            });
+            //services.AddDbContext<SynchronizedDbContext>(b =>
+            //{
+            //    b.UseSqlServer(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true");
+            //});
 
             services.AddMvc()
                 .AddRazorPagesOptions(options =>
@@ -94,21 +94,26 @@ namespace Synchronized.WebApp
         
         private IServiceProvider ConfigureIoC(IServiceCollection services)
         {
-            var registry = new Registry();
-            registry.IncludeRegistry<ServiceRegistry>();
-            registry.IncludeRegistry<RepositoryRegistry>();
-
-            var container = new Container(registry);
+            var container = new Container();
 
             container.Configure(_ =>
             {
                 _.Scan(x =>
                 {
                     x.TheCallingAssembly();
+                    x.AssemblyContainingType<EmailSender>();
                     x.AssemblyContainingType<QuestionsRepository>();
                     x.AssemblyContainingType<QuestionsService>();
                     x.WithDefaultConventions();
                 });
+
+                _.For<DbContext>().Use(new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true"));
+                _.For(typeof(IdentityDbContext<>)).Use(new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true"));
+                _.For<SynchronizedDbContext>().Use(new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true"));
+                _.For<DbContext>().Singleton();
+                _.For(typeof(IdentityDbContext<>)).Singleton();
+                _.For<SynchronizedDbContext>().Singleton();
+
                 _.Populate(services);
             });
             return container.GetInstance<IServiceProvider>();

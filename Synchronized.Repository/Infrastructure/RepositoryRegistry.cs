@@ -12,13 +12,6 @@ namespace Synchronized.Repository.Infrastructure
     {
         public RepositoryRegistry()
         {
-            //var options = new DbContextOptions<IdentityDbContext<ApplicationUser>>();
-            //services.AddDbContext<SynchronizedDbContext>(b =>
-            //{
-            //    b.UseSqlServer(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true");
-            //});            
-            For(typeof(IDataRepository<>)).Use(typeof(DataRepository<>));
-            For<DbContext>().Use<SynchronizedDbContext>();
         }
     }
 }

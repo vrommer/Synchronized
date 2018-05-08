@@ -9,7 +9,12 @@ namespace Synchronized.Core.Repositories
 {
     public class RolesRepository: IRoleStore<IdentityRole>
     {
-        private readonly RoleStore<IdentityRole> _roleStore = new RoleStore<IdentityRole>(new SynchronizedDbContext());
+        private readonly RoleStore<IdentityRole> _roleStore/* = new RoleStore<IdentityRole>(new SynchronizedDbContext())*/;
+
+        public RolesRepository(IdentityDbContext<ApplicationUser> context)
+        {
+            _roleStore = new RoleStore<IdentityRole>(context);
+        }
 
         public Task<IdentityResult> CreateAsync(IdentityRole role, CancellationToken cancellationToken)
         {

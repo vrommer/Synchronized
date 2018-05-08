@@ -7,7 +7,6 @@ namespace Synchronized.Core.Infrastructure
     {
         public ServiceRegistry()
         {
-            For(typeof(IDataService<>)).Use(typeof(DataService<>));
         }
     }
 }

@@ -1,0 +1,6 @@
+Added structuremap,
+Added QuestionsViewModel,
+Added Vote per user support,
+Added new Method VoteUpPost,
+Added persistency support in javascript,
+Added generic class ViewModel in javascript

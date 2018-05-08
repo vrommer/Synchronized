@@ -7,11 +7,16 @@ namespace Synchronized.Data
 {
     public class SynchronizedDbContext : IdentityDbContext<ApplicationUser>
     {
+        public SynchronizedDbContext(string connStr) : base()
+        {
+            _connectionString = connStr;
+        }
+
         public SynchronizedDbContext(DbContextOptions options) : base(options)
         {
         }
 
-        public SynchronizedDbContext() : base() { }
+        //public SynchronizedDbContext() : base() { }
 
         public DbSet<Post> Posts { get; set; }
         //public DbSet<CommentedPost> CommentedPosts { get; set; }
@@ -19,10 +24,11 @@ namespace Synchronized.Data
         public DbSet<QuestionTag> QusetionTags { get; set; }
         public DbSet<QuestionView> QuestionViews { get; set; }
         public DbSet<Vote> Votes { get; set; }
+        public string _connectionString { get; private set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true");
+            optionsBuilder.UseSqlServer(_connectionString);
             base.OnConfiguring(optionsBuilder);
         }
 
