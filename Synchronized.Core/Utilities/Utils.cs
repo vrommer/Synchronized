@@ -1,4 +1,4 @@
-﻿using Synchronized.Model;
+﻿using Synchronized.ServiceModel;
 using System;
 using System.Collections.Generic;
 using UtilsLib.HtmlUtils;

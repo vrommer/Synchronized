@@ -29,6 +29,7 @@ namespace Synchronized.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(_connectionString);
+            optionsBuilder.EnableSensitiveDataLogging();
             base.OnConfiguring(optionsBuilder);
         }
 
@@ -43,15 +44,15 @@ namespace Synchronized.Data
                 .ValueGeneratedOnAdd()
                 .HasDefaultValueSql("GETDATE()");
 
-            builder.Entity<Question>().HasBaseType<CommentedPost>();
+            builder.Entity<Question>().HasBaseType<VotedPost>();
 
-            builder.Entity<Answer>().HasBaseType<CommentedPost>()
+            builder.Entity<Answer>().HasBaseType<VotedPost>()
                 .HasOne(a => a.Question)
                 .WithMany(q => q.Answers)
                 .HasForeignKey(a => a.QuestionId);
 
             builder.Entity<Comment>().HasBaseType<Post>()
-                .HasOne(c => c.DataPost)
+                .HasOne(c => c.VotedPost)
                 .WithMany(d => d.Comments)
                 .HasForeignKey(c => c.PostId);
 
@@ -126,6 +127,11 @@ namespace Synchronized.Data
                 .HasForeignKey(v => v.VoterId);
 
             base.OnModelCreating(builder);
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
         }
     }
 }

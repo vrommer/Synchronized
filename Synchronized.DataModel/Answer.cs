@@ -1,7 +1,7 @@
 ﻿namespace Synchronized.Model
 {
 
-    public class Answer : CommentedPost
+    public class Answer : VotedPost
     {
         public string QuestionId { get; set; }
         public int Points { get; set; }

@@ -1,4 +1,4 @@
-﻿using Synchronized.Model;
+﻿using Synchronized.ServiceModel;
 using Synchronized.SharedLib.Utilities;
 
 namespace Synchronized.ViewModel

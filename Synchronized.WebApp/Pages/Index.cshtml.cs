@@ -10,7 +10,7 @@ namespace Synchronized.WebApp.Pages
 {
     public class IndexModel : PageModel
     {
-        public PaginatedList<Question> Questions { get; set; }
+        public PaginatedList<ServiceModel.Question> Questions { get; set; }
 
         public int CurrentPage { get; set; }
         public string SearchString { get; set; }

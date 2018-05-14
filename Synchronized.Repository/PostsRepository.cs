@@ -29,11 +29,11 @@ namespace Synchronized.Repository
         }
 
 
-        public async Task<T> FindPostOfType<T>(Expression<Func<T, bool>> predicate) where T: CommentedPost
+        public async Task<TPost> FindPostOfType<TPost>(Expression<Func<TPost, bool>> predicate) where TPost: VotedPost
         {
             var post = await _dbSet
-                .OfType<T>()
                 .AsNoTracking()
+                .OfType<TPost>()                
                 .Include(cp => cp.Votes)
                 .Where(predicate)
                 .SingleOrDefaultAsync();

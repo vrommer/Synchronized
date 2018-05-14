@@ -6,11 +6,11 @@ $(() => {
 
     $.merge(allComments, question.comments);
 
-    $("#synched-quetion .vote-up-btn").on("click", VoteUpPost.bind(questionViewModel.question))
+    $(`#${questionViewModel.model.question.id} .vote-up-btn`).on("click", VoteUpQuestion.bind(questionViewModel.model.question))
     $("#synched-quetion .vote-down-btn").on("click", VoteDownQuestion)
     $("#synched-quetion .comment-body").on("keypress", submitQuestionComment);
     $("#synched-quetion .synched-flag").on("click", flagPost.bind(question));
-    $("#synched-quetion .synched-delete").on("click", deletePost.bind(question));
+    $(`${questionViewModel.model.question.id} .synched-delete`).on("click", deletePost.bind(question));
 
     question.answers.forEach(answer => {
 
@@ -68,7 +68,7 @@ $(() => {
 
     function updateQuestionPoints(updatedQuestion) {
         question = updatedQuestion;
-        $(`#${questionViewModel.question.id}`).html(updatedQuestion.points);
+        $(`#${questionViewModel.model.question.id}`).html(updatedQuestion.points);
     }
 
     function updateAnswerPoints(updatedAnswer) {
@@ -97,23 +97,26 @@ $(() => {
         questionViewModel.posts[updatedPost.id] = updatedPost;        
     }
 
-    function updatePostPoints(post) {
-        updatePost(updatedPost);
-        $(`#${updatedPost.id} .synched-points`).html(updatedPost.points);
-    }
-
-    function VoteUpPost() {
-        ajaxRequest("POST", "/api/Posts/VoteUpPost", this.id)
-            .then(updatePostPoints(this))
-            .catch(xhr => { console.log(xhr); });
-
-    }
+    function updatePostVotes(newVote) {
+        if (newVote) {
+            questionViewModel.updatePostVotes(newVote);
+            $(`#${post.id} .synched-points`).html(questionViewModel.model.posts[newVote.id].votes.length);
+        }
+    } 
 
     function VoteUpQuestion() {
-        ajaxRequest("POST", "/api/Posts/VoteUpQuestion", question.id)
-            .then(updateQuestionPoints)
+        ajaxRequest("POST", "/api/Posts/VoteUpQuestion", this)
+            .then(updatePostVotes)
             .catch(xhr => { console.log(xhr); });
+
     }
+
+    // TODO: Delete
+    //function VoteUpQuestion() {
+    //    ajaxRequest("POST", "/api/Posts/VoteUpQuestion", question.id)
+    //        .then(updateQuestionPoints)
+    //        .catch(xhr => { console.log(xhr); });
+    //}
 
     function VoteDownQuestion() {
         ajaxRequest("POST", "/api/Posts/VoteDownQuestion", question.id)
@@ -177,8 +180,9 @@ $(() => {
     }
 
     function deletePost() {
-        return ajaxRequest("POST", "/api/Posts/DeletePost", this.id)
-            .then(() => { console.log("success!") });
+        return ajaxRequest("POST", "/api/Posts/Delete", this.id)
+            .then(() => { console.log("success!") })
+            .catch(() => { console.log("faliure!") });
     }
 
     // TODO: Use these functions

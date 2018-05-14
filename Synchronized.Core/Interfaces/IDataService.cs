@@ -1,18 +1,21 @@
-﻿using System;
+﻿using Synchronized.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Synchronized.Core.Interfaces
 {
-    public interface IDataService<TEntity> where TEntity : class
+    public interface IDataService<TServiceModel, TDomainModel> 
+        where TServiceModel : class 
+        where TDomainModel: class
     {
-        IEnumerable<TEntity> GetAll();
-        Task CreateAsync(TEntity entity);
-        TEntity FindById(string itemId);
-        void Add(TEntity item);
+        IEnumerable<TDomainModel> GetAll();
+        Task CreateAsync(TDomainModel entity);
+        TDomainModel FindById(string itemId);
+        void Add(TDomainModel item);
         void Delete(string itemId);
-        void Update(TEntity item);
-        IEnumerable<TEntity> FindBy(Expression<Func<TEntity, bool>> predicate);
+        void Update(TDomainModel item);
+        IEnumerable<TDomainModel> FindBy(Expression<Func<TDomainModel, bool>> predicate);
     }
 }

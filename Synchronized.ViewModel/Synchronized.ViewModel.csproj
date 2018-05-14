@@ -10,8 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharedLib\SharedLib.csproj" />
-    <ProjectReference Include="..\Synchronized.DataModel\Synchronized.Domain.csproj" />
+    <ProjectReference Include="..\SharedLib\Synchronized.SharedLib.csproj" />
+    <ProjectReference Include="..\Synchronized.ServiceModel\Synchronized.ServiceModel.csproj" />
   </ItemGroup>
 
 </Project>

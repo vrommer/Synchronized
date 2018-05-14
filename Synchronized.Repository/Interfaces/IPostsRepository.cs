@@ -8,6 +8,6 @@ namespace Synchronized.Repository.Interfaces
     public interface IPostsRepository : IDataRepository<Post>
     {
         Post FindPostById(string itemId);
-        Task<T> FindPostOfType<T>(Expression<Func<T, bool>> predicate) where T: CommentedPost;
+        Task<T> FindPostOfType<T>(Expression<Func<T, bool>> predicate) where T: VotedPost;
     }
 }

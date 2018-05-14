@@ -5,9 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharedLib\SharedLib.csproj" />
+    <ProjectReference Include="..\SharedLib\Synchronized.SharedLib.csproj" />
     <ProjectReference Include="..\Synchronized.DataModel\Synchronized.Domain.csproj" />
     <ProjectReference Include="..\Synchronized.Repository\Synchronized.Repository.csproj" />
+    <ProjectReference Include="..\Synchronized.ServiceModel\Synchronized.ServiceModel.csproj" />
     <ProjectReference Include="..\Synchronized.ViewModel\Synchronized.ViewModel.csproj" />
   </ItemGroup>
 

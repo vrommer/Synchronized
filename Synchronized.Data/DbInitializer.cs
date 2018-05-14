@@ -36,9 +36,9 @@ namespace Synchronized.Data
         static int minimumTagsInQuestion = 1;
         static int maximumTagsInQuestion = 4;
 
-        public static async Task Initialize(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, SynchronizedDbContext Context)
+        public static async Task Initialize(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, DbContext Context)
         {
-            context = Context;
+            context = (SynchronizedDbContext)Context;
             context.Database.EnsureCreated();
 
             string[] userNames =

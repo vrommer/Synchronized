@@ -6,14 +6,14 @@
 <script>
     var questionId = @Html.Raw(Json.Serialize(Model.Question.Id));
     var question = @Html.Raw(Json.Serialize(Model.Question));
-    var questionViewModel = new ViewModel(@Html.Raw(Json.Serialize(Model.QuestionViewModel)));
+    var questionViewModel = new PostViewModel(@Html.Raw(Json.Serialize(Model.QuestionViewModel)));
 </script>
 <section class="app-question">
     <h2>@Html.DisplayFor(model => model.Question.Title)</h2>
     <div class="row" id="@Model.Question.Id">
         <div class="app-stats col-md-1">
             <div class="synched-points">
-                @Html.DisplayFor(model => model.Question.Votes.Count)
+                @Html.DisplayFor(model => model.Question.SumVotes)
             </div>
             <div class="synched-vote-buttons">
                 <button class="synched-vote-btn vote-up-btn"><i class="fa fa-plus-square"></i></button>
@@ -30,7 +30,7 @@
             <button type="button" class="btn btn-link synched-flag">Flag</button>
             <button type="button" class="btn btn-link synched-delete">Delete</button>
             <div class="synched-meta">
-                @Html.DisplayFor(model => model.Question.Publisher.UserName)
+                @Html.DisplayFor(model => model.Question.Publisher.Name)
                 @Html.DisplayFor(model => model.Question.DatePosted)
             </div>
             @if (Model.Question.Comments != null && Model.Question.Comments.Count() > 0)
@@ -85,7 +85,7 @@
                     <button type="button" class="btn btn-link synched-flag">Flag</button>
                     <button type="button" class="btn btn-link synched-delete">Delete</button>
                     <div class="synched-meta">
-                        @answer.Publisher.UserName
+                        @answer.Publisher.Name
                         @answer.DatePosted
                     </div>
                     @if (answer.Comments != null && answer.Comments.Count() > 0)

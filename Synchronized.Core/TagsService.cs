@@ -6,7 +6,7 @@ using Synchronized.Repository.Interfaces;
 
 namespace Synchronized.Core
 {
-    public class TagsService : DataService<Tag>, ITagsService
+    public class TagsService : DataService<ServiceModel.Post, Tag>, ITagsService
     {
         private readonly ITagsRepository _tagsRepo;
 

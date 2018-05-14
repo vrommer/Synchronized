@@ -1,4 +1,5 @@
 ﻿using Synchronized.Model;
+using System;
 using System.Text;
 
 namespace Synchronized.Domain

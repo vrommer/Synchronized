@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Synchronized.Data;
 using Synchronized.Model;
 using System.Threading;
@@ -11,7 +12,7 @@ namespace Synchronized.Core.Repositories
     {
         private readonly RoleStore<IdentityRole> _roleStore/* = new RoleStore<IdentityRole>(new SynchronizedDbContext())*/;
 
-        public RolesRepository(IdentityDbContext<ApplicationUser> context)
+        public RolesRepository(DbContext context)
         {
             _roleStore = new RoleStore<IdentityRole>(context);
         }

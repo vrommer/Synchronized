@@ -1,19 +1,17 @@
-﻿using Synchronized.Model;
-using System;
+﻿using Synchronized.ServiceModel;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Synchronized.ViewModel
 {
-    public class QuestionViewModel
+    public class DetailsViewModel
     {
         public Question Question{ get; set; }
         public Dictionary<string, Answer> Answers{ get; set; }
         public Dictionary<string, Comment> Comments{ get; set; }
         public Dictionary<string, Post> Posts { get; set; }
 
-        public QuestionViewModel(Question question)
+        public DetailsViewModel(Question question)
         {
             Question = question;
             Answers = new Dictionary<string, Answer>();

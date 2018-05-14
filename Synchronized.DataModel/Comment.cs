@@ -4,6 +4,6 @@
     {
         public string PostId { get; set; }
 
-        public CommentedPost DataPost { get; set; }
+        public VotedPost VotedPost { get; set; }
     }
 }

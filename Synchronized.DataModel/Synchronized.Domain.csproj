@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharedLib\SharedLib.csproj" />
+    <ProjectReference Include="..\SharedLib\Synchronized.SharedLib.csproj" />
   </ItemGroup>
 
 </Project>

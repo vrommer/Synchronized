@@ -1,0 +1,15 @@
+﻿using System.Collections.Generic;
+
+namespace Synchronized.ServiceModel
+{
+    public class Question: VotedPost
+    {
+        public string Title { get; set; }
+        public string Tags { get; set; }
+        public int Views { get; set; }
+        public bool IsAnswered { get; set; }
+
+        public ICollection<Answer> Answers { get; set; }    
+        //public ICollection<QuestionView> Views { get; set; }
+    }
+}

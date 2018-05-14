@@ -1,4 +1,6 @@
-﻿namespace Synchronized.Model
+﻿using System;
+
+namespace Synchronized.Model
 {
     public class QuestionTag
     {

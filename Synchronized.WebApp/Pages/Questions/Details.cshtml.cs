@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Synchronized.Core.Interfaces;
-using Synchronized.Domain;
-using Synchronized.Model;
+using Synchronized.ServiceModel;
 using Synchronized.ViewModel;
 using System.Threading.Tasks;
 
@@ -13,16 +12,16 @@ namespace Synchronized.WebApp.Pages.Questions
     public class DetailsModel : PageModel
     {
         public Question Question { get; set; }
-        public QuestionViewModel QuestionViewModel{ get; set; }
+        public DetailsViewModel QuestionViewModel{ get; set; }
 
         private IQuestionsService _questionsService;
         private readonly ILogger<DetailsModel> _logger;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<Model.ApplicationUser> _userManager;
 
         public DetailsModel(
             IQuestionsService questionsService,
             ILogger<DetailsModel> logger,
-            UserManager<ApplicationUser> userManager
+            UserManager<Model.ApplicationUser> userManager
             )
         {
             _questionsService = questionsService;
@@ -32,23 +31,23 @@ namespace Synchronized.WebApp.Pages.Questions
 
         public async Task OnGetAsync(string id)
         {
-            ApplicationUser user = await GetCurrentUserAsync();
+            Model.ApplicationUser user = await GetCurrentUserAsync();
             Question = _questionsService.FindQuestionById(id);
-            QuestionViewModel = new QuestionViewModel(Question);
+            QuestionViewModel = new DetailsViewModel(Question);
 
-            if ( user!=null && !Question.QuestionViews.Contains(new QuestionView
-            {
-                UserId = user.Id,
-                QuestionId = Question.Id
-            }))
-            {
-                // EF Core will not track entity with key
-                Question.QuestionViews.Add(new QuestionView {
-                    Question = Question,
-                    User = user
-                });
-                _questionsService.UpdateQuestion(Question);
-            }
+            //if ( user!=null && !Question.QuestionViews.Contains(new QuestionView
+            //{
+            //    UserId = user.Id,
+            //    QuestionId = Question.Id
+            //}))
+            //{
+            //    // EF Core will not track entity with key
+            //    Question.QuestionViews.Add(new QuestionView {
+            //        //Question = Question,
+            //        User = user
+            //    });
+            //    _questionsService.Update(Question);
+            //}
         }
 
         [BindProperty]
@@ -62,15 +61,15 @@ namespace Synchronized.WebApp.Pages.Questions
             }
             var usr = await GetCurrentUserAsync();
 
-            Question = _questionsService.FindQuestionById(id);
-            Answer.PublisherId = usr.Id;
+            //Question = _questionsService.FindQuestionById(id);
+            //Answer.PublisherId = usr.Id;
 
-            Question.Answers.Add(Answer);
+            //Question.Answers.Add(Answer);
 
-            _questionsService.UpdateQuestion(Question);
+            //_questionsService.UpdateQuestion(Question);
             return RedirectToPage("/Questions/Details", new { id = id });
         }
 
-        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+        private Task<Model.ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
     }
 }

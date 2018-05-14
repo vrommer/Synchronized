@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using Synchronized.Model;
 using Synchronized.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Synchronized.WebApp
 {
@@ -25,9 +26,10 @@ namespace Synchronized.WebApp
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                    var dbContext = scope.ServiceProvider.GetRequiredService<SynchronizedDbContext>();
+                    //var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                    var dbContext = services.GetRequiredService<DbContext>();
                     DbInitializer.Initialize(userManager, roleManager, dbContext).Wait();
                 }
                 catch (Exception ex)

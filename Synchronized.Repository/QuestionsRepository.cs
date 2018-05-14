@@ -82,6 +82,7 @@ namespace Synchronized.Repository
         public Question FindQuestionById(string questionId)
         {
             var question = _dbSet
+                .AsNoTracking()
                 .Include(q => q.Answers)
                     .ThenInclude(a => a.Publisher)
                 .Include(q => q.Publisher)
@@ -89,7 +90,6 @@ namespace Synchronized.Repository
                 .Include(q => q.QuestionViews)
                 .Include(q => q.PostFlags)
                 .Include(q => q.DeleteVotes)
-                .AsNoTracking()
                 .SingleOrDefault(e => e.Id.Equals(questionId));
 
             // Add sorted comments to question           
@@ -130,17 +130,17 @@ namespace Synchronized.Repository
 
         public void UpdateQuestion(Question question)
         {
-            //_dbSet.Attach(question);
-            //_context.Entry(question).State = EntityState.Modified;
-            _context.Update(question);
+            _dbSet.Attach(question);
+            _context.Entry(question).State = EntityState.Modified;
+            //_context.Update(question);
             _context.SaveChanges();
         }
 
         public void UpdateAnswer(Answer answer)
         {
-            //_context.Set<Answer>().Attach(answer);
-            //_context.Entry(answer).State = EntityState.Modified;
-            _context.Update(answer);
+            _context.Set<Answer>().Attach(answer);
+            _context.Entry(answer).State = EntityState.Modified;
+            //_context.Update(answer);
             _context.SaveChanges();
         }
     }

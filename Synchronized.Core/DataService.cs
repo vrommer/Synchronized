@@ -8,21 +8,23 @@ using System.Threading.Tasks;
 
 namespace Synchronized.Core
 {
-    public class DataService<TEntity> : IDataService<TEntity> where TEntity : class, IEntity
+    public class DataService<TEntity, TModel> : IDataService<TEntity, TModel> 
+        where TEntity : class
+        where TModel: class, IEntity
     {
-        protected readonly IDataRepository<TEntity> _repo;
+        protected readonly IDataRepository<TModel> _repo;
 
-        public DataService(IDataRepository<TEntity> repo)
+        public DataService(IDataRepository<TModel> repo)
         {
-            this._repo = repo;
+            _repo = repo;
         }
 
-        public void Add(TEntity item)
+        public void Add(TModel item)
         {
             _repo.Add(item);
         }
 
-        public async Task CreateAsync(TEntity entity)
+        public async Task CreateAsync(TModel entity)
         {
             await _repo.AddAsync(entity);
         }
@@ -32,22 +34,22 @@ namespace Synchronized.Core
             _repo.Delete(itemId);
         }
 
-        public IEnumerable<TEntity> FindBy(Expression<Func<TEntity, bool>> predicate)
+        public IEnumerable<TModel> FindBy(Expression<Func<TModel, bool>> predicate)
         {
             return _repo.FindBy(predicate);
         }
 
-        public TEntity FindById(string itemId)
+        public TModel FindById(string itemId)
         {
             return _repo.FindById(itemId);
         }
 
-        public IEnumerable<TEntity> GetAll()
+        public IEnumerable<TModel> GetAll()
         {
             return _repo.GetAll();
         }
 
-        public void Update(TEntity item)
+        public void Update(TModel item)
         {
             _repo.Update(item);
         }

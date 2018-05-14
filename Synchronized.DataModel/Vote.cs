@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace Synchronized.Model
 {
@@ -9,7 +10,7 @@ namespace Synchronized.Model
         public int VoteType { get; set; }
 
         public ApplicationUser Voter { get; set; }
-        public CommentedPost Post { get; set; }
+        public VotedPost Post { get; set; }
 
         public override int GetHashCode()
         {

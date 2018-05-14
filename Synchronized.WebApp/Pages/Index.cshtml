@@ -11,34 +11,19 @@
     {
         <article class="row synched-home-content">
             <div class="col-md-3">
-                <h4>@item.Points</h4>
+                <h4>@item.SumVotes</h4>
                 <h5>pts</h5>
             </div>
             <div class="col-md-8">
                 <div class="synched-question-title">
-                    <h4><a asp-page="/Questions/Details" asp-route-id="/@item.Id">@item.Title</a></h4>
+                    <h4><a asp-page="/Questions/Details" asp-route-id="@item.Id">@item.Title</a></h4>
                 </div>
                 <div class="synched-tags">
                     @{
-                        var first = true;
-                        var tagNames = "";
                         var name = "tags-" + counter;
                         counter++;
-                        foreach (var questionTag in item.QuestionTags)
-                        {
-                            if (!first)
-                            {
-                                tagNames += "," + questionTag.Tag.Name;
-                            }
-                            else
-                            {
-                                tagNames += questionTag.Tag.Name;
-                                first = false;
-                            }
-                        }
-                        first = true;
                     }
-                    <input class="synched-tags" name=@name id=@name value=@tagNames />
+                    <input class="synched-tags" name=@name id=@name value=@item.Tags />
                 </div>
             </div>
             <div class="col-md-1">
@@ -46,7 +31,7 @@
                 {
                     <img src="~/pictures/x_mark_grey.png" height="30"/>
                 }
-                else if (item.Answered())
+                else if (item.IsAnswered)
                 {
                     <img src="~/pictures/GreenV.png" height="40"/>
                 }

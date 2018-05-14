@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SharedLib.Infrastructure.Constants;
+using Newtonsoft.Json.Linq;
 using Synchronized.Core.Interfaces;
-using Synchronized.Domain;
-using Synchronized.Model;
+using Synchronized.ServiceModel;
 using System.Threading.Tasks;
 
 namespace Synchronized.WebApp.Controllers
@@ -16,14 +15,14 @@ namespace Synchronized.WebApp.Controllers
         private IPostsService _postsService;
 
         private readonly ILogger<PostsController> _logger;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<Model.ApplicationUser> _userManager;
 
         public PostsController(
             IQuestionsService questionsService,
             IPostsService postsService,
             ILogger<PostsController> logger,
-            UserManager<ApplicationUser> userManager
-            )
+            UserManager<Model.ApplicationUser> userManager
+        )
         {
             _questionsService = questionsService;
             _postsService = postsService;
@@ -33,79 +32,78 @@ namespace Synchronized.WebApp.Controllers
 
         // POST: /api/Posts/VoteUpPost
         [HttpPost]
-        public async Task<IActionResult> VoteUpPost([FromBody]string postId)
+        public async Task<IActionResult> VoteUpQuestion([FromBody]Question post)
         {
+            _logger.LogTrace("Entering VoteUpQuestion method");
             var user = await GetCurrentUserAsync();
-            var post = await _postsService.FindtPostOfType<CommentedPost>(p => p.Id.Equals(postId));
-
-            if (user != null  && !post.Votes.Contains(new Vote {
-                VoterId = user.Id,
-                PostId = postId
-            }))
-            {
-                post.Votes.Add(new Vote
-                {
-                    Voter = user,
-                    Post = post,
-                    VoteType = (int)VoteType.UpVote
-                });
-                _postsService.Update(post);
-            }
+            await _postsService.VoteUpPost(post, user);
+            //var user = await GetCurrentUserAsync();
+            //var updatedPost = _postsService.VoteUpPost(post, user);
             return new ObjectResult(post);
         }
 
-        // POST: /api/Questions/VoteUpQuestion
+        // POST: /api/Posts/VoteDownPost
         [HttpPost]
-        public async Task<IActionResult> VoteUpQuestion([FromBody]string questionId)
+        public async Task<IActionResult> VoteDownPost([FromBody]VotedPost post)
         {
             var user = await GetCurrentUserAsync();
-            var question = _questionsService.FindQuestionById(questionId);
-            question.Points++;
-            _questionsService.UpdateQuestion(question);
-            return new ObjectResult(question);
+            //var updatedPost = _postsService.VoteDownPost(post, user);
+            return new ObjectResult(post);
         }
 
-        // POST: api/Voter/VoteDownQuestion
+        // POST: api/Posts/AddComment
         [HttpPost]
-        public async Task<IActionResult> VoteDownQuestion([FromBody]string questionId)
+        public async Task<IActionResult> AddComment([FromBody]Comment comment)
         {
             var user = await GetCurrentUserAsync();
-            var question = _questionsService.FindQuestionById(questionId);
-            question.Points--;
-            _questionsService.UpdateQuestion(question);
-            return new ObjectResult(question);
+            var result = _postsService.CommentOnPost(user, comment);
+            return new ObjectResult(result);
         }
 
-        // POST: api/Voter/VoteUpAnswer
-        [HttpPost]
-        public async Task<IActionResult> VoteUpAnswer([FromBody]Answer answer)
+        // POST: api/Posts/Delete
+        public async Task<IActionResult> Delete([FromBody]Post post)
         {
-            var user = await GetCurrentUserAsync();
-            answer.Points++;
-            _questionsService.UpdateAnswer(answer);
-            return new ObjectResult(answer);
+            _logger.LogDebug($"{post.GetType().FullName}");
+            return Ok(new { id = post.Id });
         }
 
-        // POST: api/Voter/VoteDownAnswer
-        [HttpPost]
-        public async Task<IActionResult> VoteDownAnswer([FromBody]Answer answer)
-        {
-            var user = await GetCurrentUserAsync();
-            answer.Points--;
-            _questionsService.UpdateAnswer(answer);
-            return new ObjectResult(answer);
-        }
+
+        // POST: api/Posts/Flag
+
+        /**********************************************************************/
+
+        // POST: /api/Posts/VoteUpPost
+        //[HttpPost]
+        //public async Task<IActionResult> VoteUpPost([FromBody]string postId)
+        //{
+        //    var user = await GetCurrentUserAsync();
+        //    var post = await _postsService.FindPostOfType<VotedPost>(p => p.Id.Equals(postId));
+        //    var vote = new Vote
+        //    {
+        //        VoterId = user.Id,
+        //        PostId = postId,
+        //        VoteType = (int)VoteType.UpVote                
+        //    };
+
+        //    if (user != null  && !post.Votes.Contains(vote))
+        //    {
+        //        //post.Votes.Add(vote);
+        //        _postsService.Add(post);
+        //        return new ObjectResult(vote);
+        //    }
+        //    return null;
+        //}
 
         // POST: api/Voter/SubmitQuestionComment
         [HttpPost]
-        public async Task<IActionResult> SubmitQuestionComment([FromBody]Comment comment)
+        public async Task<IActionResult> SubmitQuestionComment([FromBody]Model.Comment comment)
         {
             var user = await GetCurrentUserAsync();
             var question = _questionsService.FindQuestionById(comment.PostId);
             if (user != null)
             {
                 comment.PublisherId = user.Id;
-                question.Comments.Add(comment);
+                //question.Comments.Add(comment);
                 _questionsService.UpdateQuestion(question);
                 return new ObjectResult(comment);
             }
@@ -113,63 +111,63 @@ namespace Synchronized.WebApp.Controllers
         }
 
         // POST: api/Voter/SubmitQuestionAnswer
-        public async Task<IActionResult> SubmitAnswerComment([FromBody]Comment comment)
+        public async Task<IActionResult> SubmitAnswerComment([FromBody]Model.Comment comment)
         {
             var user = await GetCurrentUserAsync();
             var answer = _questionsService.FindAnswerById(comment.PostId);
             if (user != null)
             {
                 comment.PublisherId = user.Id;
-                answer.Comments.Add(comment);
+                //answer.Comments.Add(comment);
                 _questionsService.UpdateAnswer(answer);
                 return new ObjectResult(comment);
             }
             return null;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> DeletePost([FromBody]string postId)
-        {
-            var user = await GetCurrentUserAsync();
-            var post = _postsService.FindPostById(postId);
-            if (user != null && !post.DeleteVotes.Contains(new DeleteVote
-            {
-                UserId = user.Id,
-                PostId = post.Id
-            }))
-            {
-                // EF Core will not track new entity with key
-                post.DeleteVotes.Add(new DeleteVote
-                {
-                    Post = post,
-                    User = user
-                });
-                _postsService.Update(post);
-            }
-            return new ObjectResult(post);
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> DeletePost([FromBody]string postId)
+        //{
+        //    var user = await GetCurrentUserAsync();
+        //    var post = _postsService.FindPostById(postId);
+        //    if (user != null && !post.DeleteVotes.Contains(new DeleteVote
+        //    {
+        //        UserId = user.Id,
+        //        PostId = post.Id
+        //    }))
+        //    {
+        //        // EF Core will not track new entity with key
+        //        post.DeleteVotes.Add(new DeleteVote
+        //        {
+        //            Post = post,
+        //            User = user
+        //        });
+        //        _postsService.Update(post);
+        //    }
+        //    return new ObjectResult(post);
+        //}
 
-        [HttpPost]
-        public async Task<IActionResult> FlagPost([FromBody]string postId)
-        {
-            var user = await GetCurrentUserAsync();
-            var post = _postsService.FindPostById(postId);
-            if (user != null && !post.PostFlags.Contains(new PostFlag
-            {
-                UserId = user.Id,
-                PostId = post.Id
-            }))
-            {
-                // EF Core will not track new entity with key
-                post.PostFlags.Add(new PostFlag
-                {
-                    Post = post,
-                    User = user
-                });
-                _postsService.Update(post);
-            }
-            return new ObjectResult(post);
-        }
-        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+        //[HttpPost]
+        //public async Task<IActionResult> FlagPost([FromBody]string postId)
+        //{
+        //    var user = await GetCurrentUserAsync();
+        //    var post = _postsService.FindPostById(postId);
+        //    if (user != null && !post.PostFlags.Contains(new PostFlag
+        //    {
+        //        UserId = user.Id,
+        //        PostId = post.Id
+        //    }))
+        //    {
+        //        // EF Core will not track new entity with key
+        //        post.PostFlags.Add(new PostFlag
+        //        {
+        //            Post = post,
+        //            User = user
+        //        });
+        //        _postsService.Update(post);
+        //    }
+        //    return new ObjectResult(post);
+        //}
+        private Task<Model.ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
     }
 }

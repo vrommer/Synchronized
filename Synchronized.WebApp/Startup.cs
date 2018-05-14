@@ -16,6 +16,7 @@ using System;
 using StructureMap;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Synchronized.WebApp.Services;
+using Microsoft.Extensions.Logging;
 
 namespace Synchronized.WebApp
 {
@@ -36,10 +37,21 @@ namespace Synchronized.WebApp
                 .AddRoleStore<RolesRepository>()
                 .AddDefaultTokenProviders();
 
+
+            //_.For<DbContext>().Use(new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true")).Transient();
+            services.AddScoped<DbContext>(s => new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true"));            
+
             //services.AddDbContext<SynchronizedDbContext>(b =>
             //{
             //    b.UseSqlServer(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true");
             //});
+
+            services.AddLogging(builder =>
+            {
+                builder.AddConfiguration(Configuration.GetSection("Logging"))
+                    .AddConsole()
+                    .AddDebug();
+            });
 
             services.AddMvc()
                 .AddRazorPagesOptions(options =>
@@ -107,16 +119,18 @@ namespace Synchronized.WebApp
                     x.WithDefaultConventions();
                 });
 
-                _.For<DbContext>().Use(new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true"));
-                _.For(typeof(IdentityDbContext<>)).Use(new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true"));
-                _.For<SynchronizedDbContext>().Use(new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true"));
-                _.For<DbContext>().Singleton();
-                _.For(typeof(IdentityDbContext<>)).Singleton();
-                _.For<SynchronizedDbContext>().Singleton();
+                //_.For<DbContext>().Use<SynchronizedDbContext>();
+                //_.For<DbContext>().Use(new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true")).AlwaysUnique();
+                //_.For(typeof(IdentityDbContext<>)).Use(new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true"));
+                //_.For<SynchronizedDbContext>().Use(new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true"));
+                //_.For<DbContext>().Singleton();
+                //_.For(typeof(IdentityDbContext<>)).Singleton();
+                //_.For<SynchronizedDbContext>().Singleton();
 
                 _.Populate(services);
             });
-            return container.GetInstance<IServiceProvider>();
+            return container.GetNestedContainer().GetInstance<IServiceProvider>();
+            //return container.GetInstance<IServiceProvider>();
         }
     }
 }

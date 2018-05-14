@@ -1,10 +1,11 @@
 ﻿using Synchronized.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Synchronized.Model
 {
-    public class Question : CommentedPost
+    public class Question : VotedPost
     {
 
         public string Title { get; set; }
