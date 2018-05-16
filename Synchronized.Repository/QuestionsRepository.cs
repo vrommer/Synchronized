@@ -85,6 +85,8 @@ namespace Synchronized.Repository
                 .AsNoTracking()
                 .Include(q => q.Answers)
                     .ThenInclude(a => a.Publisher)
+                .Include(q => q.Answers)
+                    .ThenInclude(a => a.Votes)
                 .Include(q => q.Publisher)
                 .Include(q => q.Votes)
                 .Include(q => q.QuestionViews)
@@ -119,7 +121,8 @@ namespace Synchronized.Repository
             return GetPage(pageIndex, pageSize)
                 .Include(q => q.Answers)
                 .Include(q => q.QuestionTags)
-                    .ThenInclude(qt => qt.Tag);
+                    .ThenInclude(qt => qt.Tag)
+                .Include(q => q.Votes);
         }
 
         private IQueryable<Question> GetQuestionsQueryWithUsers(int pageIndex, int pageSize)

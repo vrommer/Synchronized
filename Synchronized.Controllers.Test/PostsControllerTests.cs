@@ -39,7 +39,7 @@ namespace Synchronized.Controllers.Test
 
             var controller = new PostsController(questionsService, postsService, logger, userManager);
 
-            var result = await controller.Delete(new ServiceModel.Question { });
+            //var result = await controller.Delete(new ServiceModel.Question { });
 
             //// Arrange
             //var mockRepo = new Mock<IBrainstormSessionRepository>();

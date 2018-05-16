@@ -6,14 +6,27 @@ $(() => {
 
     $.merge(allComments, question.comments);
 
-    $(`#${questionViewModel.model.question.id} .vote-up-btn`).on("click", VoteUpQuestion.bind(questionViewModel.model.question))
-    $("#synched-quetion .vote-down-btn").on("click", VoteDownQuestion)
+    $(`#${questionViewModel.question.id} .vote-up-btn`).on("click", VoteUpQuestion.bind(questionViewModel.question))
+    $(`#${questionViewModel.question.id} .vote-down-btn`).on("click", VoteDownQuestion.bind(questionViewModel.question))
     $("#synched-quetion .comment-body").on("keypress", submitQuestionComment);
     $("#synched-quetion .synched-flag").on("click", flagPost.bind(question));
-    $(`${questionViewModel.model.question.id} .synched-delete`).on("click", deletePost.bind(question));
+    $(`${questionViewModel.question.id} .synched-delete`).on("click", deletePost.bind(question));
 
-    question.answers.forEach(answer => {
+    //questionViewModel.model.answers.forEach(answer => {
 
+    //    $.merge(allComments, answer.comments);
+
+    //    answers[answer.id] = answer;
+
+    //    $(`#${answer.id} .vote-up-btn`).on("click", VoteUpAnswer.bind(answer))
+    //    $(`#${answer.id} .vote-down-btn`).on("click", VoteDownAnswer.bind(answer))
+    //    $(`#${answer.id} .comment-body`).on("keypress", submitAnswerComment.bind(answer));
+    //    $(`#${answer.id} .synched-flag`).on("click", flagPost.bind(answer));
+    //    $(`#${answer.id} .synched-delete`).on("click", deletePost.bind(answer));
+    //});
+
+    for (var id in questionViewModel.answers) {
+        var answer = questionViewModel.answers[id];
         $.merge(allComments, answer.comments);
 
         answers[answer.id] = answer;
@@ -23,7 +36,7 @@ $(() => {
         $(`#${answer.id} .comment-body`).on("keypress", submitAnswerComment.bind(answer));
         $(`#${answer.id} .synched-flag`).on("click", flagPost.bind(answer));
         $(`#${answer.id} .synched-delete`).on("click", deletePost.bind(answer));
-    });
+    }
 
     allComments.forEach(comment => {
         $(`#${comment.id} .synched-delete`).on("click", deletePost.bind(comment));
@@ -68,7 +81,7 @@ $(() => {
 
     function updateQuestionPoints(updatedQuestion) {
         question = updatedQuestion;
-        $(`#${questionViewModel.model.question.id}`).html(updatedQuestion.points);
+        $(`#${questionViewModel.question.id}`).html(updatedQuestion.points);
     }
 
     function updateAnswerPoints(updatedAnswer) {
@@ -97,41 +110,59 @@ $(() => {
         questionViewModel.posts[updatedPost.id] = updatedPost;        
     }
 
-    function updatePostVotes(newVote) {
-        if (newVote) {
-            questionViewModel.updatePostVotes(newVote);
-            $(`#${post.id} .synched-points`).html(questionViewModel.model.posts[newVote.id].votes.length);
-        }
-    } 
-
+    //---------------------------------------------------------------------------
     function VoteUpQuestion() {
-        ajaxRequest("POST", "/api/Posts/VoteUpQuestion", this)
-            .then(updatePostVotes)
-            .catch(xhr => { console.log(xhr); });
-
+        VoteForPost("/api/Posts/VoteUpQuestion", this);
     }
 
-    // TODO: Delete
-    //function VoteUpQuestion() {
-    //    ajaxRequest("POST", "/api/Posts/VoteUpQuestion", question.id)
-    //        .then(updateQuestionPoints)
-    //        .catch(xhr => { console.log(xhr); });
-    //}
-
     function VoteDownQuestion() {
-        ajaxRequest("POST", "/api/Posts/VoteDownQuestion", question.id)
-            .then(updateQuestionPoints);
+        VoteForPost("/api/Posts/VoteDownQuestion", this);
     }
 
     function VoteUpAnswer() {
-        ajaxRequest("POST", "/api/Posts/VoteUpAnswer", answers[this.id])
-            .then(updateAnswerPoints);
+        VoteForPost("/api/Posts/VoteUpAnswer", this);
     }
 
     function VoteDownAnswer() {
-        ajaxRequest("POST", "/api/Posts/VoteDownAnswer", answers[this.id])
-            .then(updateAnswerPoints);
+        VoteForPost("/api/Posts/VoteDownAnswer", this);
     }
+
+    function VoteForPost(url, post) {
+        ajaxRequest("POST", url, post)
+            .then(updatePostVotes)
+            .then(updatePointsInPage)
+            .then(updateHandler)
+            .catch(xhr => { console.log(xhr); });
+    }
+
+    function updatePostVotes(updatedPost) {
+        return new Promise((resolve, reject) => {
+            try {
+                questionViewModel.updatePostVotes(updatedPost);
+                resolve(updatedPost);
+            } catch (err) {
+                reject(err);
+            }
+        });
+    }
+
+    function updatePointsInPage(updatedPost) {
+        return new Promise((resolve, reject) => {
+            try {
+                $(`#${updatedPost.id} .synched-points`)
+                    .html(questionViewModel.posts[updatedPost.id].sumVotes);
+                resolve(updatedPost);
+            } catch (err) {
+                reject(err)
+            }
+        });
+    }
+
+    function updateHandler(updatedPost) {
+        $(`#${updatedPost.id} .vote-up-btn`).off("click", VoteUpQuestion);
+        $(`#${updatedPost.id} .vote-up-btn`).on("click", VoteUpQuestion.bind(updatedPost));
+    }
+    //-----------------------------------------------------------------------------
 
     // TODO: Use this function
     //function submitComment() {

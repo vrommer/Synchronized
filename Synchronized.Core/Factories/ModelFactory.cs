@@ -170,17 +170,32 @@ namespace Synchronized.Core.Factories
                 }
             }
 
+            //// VotedPost.Votes
+            //if (answer.Votes != null)
+            //{
+            //    foreach (var vote in answer.Votes)
+            //    {
+            //        if (vote.VoteType == (int)VoteType.UpVote)
+            //            newAnswer.UpVotes++;
+            //        else
+            //            newAnswer.DownVotes++;
+            //    }
+            //}
+
             // VotedPost.Votes
+            newAnswer.VoterIds = GetVoterIdsList();
             if (answer.Votes != null)
             {
                 foreach (var vote in answer.Votes)
                 {
+                    newAnswer.VoterIds.Add(vote.VoterId);
                     if (vote.VoteType == (int)VoteType.UpVote)
                         newAnswer.UpVotes++;
                     else
                         newAnswer.DownVotes++;
                 }
             }
+
             // VotedPost.Comments
             if (answer.Comments != null)
             {

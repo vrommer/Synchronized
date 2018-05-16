@@ -32,7 +32,7 @@
                             </div>
                             <div class="question-content">
                                 @Html.Raw(item.Body)
-                                @if (item.Tags.Count() > 0)
+                                @if (!string.IsNullOrEmpty(item.Tags))
                                 {
                                     <div>
                                         @{
@@ -68,7 +68,7 @@
                             <div class="views">@item.Views</div><i class="fa fa-eye" aria-hidden="true"></i>
                         </div>
                         <div class="points col-md-1">
-                            <div class="synched-points">@item.Views</div><i class="fa fa-star-o" aria-hidden="true"></i>
+                            <div class="synched-points">@item.SumVotes</div><i class="fa fa-star-o" aria-hidden="true"></i>
                         </div>
                     </div>
                 </article>

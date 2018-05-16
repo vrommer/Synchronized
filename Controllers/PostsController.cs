@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using SharedLib.Infrastructure.Constants;
 using Synchronized.Core.Interfaces;
 using Synchronized.ServiceModel;
 using System.Threading.Tasks;
@@ -30,24 +31,39 @@ namespace Synchronized.WebApp.Controllers
             _userManager = userManager;
         }
 
-        // POST: /api/Posts/VoteUpPost
+        // POST: /api/Posts/VoteUpQuestion
         [HttpPost]
         public async Task<IActionResult> VoteUpQuestion([FromBody]Question post)
         {
             _logger.LogTrace("Entering VoteUpQuestion method");
-            var user = await GetCurrentUserAsync();
-            await _postsService.VoteUpPost(post, user);
-            //var user = await GetCurrentUserAsync();
-            //var updatedPost = _postsService.VoteUpPost(post, user);
+            await VoteForPost(post, VoteType.UpVote);
             return new ObjectResult(post);
         }
 
-        // POST: /api/Posts/VoteDownPost
+        // POST: /api/Posts/VoteDownQuestion
         [HttpPost]
-        public async Task<IActionResult> VoteDownPost([FromBody]VotedPost post)
+        public async Task<IActionResult> VoteDownQuestion([FromBody]Question post)
         {
-            var user = await GetCurrentUserAsync();
-            //var updatedPost = _postsService.VoteDownPost(post, user);
+            _logger.LogTrace("Entering VoteDownQuestion method");
+            await VoteForPost(post, VoteType.DownVote);
+            return new ObjectResult(post);
+        }
+
+        // POST: /api/Posts/VoteUpQuestion
+        [HttpPost]
+        public async Task<IActionResult> VoteUpAnswer([FromBody]Answer post)
+        {
+            _logger.LogTrace("Entering VoteUpAnswer method");
+            await VoteForPost(post, VoteType.UpVote);
+            return new ObjectResult(post);
+        }
+
+        // POST: /api/Posts/VoteUpQuestion
+        [HttpPost]
+        public async Task<IActionResult> VoteDownAnswer([FromBody]Answer post)
+        {
+            _logger.LogTrace("Entering VoteDownAnswer method");
+            await VoteForPost(post, VoteType.DownVote);
             return new ObjectResult(post);
         }
 
@@ -61,11 +77,11 @@ namespace Synchronized.WebApp.Controllers
         }
 
         // POST: api/Posts/Delete
-        public async Task<IActionResult> Delete([FromBody]Post post)
-        {
-            _logger.LogDebug($"{post.GetType().FullName}");
-            return Ok(new { id = post.Id });
-        }
+        //public async Task<IActionResult> Delete([FromBody]Post post)
+        //{
+        //    _logger.LogDebug($"{post.GetType().FullName}");
+        //    return Ok(new { id = post.Id });
+        //}
 
 
         // POST: api/Posts/Flag
@@ -168,6 +184,12 @@ namespace Synchronized.WebApp.Controllers
         //    }
         //    return new ObjectResult(post);
         //}
+
+        private async Task VoteForPost(VotedPost post, VoteType voteType) {
+            var user = await GetCurrentUserAsync();
+            await _postsService.VoteForPost(post, user, voteType);
+        }
+
         private Task<Model.ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
     }
 }

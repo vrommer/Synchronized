@@ -29,9 +29,9 @@ namespace Synchronized.WebApp.Pages.Questions
             _userManager = userManager;
         }
 
-        public async Task OnGetAsync(string id)
+        public void OnGetAsync(string id)
         {
-            Model.ApplicationUser user = await GetCurrentUserAsync();
+            //Model.ApplicationUser user = await GetCurrentUserAsync();
             Question = _questionsService.FindQuestionById(id);
             QuestionViewModel = new DetailsViewModel(Question);
 
