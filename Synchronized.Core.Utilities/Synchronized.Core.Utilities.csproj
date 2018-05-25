@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SharedLib\Synchronized.SharedLib.csproj" />
+    <ProjectReference Include="..\Synchronized.DataModel\Synchronized.Domain.csproj" />
+    <ProjectReference Include="..\Synchronized.ServiceModel\Synchronized.ServiceModel.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -41,7 +41,7 @@
                                         }
                                         <input class="synched-tags" name=@name id=@name value=@item.Tags />
                                         <div class="synched-publisher">
-                                            <a href="/Users/Details/@item.Publisher.">@item.Publisher.Name</a>
+                                            <a href="/Users/Details/@item.PublisherId">@item.PublisherName</a>
                                         </div>
                                     </div>
                                  }
@@ -49,26 +49,26 @@
                         </div>
 
                         <div class="col-md-2">
-                            <div class="synched-question-date">
+                            <div class="details-date">
                                 @String.Format("{0:dd/MM/yyyy}", item.DatePosted)
                             </div>
                         </div>
                         <div class="col-md-1">
                             @if (item.IsAnswered)
                             {
-                                <div class="synched-answers answered">@item.Answers.Count</div>
+                                <div class="details-answers answered">@item.AnswersCount</div>
                             }
                             else
                             {
-                                <div class="synched-answers">@item.Answers.Count</div>
+                                <div class="details-answers">@item.AnswersCount</div>
                             }
                             <i class="fa fa-envelope-o" aria-hidden="true"></i>
                         </div>
-                        <div class="synched-views col-md-1">
-                            <div class="views">@item.Views</div><i class="fa fa-eye" aria-hidden="true"></i>
+                        <div class="col-md-1">
+                            <div class="details-views">@item.ViewsCount</div><i class="fa fa-eye" aria-hidden="true"></i>
                         </div>
-                        <div class="points col-md-1">
-                            <div class="synched-points">@item.SumVotes</div><i class="fa fa-star-o" aria-hidden="true"></i>
+                        <div class="details-points col-md-1">
+                            <div class="details-points">@item.Points</div><i class="fa fa-star-o" aria-hidden="true"></i>
                         </div>
                     </div>
                 </article>

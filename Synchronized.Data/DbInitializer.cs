@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Synchronized.Domain;
-using Synchronized.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

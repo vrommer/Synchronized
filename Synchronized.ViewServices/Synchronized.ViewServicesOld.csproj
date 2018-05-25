@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Synchronized.Core\Synchronized.Core.csproj" />
+    <ProjectReference Include="..\Synchronized.ViewModelFactories\Synchronized.ViewModelFactories.csproj" />
+    <ProjectReference Include="..\Synchronized.ViewModel\Synchronized.ViewModel.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,4 +1,4 @@
-﻿namespace Synchronized.Model
+﻿namespace Synchronized.Domain
 {
     public interface IEntity
     {

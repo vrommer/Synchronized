@@ -1,80 +1,58 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Synchronized.Repository.Interfaces;
+﻿using Synchronized.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text;
 using System.Linq.Expressions;
-using Synchronized.Model;
 using System.Threading.Tasks;
+using Synchronized.Domain;
+using Microsoft.EntityFrameworkCore;
 
-namespace Synchronized.Repository.Repositories
+namespace Synchronized.Repository
 {
-    public class DataRepository<TModel> : IDataRepository<TModel> where TModel : class, IEntity
+    public class DataRepository<T> : IDataRepository<T> where T : class, IEntity
     {
-        protected DbContext _context;
-        protected DbSet<TModel> _dbSet;
+        private DbContext _context;
+        private DbSet<T> _set;
 
         public DataRepository(DbContext context)
         {
             _context = context;
-            _dbSet = context.Set<TModel>();
+            _set = context.Set<T>();
         }
 
-        public void Add(TModel item)
-        {
-            _dbSet.Add(item);
-            _context.SaveChanges();
-        }
-
-        public int CountItems()
+        public Task AddAsync(T entity)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(string itemId)
+        public Task DeleteAsync(string entityId)
         {
-            var item =_dbSet.Find(itemId);
-            _dbSet.Remove(item);
+            throw new NotImplementedException();
         }
 
-        public IQueryable<TModel> FindBy(Expression<Func<TModel, bool>> predicate)
+        public Task<T> GetBy(Expression<Func<T, bool>> predicate)
         {
-            IQueryable<TModel> results = _dbSet.AsNoTracking()
-                .Where(predicate);
-            return results;
+            throw new NotImplementedException();
         }
 
-        public TModel FindById(string itemId)
+        public virtual Task<T> GetById(string entityId)
         {
-            return _dbSet.AsNoTracking().SingleOrDefault(e => e.Id.Equals(itemId));
+            throw new NotImplementedException();
         }
 
-        public IEnumerable<TModel> GetAll()
+        public int GetCount()
         {
-            return _dbSet.AsNoTracking().ToList();
+            throw new NotImplementedException();
         }
 
-        public async Task<int> GetCount()
+        public Task<List<T>> GetPageAsync(int pageNumber, int pageSize, string searchTerm, string filter)
         {
-            int count = await _dbSet.CountAsync();
-            return count;
+            throw new NotImplementedException();
         }
 
-        public void Update(TModel item)
+        public Task UpdateAsync(T Entity)
         {
-            _dbSet.Update(item);
-            _context.SaveChanges();
-        }
-
-        public IQueryable<TModel> GetPage(int pageIndex, int pageSize)
-        {
-            return _dbSet.AsNoTracking().Skip((pageIndex - 1) * pageSize).Take(pageSize);
-        }
-
-        public async Task AddAsync(TModel model)
-        {
-            await _dbSet.AddAsync(model);
-            await _context.SaveChangesAsync();
+            throw new NotImplementedException();
         }
     }
 }

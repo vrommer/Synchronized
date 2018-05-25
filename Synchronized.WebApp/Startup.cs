@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Synchronized.Repository.Repositories;
 using Synchronized.Core.Repositories;
-using Synchronized.Model;
+using Synchronized.Domain;
 using Synchronized.Repository;
 using Synchronized.Core;
 using Synchronized.Data;
@@ -37,9 +37,8 @@ namespace Synchronized.WebApp
                 .AddRoleStore<RolesRepository>()
                 .AddDefaultTokenProviders();
 
-
             //_.For<DbContext>().Use(new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true")).Transient();
-            services.AddScoped<DbContext>(s => new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true"));            
+            services.AddScoped<DbContext>(s => new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true"));
 
             //services.AddDbContext<SynchronizedDbContext>(b =>
             //{

@@ -1,90 +1,51 @@
 ﻿using Synchronized.Core.Interfaces;
 using Synchronized.Repository.Interfaces;
-using UtilsLib.HtmlUtils.HtmlParser;
 using Synchronized.Core.Utilites;
+using Synchronized.ServiceModel;
+using Synchronized.Core.Utilities.Interfaces;
 using System.Threading.Tasks;
 using Synchronized.SharedLib.Utilities;
-using System.Collections.Generic;
 using System;
-using Microsoft.Extensions.DependencyInjection;
-using Synchronized.ServiceModel;
-using Microsoft.Extensions.Logging;
+using UtilsLib.HtmlUtils.HtmlParser;
 
 namespace Synchronized.Core
 {
-    public class QuestionsService : DataService<Question, Model.Question>, IQuestionsService, IViewQuestions
+    public class QuestionsService : PostsService<Domain.Question, Question>, IQuestionsService
     {
-        private readonly IModelFactory _factory;
-        private readonly IServiceProvider _services;
-        private readonly HtmlParser _parser;
-        private readonly ILogger<QuestionsService> _logger;
+        private HtmlParser _parser;
 
-        public QuestionsService(IQuestionsRepository repo, IModelFactory factory, IServiceProvider services, HtmlParser parser, ILogger<QuestionsService> logger) : base(repo)
+        public QuestionsService(IQuestionsRepository repo, IServiceModelFactory factory, IDataConverter converter, HtmlParser parser) : base(repo, factory, converter)
         {
-            _factory = factory;
-            _services = services;
             _parser = parser;
-            _logger = logger;
         }
 
-        public async Task<PaginatedList<Question>> GetQuestionsPageAsync(int pageIndex, int pageSize)
+        public async Task<PaginatedList<Question>> GetPage(int pageIndex, int pageSize)
         {
-            var domainQuestions = await ((IQuestionsRepository)_repo).GetQuestionsPageAsync(pageIndex, pageSize);
-            var serviceModelQuestions = _services.GetRequiredService<List<Question>>();
-            domainQuestions.ForEach(q => serviceModelQuestions.Add(_factory.GetQuestion(q)));
-            return await CreatePage(serviceModelQuestions, pageIndex, pageSize);
-        }
-
-        public async Task<PaginatedList<Question>> GetQuestionsPageWithUsersAsync(int pageIndex, int pageSize)
-        {
-            var domainQuestions = ((IQuestionsRepository)_repo).GetQuestionsPageWithUsersAsync(pageIndex, pageSize);
-            var serviceModelQuestions = _services.GetRequiredService<List<Question>>();
-            domainQuestions.ForEach(q => serviceModelQuestions.Add(_factory.GetQuestion(q)));
-            return await CreatePage(serviceModelQuestions, pageIndex, pageSize);
-        }
-
-        public Question FindQuestionById(string questionId)
-        {
-            var domainQuestion = ((IQuestionsRepository)_repo).FindQuestionById(questionId);
-            return _factory.GetQuestion(domainQuestion);
-        }
-
-        public async Task<PaginatedList<Question>> GetQuestionsPageWithUsersAsync(int pageIndex, int pageSize, string sortOrder, string filter)
-        {
-            var domainQuestions = ((IQuestionsRepository)_repo).GetQuestionsPageWithUsersAsync(pageIndex, pageSize, sortOrder, filter);
-            var serviceModelQuestions = _services.GetRequiredService<List<Question>>();
-            domainQuestions.ForEach(q => serviceModelQuestions.Add(_factory.GetQuestion(q)));
-            return await CreatePage(serviceModelQuestions, pageIndex, pageSize);
-        }
-
-        private async Task<PaginatedList<Question>> CreatePage(List<Question> questions, int pageIndex, int pageSize)
-        {
-            int count = await _repo.GetCount();
+            var domainQuestions = await((IQuestionsRepository)_repo).GetPageAsync(pageIndex, pageSize);
+            var questions = _factory.GetQuestionsList(_repo.GetCount(), pageIndex, pageSize);
+            domainQuestions.ForEach(q => {
+                var question = _factory.GetQuestion();
+                questions.Add(_converter.Convert(q, question));
+            });
             Utils.MinimizeContent(_parser, questions);
-            return new PaginatedList<Question>(questions, count, pageIndex, pageSize);
+            return questions;
         }
 
-        public Answer FindAnswerById(string answerId)
+        public async override Task<PaginatedList<Question>> GetPage(int pageIndex, int pageSize, string sortOrder, string searchString)
         {
-            var domainAnswer = ((IQuestionsRepository)_repo).FindAnswerById(answerId);
-            return _factory.GetAnswer(domainAnswer);
+            var domainQuestions = await _repo.GetPageAsync(pageIndex, pageSize, sortOrder, searchString);
+            var questions = _factory.GetQuestionsList(_repo.GetCount(), pageIndex, pageSize);
+            domainQuestions.ForEach(q => {
+                var question = _factory.GetQuestion();
+                questions.Add(_converter.Convert(q, question));
+            });
+            return questions;
         }
 
-        public void UpdateQuestion(Question question)
+        public async override Task<Question> GetById(string id)
         {
-            throw new NotImplementedException();
-            //((IQuestionsRepository)_repo).UpdateQuestion(question);
-        }
-
-        public void UpdateAnswer(Answer answer)
-        {
-            throw new NotImplementedException();
-            //((IQuestionsRepository)_repo).UpdateAnswer(answer);
-        }
-
-        public Task ViewQuestion(string UserId, string questionId)
-        {
-            throw new NotImplementedException();
+            var question = await _converter.Convert(((IQuestionsRepository)_repo).GetById(id), _factory.GetQuestion());
+            return question;
         }
     }
 }

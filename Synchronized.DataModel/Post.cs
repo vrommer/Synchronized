@@ -1,8 +1,7 @@
-﻿using Synchronized.Domain;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace Synchronized.Model
+namespace Synchronized.Domain
 {
     public abstract class Post : IEntity
     {

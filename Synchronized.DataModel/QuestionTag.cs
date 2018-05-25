@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Synchronized.Model
+namespace Synchronized.Domain
 {
     public class QuestionTag
     {

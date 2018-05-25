@@ -1,21 +1,21 @@
-﻿using System;
+﻿using Synchronized.Domain;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Synchronized.Repository.Interfaces
 {
-    public interface IDataRepository<TModel> where TModel : class
+    public interface IDataRepository<T> where T: class, IEntity
     {
-        IEnumerable<TModel> GetAll();
-        IQueryable<TModel> GetPage(int pageIndex, int pageSize);
-        Task<int> GetCount();
-        Task AddAsync(TModel entity);
-        TModel FindById(string itemId);
-        void Add(TModel item);
-        void Delete(string itemId);
-        void Update(TModel item);
-        IQueryable<TModel> FindBy(Expression<Func<TModel, bool>> predicate);        
+        Task<T> GetById(string entityId);
+        Task<T> GetBy(Expression<Func<T, bool>> predicate);
+        Task<List<T>> GetPageAsync(int pageNumber, int pageSize, string searchTerm, string filter);
+        Task AddAsync(T entity);
+        Task UpdateAsync(T Entity);
+        Task DeleteAsync(string entityId);
+        int GetCount();
+
     }
 }

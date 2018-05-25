@@ -1,5 +1,5 @@
 @using Microsoft.AspNetCore.Identity
-@using Synchronized.Model
+@using Synchronized.Domain
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
@@ -19,7 +19,7 @@
 else
 {
     <ul class="navbar-nav mr-auto">
-        <li class="navbar-brand"><a asp-page="/Account/Register" class="nav-link">Register</a></li>
-        <li class="navbar-brand"><a asp-page="/Account/Login" class="nav-link">Log in</a></li>
+        <li class="nav-item"><a asp-page="/Account/Register" class="nav-link">Register</a></li>
+        <li class="nav-item"><a asp-page="/Account/Login" class="nav-link">Log in</a></li>
     </ul>
 }

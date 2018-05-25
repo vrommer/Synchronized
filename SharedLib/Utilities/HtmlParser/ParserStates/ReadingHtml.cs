@@ -17,6 +17,7 @@ namespace UtilsLib.HtmlUtils.HtmlParser.ParserStates
             int numOfCharsParsed = 0;
             while (numOfCharsParsed < htmlContent.Length)
             {                
+                // If reading </
                 if ((htmlContent[numOfCharsParsed].Equals('<')) && 
                     (numOfCharsParsed + 1 < htmlContent.Length) && 
                     (htmlContent[numOfCharsParsed + 1].Equals('/')))
@@ -24,11 +25,13 @@ namespace UtilsLib.HtmlUtils.HtmlParser.ParserStates
                     context.ChangeState(context.GetState(StateType.ReadingClosingTag));
                     return numOfCharsParsed;
                 }
+                // If reading <
                 else if (htmlContent[numOfCharsParsed].Equals('<'))
                 {
                     context.ChangeState(context.GetState(StateType.ReadingOpeningTag));
                     return numOfCharsParsed;
                 }
+                // If reading entity
                 else if (htmlContent[numOfCharsParsed].Equals('&'))
                 {
                     context.ChangeState(context.GetState(StateType.ReadingHtmlEntity));

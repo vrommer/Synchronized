@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Synchronized.Model;
+using Synchronized.Domain;
 
 namespace Synchronized.WebApp.Pages.Account.Manage
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Synchronized.Core.Interfaces;
-using Synchronized.Model;
+using Synchronized.Domain;
 using Synchronized.SharedLib.Utilities;
 using Synchronized.WebApp.Conventions;
 using System.Threading.Tasks;
@@ -17,11 +17,11 @@ namespace Synchronized.WebApp.Pages.Users
         public string SortOrder { get; set; }
 
         private const int PAGE_SIZE = 20;
-        private readonly IUsersService _service;
+        private readonly IUsersServiceOld _service;
         private readonly ILogger<IndexModel> _logger;
 
         public IndexModel(
-            IUsersService service,
+            IUsersServiceOld service,
             ILogger<IndexModel> logger
         )
         {

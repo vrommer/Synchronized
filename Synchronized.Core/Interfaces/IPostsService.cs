@@ -1,15 +1,12 @@
-﻿using Synchronized.Model;
-using System.Threading.Tasks;
+﻿using Synchronized.ServiceModel;
 using System;
 using System.Linq.Expressions;
-using Synchronized.ServiceModel;
-using SharedLib.Infrastructure.Constants;
+using System.Threading.Tasks;
 
 namespace Synchronized.Core.Interfaces
 {
-    public interface IPostsService : IDataService<ServiceModel.Post, Model.Post>
+    public interface IPostsService<T>: IDataService<T> where T: Post
     {
-        object CommentOnPost(ApplicationUser user, ServiceModel.Comment comment);
-        Task VoteForPost(ServiceModel.VotedPost post, ApplicationUser user, VoteType upVote);
+        Task<VotedPost> GetVotedPostBy(Expression<Func<VotedPost, bool>> predicate);
     }
 }

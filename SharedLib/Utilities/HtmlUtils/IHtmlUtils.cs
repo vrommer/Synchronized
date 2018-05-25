@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace UtilsLib.HtmlUtils
+﻿namespace UtilsLib.HtmlUtils
 {
     public interface IHtmlUtils
     {

@@ -1,10 +1,11 @@
-﻿using Synchronized.ServiceModel;
-using Synchronized.SharedLib.Utilities;
+﻿using Synchronized.SharedLib.Utilities;
+using System.Collections.Generic;
 
 namespace Synchronized.ViewModel
 {
     public class HomeViewModel
     {
-        public PaginatedList<Question> Questions { get; set; }
+        //public PaginatedList<QuestionViewModel> Questions { get; set; }
+        public List<QuestionForHomePage> Questions { get; set; }
     }
 }

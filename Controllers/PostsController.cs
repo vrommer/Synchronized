@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using SharedLib.Infrastructure.Constants;
 using Synchronized.Core.Interfaces;
 using Synchronized.ServiceModel;
@@ -12,17 +11,17 @@ namespace Synchronized.WebApp.Controllers
     [Produces("application/json")]
     public class PostsController : Controller
     {
-        private IQuestionsService _questionsService;
-        private IPostsService _postsService;
+        private IQuestionsServiceOld _questionsService;
+        private IPostsServiceOld _postsService;
 
         private readonly ILogger<PostsController> _logger;
-        private readonly UserManager<Model.ApplicationUser> _userManager;
+        private readonly UserManager<Domain.ApplicationUser> _userManager;
 
         public PostsController(
-            IQuestionsService questionsService,
-            IPostsService postsService,
+            IQuestionsServiceOld questionsService,
+            IPostsServiceOld postsService,
             ILogger<PostsController> logger,
-            UserManager<Model.ApplicationUser> userManager
+            UserManager<Domain.ApplicationUser> userManager
         )
         {
             _questionsService = questionsService;
@@ -112,7 +111,7 @@ namespace Synchronized.WebApp.Controllers
 
         // POST: api/Voter/SubmitQuestionComment
         [HttpPost]
-        public async Task<IActionResult> SubmitQuestionComment([FromBody]Model.Comment comment)
+        public async Task<IActionResult> SubmitQuestionComment([FromBody]Domain.Comment comment)
         {
             var user = await GetCurrentUserAsync();
             var question = _questionsService.FindQuestionById(comment.PostId);
@@ -127,7 +126,7 @@ namespace Synchronized.WebApp.Controllers
         }
 
         // POST: api/Voter/SubmitQuestionAnswer
-        public async Task<IActionResult> SubmitAnswerComment([FromBody]Model.Comment comment)
+        public async Task<IActionResult> SubmitAnswerComment([FromBody]Domain.Comment comment)
         {
             var user = await GetCurrentUserAsync();
             var answer = _questionsService.FindAnswerById(comment.PostId);
@@ -190,6 +189,6 @@ namespace Synchronized.WebApp.Controllers
             await _postsService.VoteForPost(post, user, voteType);
         }
 
-        private Task<Model.ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+        private Task<Domain.ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
     }
 }

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Synchronized.Data;
-using Synchronized.Model;
+using Synchronized.Domain;
 using System.Threading;
 using System.Threading.Tasks;
 
