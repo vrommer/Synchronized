@@ -1,14 +1,13 @@
 ﻿using Synchronized.Repository.Interfaces;
-using System;
 using System.Collections.Generic;
 using Synchronized.Domain;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Synchronized.Repository
 {
-    public class QuestionsRepository : PostsRepository,  IQuestionsRepository
+    public class QuestionsRepository : PostsRepository<Question>,  IQuestionsRepository
     {
 
         public QuestionsRepository(DbContext context): base(context)
@@ -16,24 +15,94 @@ namespace Synchronized.Repository
 
         }
 
-        public Task AddAsync(Question entity)
+        public async Task<List<Question>> GetPageAsync(int pageIndex, int pageSize)
         {
-            throw new NotImplementedException();
+            var questions = await _set.AsNoTracking()
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .Include(q => q.Answers)
+                .Include(q => q.QuestionTags)
+                    .ThenInclude(qt => qt.Tag)
+                .Include(q => q.Votes)
+                .ToListAsync();
+
+            return questions;
         }
 
-        public Task<Question> GetBy(Expression<Func<Question, bool>> predicate)
+        public async override Task<List<Question>> GetPageAsync(int pageIndex, int pageSize, string sortOrder, string searchString)
         {
-            throw new NotImplementedException();
+            var questions = await GetByAsync(q => q.Title.Contains(searchString) || q.Body.Contains(searchString));
+
+            switch (sortOrder)
+            {
+                case "Date":
+                    questions = questions.OrderBy(q => q.DatePosted.ToString());
+                    break;
+                case "date_desc":
+                    questions = questions.OrderByDescending(q => q.DatePosted.ToString());
+                    break;
+                case "Answers":
+                    questions = questions.OrderBy(q => q.Answers.Count);
+                    break;
+                case "answers_desc":
+                    questions = questions.OrderByDescending(q => q.Answers.Count);
+                    break;
+                case "Views":
+                    questions = questions.OrderBy(q => q.QuestionViews.Count);
+                    break;
+                case "views_desc":
+                    questions = questions.OrderByDescending(q => q.QuestionViews.Count);
+                    break;
+                case "Points":
+                    questions = questions.OrderBy(q => q.Votes.Count);
+                    break;
+                case "points_desc":
+                    questions = questions.OrderByDescending(q => q.Votes.Count);
+                    break;
+                default:
+                    questions = questions.OrderByDescending(q => q.Answers.Count);
+                    break;
+            }
+
+            questions = questions.Skip((pageIndex - 1) * pageSize).Take(pageSize)
+                .Include(q => q.Votes)
+                .Include(q => q.QuestionViews)
+                .Include(q => q.QuestionTags)
+                    .ThenInclude(qt => qt.Tag)
+                .Include(q => q.Publisher)
+                .Include(q => q.Answers);
+
+            var questionsList = questions.ToList();
+            return questionsList;
         }
 
-        public Task<List<Question>> GetPageAsync(int pageNumber, int pageSize)
+        public async override Task<Question> GetById(string id)
         {
-            throw new NotImplementedException();
-        }
+            var question = await _set
+                .AsNoTracking()
+                .Include(q => q.Answers)
+                    .ThenInclude(a => a.Publisher)
+                .Include(q => q.Answers)
+                    .ThenInclude(a => a.Votes)
+                .Include(q => q.Publisher)
+                .Include(q => q.Votes)
+                .Include(q => q.QuestionViews)
+                .Include(q => q.PostFlags)
+                .Include(q => q.DeleteVotes)
+                .SingleOrDefaultAsync(e => e.Id.Equals(id));
 
-        public Task UpdateAsync(Question Entity)
-        {
-            throw new NotImplementedException();
+            // Add sorted comments to question           
+            question.Comments = _context.Set<Comment>().Where(c => c.PostId == question.Id).OrderBy(c => c.DatePosted).ToList();
+
+            // Add sorted comments to each answer
+            foreach (Answer a in question.Answers)
+            {
+                a.Comments = _context.Set<Comment>()
+                    .Where(c => c.PostId == a.Id)
+                    .OrderBy(c => c.DatePosted).ToList();
+            }
+
+            return question;
         }
     }
 }

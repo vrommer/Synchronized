@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Synchronized.Repository
 {
-    public class PostsRepository : DataRepository<Post>, IPostsRepository
+    public class PostsRepository<TModel> : DataRepository<TModel>, IPostsRepository<TModel> where TModel: Post
     {
         public PostsRepository(DbContext context): base(context)
         {

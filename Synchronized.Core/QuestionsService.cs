@@ -5,7 +5,6 @@ using Synchronized.ServiceModel;
 using Synchronized.Core.Utilities.Interfaces;
 using System.Threading.Tasks;
 using Synchronized.SharedLib.Utilities;
-using System;
 using UtilsLib.HtmlUtils.HtmlParser;
 
 namespace Synchronized.Core
@@ -44,7 +43,8 @@ namespace Synchronized.Core
 
         public async override Task<Question> GetById(string id)
         {
-            var question = await _converter.Convert(((IQuestionsRepository)_repo).GetById(id), _factory.GetQuestion());
+            var domainQuestion = await ((IQuestionsRepository)_repo).GetById(id);
+            var question = _converter.Convert(domainQuestion, _factory.GetQuestion());
             return question;
         }
     }

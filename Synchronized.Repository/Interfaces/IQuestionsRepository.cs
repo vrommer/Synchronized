@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Synchronized.Repository.Interfaces
 {
-    public interface IQuestionsRepository: IPostsRepository
+    public interface IQuestionsRepository: IPostsRepository<Question>
     {
         Task<List<Question>> GetPageAsync(int pageNumber, int pageSize);
     }

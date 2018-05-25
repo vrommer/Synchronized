@@ -6,13 +6,14 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Synchronized.Domain;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Synchronized.Repository
 {
     public class DataRepository<T> : IDataRepository<T> where T : class, IEntity
     {
-        private DbContext _context;
-        private DbSet<T> _set;
+        protected DbContext _context;
+        protected DbSet<T> _set;
 
         public DataRepository(DbContext context)
         {
@@ -30,7 +31,7 @@ namespace Synchronized.Repository
             throw new NotImplementedException();
         }
 
-        public Task<T> GetBy(Expression<Func<T, bool>> predicate)
+        public Task<IQueryable<T>> GetByAsync(Expression<Func<T, bool>> predicate)
         {
             throw new NotImplementedException();
         }
@@ -45,7 +46,7 @@ namespace Synchronized.Repository
             throw new NotImplementedException();
         }
 
-        public Task<List<T>> GetPageAsync(int pageNumber, int pageSize, string searchTerm, string filter)
+        public virtual Task<List<T>> GetPageAsync(int pageNumber, int pageSize, string searchTerm, string filter)
         {
             throw new NotImplementedException();
         }
