@@ -1,5 +1,5 @@
 ﻿using Synchronized.Repository.Interfaces;
-using Synchronized.Model;
+using Synchronized.Domain;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
@@ -267,7 +267,7 @@ namespace Synchronized.Repository.Repositories
         }
 
         #region IDataRepository implementation
-        public IQueryable<ApplicationUser> FindBy(Expression<Func<ApplicationUser, bool>> predicate)
+        public IQueryable<ApplicationUser> GetBy(Expression<Func<ApplicationUser, bool>> predicate)
         {
             throw new NotImplementedException();
         }
@@ -277,7 +277,7 @@ namespace Synchronized.Repository.Repositories
             return _userStore.Users.AsNoTracking().Skip((pageIndex - 1) * pageSize).Take(pageSize);
         }
     
-        public ApplicationUser FindById(string userId)
+        public ApplicationUser GetById(string userId)
         {
             //return _userStore.Users.AsNoTracking().Include(u => u.Tags).SingleOrDefault(u => u.Id.Equals(userId));
             return _userStore.Users.AsNoTracking().SingleOrDefault(u => u.Id.Equals(userId));
@@ -302,6 +302,11 @@ namespace Synchronized.Repository.Repositories
         }
 
         public void Update(ApplicationUser user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ApplicationUser> GetByIdAsync(string itemId)
         {
             throw new NotImplementedException();
         }

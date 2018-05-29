@@ -2,38 +2,40 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Synchronized.Core.Interfaces;
 using Synchronized.ServiceModel;
-using Synchronized.ViewModel;
+using Synchronized.ViewModel.QuestionsViewModels;
+using Synchronized.ViewServices.Interfaces;
 using System.Threading.Tasks;
 
 namespace Synchronized.WebApp.Pages.Questions
 {
     public class DetailsModel : PageModel
     {
-        public Question Question { get; set; }
-        public DetailsViewModel QuestionViewModel{ get; set; }
+        //public Question Question { get; set; }
+        public QuestionForDetailsPage Question { get; set; }
 
-        private IQuestionsService _questionsService;
+        //private IQuestionsService _questionsService;
         private readonly ILogger<DetailsModel> _logger;
-        private readonly UserManager<Model.ApplicationUser> _userManager;
+        ILocalService _localService;
+        private readonly UserManager<Domain.ApplicationUser> _userManager;
 
         public DetailsModel(
-            IQuestionsService questionsService,
+            //IQuestionsService questionsService,
+            ILocalService localService,
             ILogger<DetailsModel> logger,
-            UserManager<Model.ApplicationUser> userManager
+            UserManager<Domain.ApplicationUser> userManager
             )
         {
-            _questionsService = questionsService;
+            _localService = localService;
             _logger = logger;
             _userManager = userManager;
         }
 
-        public void OnGetAsync(string id)
+        public async Task OnGetAsync(string id)
         {
             //Model.ApplicationUser user = await GetCurrentUserAsync();
-            Question = _questionsService.FindQuestionById(id);
-            QuestionViewModel = new DetailsViewModel(Question);
+            Question = await _localService.GetQuestionDetailsPageModel(id);
+            //QuestionViewModel = new DetailsViewModel(Question);
 
             //if ( user!=null && !Question.QuestionViews.Contains(new QuestionView
             //{
@@ -70,6 +72,6 @@ namespace Synchronized.WebApp.Pages.Questions
             return RedirectToPage("/Questions/Details", new { id = id });
         }
 
-        private Task<Model.ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+        private Task<Domain.ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
     }
 }

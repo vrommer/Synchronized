@@ -86,6 +86,24 @@
 
 /* Questions 
 ---------------*/
+
+.details-date,
+.details-points,
+.details-points + i,
+.details-answers,
+.details-answers + i,
+.details-views,
+.details-views + i{
+    font-size: 1.2em;
+}
+
+/*.details-date,
+.details-points,
+.details-answers,
+.details-views {
+    font-size: 1.2em;
+}*/
+
 .synched-home-content {
     text-align: center;
     margin: 40px 0;

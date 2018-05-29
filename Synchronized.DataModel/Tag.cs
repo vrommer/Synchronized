@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Synchronized.Model
+namespace Synchronized.Domain
 {
     public class Tag: IEntity
     {

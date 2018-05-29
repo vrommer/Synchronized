@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Synchronized.Model
+namespace Synchronized.Domain
 {
     public class Vote
     {

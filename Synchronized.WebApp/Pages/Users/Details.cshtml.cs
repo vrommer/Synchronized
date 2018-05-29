@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Synchronized.Core.Interfaces;
-using Synchronized.Model;
+using Synchronized.Domain;
 
 namespace Synchronized.WebApp.Pages.Users
 {
@@ -13,11 +13,11 @@ namespace Synchronized.WebApp.Pages.Users
         public string SearchString { get; set; }
         public string SortOrder { get; set; }
 
-        private readonly IUsersService _service;
+        private readonly IUsersServiceOld _service;
         private readonly ILogger<DetailsModel> _logger;
 
         public DetailsModel(
-            IUsersService service,
+            IUsersServiceOld service,
             ILogger<DetailsModel> logger
         )
         {

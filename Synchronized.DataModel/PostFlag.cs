@@ -1,4 +1,4 @@
-﻿using Synchronized.Model;
+﻿using Synchronized.Domain;
 using System;
 using System.Text;
 

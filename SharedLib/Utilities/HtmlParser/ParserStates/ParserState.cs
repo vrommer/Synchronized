@@ -8,7 +8,7 @@ namespace UtilsLib.HtmlUtils.HtmlParser.ParserStates
          * Fields
          *********************************************/
         public StateType _stateType { get; set; }
-        public static List<string> _voidTags = new List<string>()
+        public static HashSet<string> _voidTags = new HashSet<string>()
         {
             "area",
             "base",
@@ -33,7 +33,7 @@ namespace UtilsLib.HtmlUtils.HtmlParser.ParserStates
          *********************************************/
         public ParserState(StateType stateType)
         {
-            this._stateType = stateType;
+            _stateType = stateType;
         }
         /*********************************************
          * Methods
@@ -74,7 +74,7 @@ namespace UtilsLib.HtmlUtils.HtmlParser.ParserStates
         }
 
         /**
-         * <summary>Implement this method in your custom ConcreteParseState subclass.</summary>
+         * <summary>Implement this method in your custom ConcreteParserState subclass.</summary>
          * <returns>The number of chars parsed.</returns>
          * <param name="htmlContent">The HTML to be parsed represented as a string.</param>
          * <param name="context">An instance of IHtmlParser context under which the different ParseStates will be executed.

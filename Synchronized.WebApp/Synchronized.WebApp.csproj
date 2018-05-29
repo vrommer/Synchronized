@@ -22,5 +22,6 @@
     <ProjectReference Include="..\Synchronized.Data\Synchronized.Data.csproj" />
     <ProjectReference Include="..\Synchronized.Repository\Synchronized.Repository.csproj" />
     <ProjectReference Include="..\Synchronized.ServiceModel\Synchronized.ServiceModel.csproj" />
+    <ProjectReference Include="..\Synchronized.ViewService\Synchronized.ViewServices.csproj" />
   </ItemGroup>
 </Project>

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Synchronized.Core.Interfaces;
-using Synchronized.Model;
+using Synchronized.Domain;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,11 +10,11 @@ namespace Synchronized.WebApp.Pages.Questions
 {
     public class AskModel : PageModel
     {
-        private IQuestionsService _questionsService;
+        private IQuestionsServiceOld _questionsService;
         private ITagsService _tagsService;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public AskModel(IQuestionsService questionsService,
+        public AskModel(IQuestionsServiceOld questionsService,
             ITagsService tagsService,
             UserManager<ApplicationUser> userManager)
         {

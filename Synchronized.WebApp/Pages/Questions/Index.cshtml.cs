@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Synchronized.Core.Interfaces;
-using Synchronized.ServiceModel;
 using Synchronized.SharedLib.Utilities;
+using Synchronized.ViewModel.QuestionsViewModels;
+using Synchronized.ViewServices.Interfaces;
 using Synchronized.WebApp.Conventions;
 using System.Threading.Tasks;
 
@@ -10,7 +10,7 @@ namespace Synchronized.WebApp.Pages.Questions
 {
     public class IndexModel : PageModel
     {
-        public PaginatedList<Question> Questions { get; set; }
+        public PaginatedList<QuestionForQuestionsPage> Questions { get; set; }
 
         public int CurrentPage { get; set; }
         public string SearchString { get; set; }
@@ -21,15 +21,18 @@ namespace Synchronized.WebApp.Pages.Questions
         public string SortOrder { get; set; }
 
         private const int PAGE_SIZE = 20;
-        private readonly IQuestionsService _service;
+        //private readonly IQuestionsService _service;
+        private readonly ILocalService _localService;
         private readonly ILogger<IndexModel> _logger;
 
         public IndexModel(
-            IQuestionsService service,
+            //IQuestionsService service,
+            ILocalService localService,
             ILogger<IndexModel> logger
             )
         {
-            _service = service;
+            //_service = service;
+            _localService = localService;
             _logger = logger;
         }
 
@@ -45,7 +48,8 @@ namespace Synchronized.WebApp.Pages.Questions
 
             CurrentPage = pageNumber ?? (CurrentPage == 0 ? 1 : CurrentPage);
 
-            Questions = await _service.GetQuestionsPageWithUsersAsync(CurrentPage, PAGE_SIZE, sortOrder, SearchString);
+            //Questions = await _service.GetQuestionsIndexPage(CurrentPage, PAGE_SIZE, sortOrder, SearchString);
+            Questions = await _localService.GetQuestionsIndexPageModel(CurrentPage, SortOrder, SearchString);
         }
     }
 }

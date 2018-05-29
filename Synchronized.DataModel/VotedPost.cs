@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace Synchronized.Model
+namespace Synchronized.Domain
 {
     public abstract class VotedPost: Post 
     {

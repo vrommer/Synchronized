@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
-using Synchronized.Model;
+using Synchronized.Domain;
 using Synchronized.Data;
 using Microsoft.EntityFrameworkCore;
 

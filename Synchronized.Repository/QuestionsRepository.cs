@@ -1,34 +1,37 @@
-﻿using Synchronized.Model;
-using Synchronized.Repository.Interfaces;
-using Synchronized.Repository.Repositories;
+﻿using Synchronized.Repository.Interfaces;
 using System.Collections.Generic;
+using Synchronized.Domain;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using System;
 
 namespace Synchronized.Repository
 {
-    public class QuestionsRepository : DataRepository<Question>, IQuestionsRepository
+    public class QuestionsRepository : PostsRepository<Question>,  IQuestionsRepository
     {
-        protected DbSet<QuestionTag> _questionTags;
-        protected DbSet<Comment> _comments;
 
-        public QuestionsRepository(DbContext context) : base(context)
+        public QuestionsRepository(DbContext context): base(context)
         {
-            _questionTags = context.Set<QuestionTag>();
-            _comments = context.Set<Comment>();
+
         }
 
-        public List<Question> GetQuestionsPageWithUsersAsync(int pageIndex, int pageSize)
+        public async Task<List<Question>> GetPageAsync(int pageIndex, int pageSize)
         {
-            var questions = GetQuestionsQueryWithUsers(pageIndex, pageSize).ToList();
+            var questions = await _set.AsNoTracking()
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .Include(q => q.Answers)
+                .Include(q => q.QuestionTags)
+                    .ThenInclude(qt => qt.Tag)
+                .Include(q => q.Votes)
+                .ToListAsync();
+
             return questions;
         }
 
-        public List<Question> GetQuestionsPageWithUsersAsync(int pageIndex, int pageSize, string sortOrder, string filter)
+        public override List<Question> GetPage(int pageIndex, int pageSize, string sortOrder, string searchString)
         {
-            var questions = FindBy(q => q.Title.Contains(filter) || q.Body.Contains(filter));
+            var questions = GetBy(q => q.Title.Contains(searchString) || q.Body.Contains(searchString));
 
             switch (sortOrder)
             {
@@ -61,7 +64,8 @@ namespace Synchronized.Repository
                     break;
             }
 
-            questions = questions.Skip((pageIndex - 1) * pageSize).Take(pageSize)
+            questions = questions.AsNoTracking()
+                .Skip((pageIndex - 1) * pageSize).Take(pageSize)
                 .Include(q => q.Votes)
                 .Include(q => q.QuestionViews)
                 .Include(q => q.QuestionTags)
@@ -73,78 +77,40 @@ namespace Synchronized.Repository
             return questionsList;
         }
 
-        public async Task<List<Question>> GetQuestionsPageAsync(int pageIndex, int pageSize)
+        public async override Task<Question> GetById(string id)
         {
-            var questions = await GetQuestionsQuery(pageIndex, pageSize).ToListAsync();
-            return questions;
-        }
-
-        public Question FindQuestionById(string questionId)
-        {
-            var question = _dbSet
+            var question = await _set
                 .AsNoTracking()
                 .Include(q => q.Answers)
                     .ThenInclude(a => a.Publisher)
                 .Include(q => q.Answers)
                     .ThenInclude(a => a.Votes)
+                .Include(q => q.Comments)
                 .Include(q => q.Publisher)
-                .Include(q => q.Votes)
-                .Include(q => q.QuestionViews)
                 .Include(q => q.PostFlags)
                 .Include(q => q.DeleteVotes)
-                .SingleOrDefault(e => e.Id.Equals(questionId));
+                .Include(q => q.Votes)
+                .Include(q => q.QuestionViews)
+                .Include(q => q.QuestionTags)
+                    .ThenInclude(qt => qt.Tag)
+                .SingleOrDefaultAsync(e => e.Id.Equals(id));
 
             // Add sorted comments to question           
-            question.Comments = _context.Set<Comment>().Where(c => c.PostId == question.Id).OrderBy(c => c.DatePosted).ToList();
+            question.Comments = await _context.Set<Comment>().Where(c => c.PostId == question.Id)
+                .OrderBy(c => c.DatePosted)
+                .Include(c => c.Publisher)
+                .ToListAsync();
 
             // Add sorted comments to each answer
             foreach (Answer a in question.Answers)
             {
                 a.Comments = _context.Set<Comment>()
                     .Where(c => c.PostId == a.Id)
+                    .Include(c => c.Publisher)
                     .OrderBy(c => c.DatePosted).ToList();
             }
+
             return question;
-        }
-
-        public Answer FindAnswerById(string answerId)
-        {
-            var answer = _context.Set<Answer>()
-                .Include(a => a.Comments)
-                .SingleOrDefault(a => a.Id.Equals(answerId));
-
-            return answer;
-        }
-
-        private IQueryable<Question> GetQuestionsQuery(int pageIndex, int pageSize)
-        {
-            return GetPage(pageIndex, pageSize)
-                .Include(q => q.Answers)
-                .Include(q => q.QuestionTags)
-                    .ThenInclude(qt => qt.Tag)
-                .Include(q => q.Votes);
-        }
-
-        private IQueryable<Question> GetQuestionsQueryWithUsers(int pageIndex, int pageSize)
-        {
-            return GetQuestionsQuery(pageIndex, pageSize)
-                .Include(q => q.Publisher);
-        }
-
-        public void UpdateQuestion(Question question)
-        {
-            _dbSet.Attach(question);
-            _context.Entry(question).State = EntityState.Modified;
-            //_context.Update(question);
-            _context.SaveChanges();
-        }
-
-        public void UpdateAnswer(Answer answer)
-        {
-            _context.Set<Answer>().Attach(answer);
-            _context.Entry(answer).State = EntityState.Modified;
-            //_context.Update(answer);
-            _context.SaveChanges();
         }
     }
 }

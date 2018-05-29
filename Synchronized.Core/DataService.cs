@@ -1,57 +1,43 @@
 ﻿using Synchronized.Core.Interfaces;
-using Synchronized.Model;
+using Synchronized.Domain;
 using Synchronized.Repository.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Synchronized.SharedLib.Utilities;
+using Synchronized.Core.Utilities.Interfaces;
+using Synchronized.Core.Factories.Interfaces;
 
 namespace Synchronized.Core
 {
-    public class DataService<TEntity, TModel> : IDataService<TEntity, TModel> 
-        where TEntity : class
-        where TModel: class, IEntity
+    public class DataService<TEntity, TServiceModel> : IDataService<TServiceModel>
+        where TEntity : class, IEntity
+        where TServiceModel : ServiceModel.Post
     {
-        protected readonly IDataRepository<TModel> _repo;
-
-        public DataService(IDataRepository<TModel> repo)
+        public DataService(IDataRepository<TEntity> repo, IServiceModelFactory factory, IDataConverter converter)
         {
             _repo = repo;
+            _factory = factory;
+            _converter = converter;
         }
 
-        public void Add(TModel item)
+        protected IDataRepository<TEntity> _repo;
+        protected IServiceModelFactory _factory;
+        protected IDataConverter _converter;
+
+        public virtual Task<TServiceModel> GetBy(Expression<Func<TServiceModel, bool>> predicate)
         {
-            _repo.Add(item);
+            throw new NotImplementedException();
         }
 
-        public async Task CreateAsync(TModel entity)
+        public virtual Task<TServiceModel> GetById(string Id)
         {
-            await _repo.AddAsync(entity);
+            throw new NotImplementedException();
         }
 
-        public void Delete(string itemId)
+        public virtual Task<PaginatedList<TServiceModel>> GetPage(int pageNumber, int pageSize, string sortOrder, string filter)
         {
-            _repo.Delete(itemId);
-        }
-
-        public IEnumerable<TModel> FindBy(Expression<Func<TModel, bool>> predicate)
-        {
-            return _repo.FindBy(predicate);
-        }
-
-        public TModel FindById(string itemId)
-        {
-            return _repo.FindById(itemId);
-        }
-
-        public IEnumerable<TModel> GetAll()
-        {
-            return _repo.GetAll();
-        }
-
-        public void Update(TModel item)
-        {
-            _repo.Update(item);
+            throw new NotImplementedException();
         }
     }
 }

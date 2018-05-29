@@ -11,7 +11,7 @@
     {
         <article class="row synched-home-content">
             <div class="col-md-3">
-                <h4>@item.SumVotes</h4>
+                <h4>@item.Points</h4>
                 <h5>pts</h5>
             </div>
             <div class="col-md-8">
@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="col-md-1">
-                @if (item.Answers == null || item.Answers.Count() == 0)
+                @if (!item.HasAnswers)
                 {
                     <img src="~/pictures/x_mark_grey.png" height="30"/>
                 }

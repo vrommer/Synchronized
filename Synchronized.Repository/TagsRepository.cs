@@ -1,4 +1,4 @@
-﻿using Synchronized.Model;
+﻿using Synchronized.Domain;
 using Synchronized.Repository.Interfaces;
 using Synchronized.Repository.Repositories;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Synchronized.Repository
 {
-    public class TagsRepository : DataRepository<Tag>, ITagsRepository
+    public class TagsRepository : DataRepositoryOld<Tag>, ITagsRepository
     {
         public TagsRepository(DbContext context) : base(context)
         {
@@ -15,7 +15,7 @@ namespace Synchronized.Repository
 
         public async Task<Tag> FindTagByName(string name)
         {
-            return await FindBy(t => t.Name.Equals(name)).FirstOrDefaultAsync();
+            return await GetBy(t => t.Name.Equals(name)).FirstOrDefaultAsync();
         }
 
         public async Task<List<Tag>> GetTagsPageAsync(int pageIndex, int pageSize)
