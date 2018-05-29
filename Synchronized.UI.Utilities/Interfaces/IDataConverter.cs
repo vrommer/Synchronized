@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Synchronized.UI.Utilities.Interfaces
 {
-    public interface IDataConverter: IHomeViewConverter, IQuestionsConverter, IDetailsConverter
+    public interface IDataConverter: IHomeViewConverter, IQuestionsConverter, IDetailsConverter, IAnswerConverter, ICommentConverter
     {
     }
 }

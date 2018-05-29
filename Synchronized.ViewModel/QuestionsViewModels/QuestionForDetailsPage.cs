@@ -1,5 +1,4 @@
-﻿using Synchronized.ViewModel.QuestionsViewModels;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Synchronized.ViewModel.QuestionsViewModels
 {

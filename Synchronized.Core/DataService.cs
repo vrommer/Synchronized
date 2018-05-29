@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Synchronized.SharedLib.Utilities;
 using Synchronized.Core.Utilities.Interfaces;
+using Synchronized.Core.Factories.Interfaces;
 
 namespace Synchronized.Core
 {

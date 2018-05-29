@@ -10,6 +10,7 @@ namespace Synchronized.ViewModel
         public string Body { get; set; }
         public DateTime DatePosted { get; set; }
         public string PublisherName { get; set; }
+        public string PublisherId { get; set; }
         public int Points { get; set; }
         public bool Accapted { get; set; }
 

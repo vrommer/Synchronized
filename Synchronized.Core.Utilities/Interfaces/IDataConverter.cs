@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Synchronized.Core.Utilities.Interfaces
 {
-    public interface IDataConverter: IPostsConverter, IVotedPostConverter, IQuestionsConverter, IAnswersConverter, ICommentsConverter
+    public interface IDataConverter: IPostConverter, IVotedPostConverter, IQuestionConverter, IAnswerConverter, ICommentConverter, IUserConverter, IFlagConverter, IDeleteVoteConverter
     {
     }
 }

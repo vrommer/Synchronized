@@ -47,5 +47,25 @@ namespace Synchronized.ViewModelFactories
         {
             return new PaginatedList<T>(count, pageIndex, pageSize);            
         }
+
+        public AnswerViewModel GetAnswer()
+        {
+            return new AnswerViewModel();
+        }
+
+        public CommentViewModel GetComment()
+        {
+            return new CommentViewModel();
+        }
+
+        public List<AnswerViewModel> GetAnswers()
+        {
+            return new List<AnswerViewModel>();
+        }
+
+        public List<CommentViewModel> GetComments()
+        {
+            return new List<CommentViewModel>();
+        }
     }
 }

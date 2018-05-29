@@ -31,9 +31,11 @@ namespace Synchronized.Repository
             throw new NotImplementedException();
         }
 
-        public Task<IQueryable<T>> GetByAsync(Expression<Func<T, bool>> predicate)
+        public IQueryable<T> GetBy(Expression<Func<T, bool>> predicate)
         {
-            throw new NotImplementedException();
+            IQueryable<T> results = _set.AsNoTracking()
+                .Where(predicate);
+            return results;
         }
 
         public virtual Task<T> GetById(string entityId)
@@ -43,10 +45,10 @@ namespace Synchronized.Repository
 
         public int GetCount()
         {
-            throw new NotImplementedException();
+            return _set.Count();
         }
 
-        public virtual Task<List<T>> GetPageAsync(int pageNumber, int pageSize, string searchTerm, string filter)
+        public virtual List<T> GetPage(int pageNumber, int pageSize, string searchTerm, string filter)
         {
             throw new NotImplementedException();
         }

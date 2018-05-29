@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Synchronized.Core.Interfaces;
 using Synchronized.Repository.Interfaces;
 using Synchronized.Core.Utilities.Interfaces;
+using Synchronized.Core.Factories.Interfaces;
 
 namespace Synchronized.Core
 {

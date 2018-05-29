@@ -29,9 +29,9 @@ namespace Synchronized.Repository
             return questions;
         }
 
-        public async override Task<List<Question>> GetPageAsync(int pageIndex, int pageSize, string sortOrder, string searchString)
+        public override List<Question> GetPage(int pageIndex, int pageSize, string sortOrder, string searchString)
         {
-            var questions = await GetByAsync(q => q.Title.Contains(searchString) || q.Body.Contains(searchString));
+            var questions = GetBy(q => q.Title.Contains(searchString) || q.Body.Contains(searchString));
 
             switch (sortOrder)
             {
@@ -64,7 +64,8 @@ namespace Synchronized.Repository
                     break;
             }
 
-            questions = questions.Skip((pageIndex - 1) * pageSize).Take(pageSize)
+            questions = questions.AsNoTracking()
+                .Skip((pageIndex - 1) * pageSize).Take(pageSize)
                 .Include(q => q.Votes)
                 .Include(q => q.QuestionViews)
                 .Include(q => q.QuestionTags)
@@ -84,21 +85,28 @@ namespace Synchronized.Repository
                     .ThenInclude(a => a.Publisher)
                 .Include(q => q.Answers)
                     .ThenInclude(a => a.Votes)
+                .Include(q => q.Comments)
                 .Include(q => q.Publisher)
-                .Include(q => q.Votes)
-                .Include(q => q.QuestionViews)
                 .Include(q => q.PostFlags)
                 .Include(q => q.DeleteVotes)
+                .Include(q => q.Votes)
+                .Include(q => q.QuestionViews)
+                .Include(q => q.QuestionTags)
+                    .ThenInclude(qt => qt.Tag)
                 .SingleOrDefaultAsync(e => e.Id.Equals(id));
 
             // Add sorted comments to question           
-            question.Comments = _context.Set<Comment>().Where(c => c.PostId == question.Id).OrderBy(c => c.DatePosted).ToList();
+            question.Comments = await _context.Set<Comment>().Where(c => c.PostId == question.Id)
+                .OrderBy(c => c.DatePosted)
+                .Include(c => c.Publisher)
+                .ToListAsync();
 
             // Add sorted comments to each answer
             foreach (Answer a in question.Answers)
             {
                 a.Comments = _context.Set<Comment>()
                     .Where(c => c.PostId == a.Id)
+                    .Include(c => c.Publisher)
                     .OrderBy(c => c.DatePosted).ToList();
             }
 

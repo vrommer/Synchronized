@@ -2,7 +2,7 @@
 
 namespace Synchronized.Core.Utilities.Interfaces
 {
-    public interface IQuestionsConverter : IDataConverter<Domain.Question, ServiceModel.Question>
+    public interface IQuestionConverter : IDataConverter<Domain.Question, ServiceModel.Question>
     {        
     }
 }

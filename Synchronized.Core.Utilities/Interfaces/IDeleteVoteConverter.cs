@@ -2,7 +2,7 @@
 
 namespace Synchronized.Core.Utilities.Interfaces
 {
-    public interface IAnswerConverter: IDataConverter<Domain.Answer, ServiceModel.Answer>
+    public interface IDeleteVoteConverter: IDataConverter<Domain.DeleteVote, ServiceModel.PostDelete>
     {
     }
 }

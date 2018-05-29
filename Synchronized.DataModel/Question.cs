@@ -12,9 +12,9 @@ namespace Synchronized.Domain
         public int Points { get; set; }
         public int Deleted { get; set; }
 
-        public ICollection<Answer> Answers { get; set; }
-        public ICollection<QuestionTag> QuestionTags { get; set; }
-        public ICollection<QuestionView> QuestionViews { get; set; }
+        public List<Answer> Answers { get; set; }
+        public List<QuestionTag> QuestionTags { get; set; }
+        public List<QuestionView> QuestionViews { get; set; }
 
 
         public bool Answered() {

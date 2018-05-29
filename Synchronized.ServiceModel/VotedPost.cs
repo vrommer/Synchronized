@@ -10,5 +10,6 @@ namespace Synchronized.ServiceModel
 
         public ICollection<Comment> Comments { get; set; }
         public ICollection<string> VoterIds { get; set; }
+        public ICollection<string> DeleterIds { get; set; }
     }
 }

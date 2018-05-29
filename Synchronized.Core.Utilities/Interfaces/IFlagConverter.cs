@@ -2,7 +2,7 @@
 
 namespace Synchronized.Core.Utilities.Interfaces
 {
-    public interface IPostConverter : IDataConverter<Domain.Post, ServiceModel.Post>
-    {        
+    public interface IFlagConverter: IDataConverter<Domain.PostFlag, ServiceModel.PostFlag>
+    {
     }
 }

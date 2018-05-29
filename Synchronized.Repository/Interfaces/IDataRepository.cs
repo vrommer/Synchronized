@@ -10,8 +10,8 @@ namespace Synchronized.Repository.Interfaces
     public interface IDataRepository<T> where T: class, IEntity
     {
         Task<T> GetById(string entityId);
-        Task<IQueryable<T>> GetByAsync(Expression<Func<T, bool>> predicate);
-        Task<List<T>> GetPageAsync(int pageNumber, int pageSize, string searchTerm, string filter);
+        IQueryable<T> GetBy(Expression<Func<T, bool>> predicate);
+        List<T> GetPage(int pageNumber, int pageSize, string searchTerm, string filter);
         Task AddAsync(T entity);
         Task UpdateAsync(T Entity);
         Task DeleteAsync(string entityId);

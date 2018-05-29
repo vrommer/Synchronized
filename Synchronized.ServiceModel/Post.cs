@@ -9,7 +9,8 @@ namespace Synchronized.ServiceModel
         public DateTime DatePosted { get; set; }
         public string Body { get; set; }
         
-        public User Publisher { get; set; }
-        public ICollection<PostFlag> Flags { get; set; }
+        public string PublisherName { get; set; }
+        public string PublisherId { get; set; }
+        public ICollection<string> FlaggerIds { get; set; }
     }
 }

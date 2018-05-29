@@ -29,8 +29,8 @@ namespace Synchronized.ViewServices
             var questions = await _questionsService.GetPage(pageIndex, pageSize);
             var questionsPage = _factory.GetPaginatedList<QuestionForHomePage>(questions.TotalSize, pageIndex, pageSize);
             questions.ForEach(q => {
-                var question = _factory.GetQuestionForHomePage();
-                questionsPage.Add((_converter).Convert(q, question));
+                var viewModelQuestion = ((IHomeViewConverter)_converter).Convert(q);
+                questionsPage.Add(viewModelQuestion);
             });
             return questionsPage;
         }
@@ -38,8 +38,7 @@ namespace Synchronized.ViewServices
         public async Task<QuestionForDetailsPage> GetQuestionDetailsPageModel(string questionId)
         {
             var question = await _questionsService.GetById(questionId);
-            var questionForDetailsPage = _factory.GetQuestionForDetailsPage();
-            _converter.Convert(question, questionForDetailsPage);
+            var questionForDetailsPage = ((IDetailsConverter)_converter).Convert(question);
             return questionForDetailsPage;
         }
 
@@ -49,7 +48,7 @@ namespace Synchronized.ViewServices
             var questionsPage = _factory.GetPaginatedList<QuestionForQuestionsPage>(questions.Count, pageIndex, pageSize);
             questions.ForEach(q => {
                 var question = _factory.GetQuestionForQuestionsPage();
-                questionsPage.Add(_converter.Convert(q, question));
+                questionsPage.Add(((IQuestionsConverter)_converter).Convert(q));
             });
             return questionsPage;
         }

@@ -7,16 +7,20 @@ using Microsoft.Extensions.DependencyInjection;
 using Synchronized.Repository.Repositories;
 using Synchronized.Core.Repositories;
 using Synchronized.Domain;
-using Synchronized.Repository;
-using Synchronized.Core;
 using Synchronized.Data;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using System;
 using StructureMap;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Synchronized.WebApp.Services;
 using Microsoft.Extensions.Logging;
+using Synchronized.ViewServices.Interfaces;
+using Synchronized.Repository.Interfaces;
+using Synchronized.Core.Interfaces;
+using Synchronized.Core.Factories.Interfaces;
+using Synchronized.UI.Utilities;
+using Synchronized.UI.Utilities.Interfaces;
+using Synchronized.ViewModelFactories.Interfaces;
 
 namespace Synchronized.WebApp
 {
@@ -112,24 +116,19 @@ namespace Synchronized.WebApp
                 _.Scan(x =>
                 {
                     x.TheCallingAssembly();
-                    x.AssemblyContainingType<EmailSender>();
-                    x.AssemblyContainingType<QuestionsRepository>();
-                    x.AssemblyContainingType<QuestionsService>();
+                    x.AssemblyContainingType<IEmailSender>();
+                    x.AssemblyContainingType<IQuestionsRepository>();
+                    x.AssemblyContainingType<IQuestionsService>();
+                    x.AssemblyContainingType<ILocalService>();
+                    x.AssemblyContainingType<IServiceModelFactory>();
+                    x.AssemblyContainingType<IViewModelFactory>();
                     x.WithDefaultConventions();
+                    x.LookForRegistries();
                 });
-
-                //_.For<DbContext>().Use<SynchronizedDbContext>();
-                //_.For<DbContext>().Use(new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true")).AlwaysUnique();
-                //_.For(typeof(IdentityDbContext<>)).Use(new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true"));
-                //_.For<SynchronizedDbContext>().Use(new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true"));
-                //_.For<DbContext>().Singleton();
-                //_.For(typeof(IdentityDbContext<>)).Singleton();
-                //_.For<SynchronizedDbContext>().Singleton();
-
+                _.For<IDataConverter>().Use<DataConverter>();
                 _.Populate(services);
             });
             return container.GetNestedContainer().GetInstance<IServiceProvider>();
-            //return container.GetInstance<IServiceProvider>();
         }
     }
 }

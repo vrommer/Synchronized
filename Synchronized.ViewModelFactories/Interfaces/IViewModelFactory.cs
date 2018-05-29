@@ -15,5 +15,9 @@ namespace Synchronized.ViewModelFactories.Interfaces
         QuestionForDetailsPage GetQuestionForDetailsPage();
         List<QuestionForHomePage> GetHomePageQuestionsList();
         PaginatedList<T> GetPaginatedList<T>(int count, int pageIndex, int pageSize);
+        AnswerViewModel GetAnswer();
+        CommentViewModel GetComment();
+        List<AnswerViewModel> GetAnswers();
+        List<CommentViewModel> GetComments();
     }
 }

@@ -1,17 +1,19 @@
 ﻿class PostViewModel {
     constructor(model) {
-        this.model = model;
-        this.question = model.question;
+        this.question = model;
         this.answers = model.answers;
         this.comments = model.comments;
         this.posts = {};
 
-        this.posts[model.question.id] = this.question;
+        this.posts[model.id] = this.question;
         for (var index in model.answers) {
-            this.posts[index] = this.answers[index];
+            this.posts[this.answers[index].id] = this.answers[index];
+            for (var i in this.answers[index].comments) {
+                this.posts[this.answers[index].comments[i].id] = this.answers[index].comments[i];
+            }
         };
         for (var index in model.comments) {
-            this.posts[index] = this.comments[index];
+            this.posts[model.comments[index].id] = this.comments[index];
         };
     }
 

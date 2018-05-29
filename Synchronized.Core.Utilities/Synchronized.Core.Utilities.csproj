@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SharedLib\Synchronized.SharedLib.csproj" />
+    <ProjectReference Include="..\Synchronized.Core.Factories\Synchronized.Core.Factories.csproj" />
     <ProjectReference Include="..\Synchronized.DataModel\Synchronized.Domain.csproj" />
     <ProjectReference Include="..\Synchronized.ServiceModel\Synchronized.ServiceModel.csproj" />
   </ItemGroup>

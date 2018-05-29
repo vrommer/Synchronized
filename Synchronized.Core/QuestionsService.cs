@@ -6,6 +6,8 @@ using Synchronized.Core.Utilities.Interfaces;
 using System.Threading.Tasks;
 using Synchronized.SharedLib.Utilities;
 using UtilsLib.HtmlUtils.HtmlParser;
+using Synchronized.Core.Factories.Interfaces;
+using System.Collections.Generic;
 
 namespace Synchronized.Core
 {
@@ -20,32 +22,38 @@ namespace Synchronized.Core
 
         public async Task<PaginatedList<Question>> GetPage(int pageIndex, int pageSize)
         {
-            var domainQuestions = await((IQuestionsRepository)_repo).GetPageAsync(pageIndex, pageSize);
-            var questions = _factory.GetQuestionsList(_repo.GetCount(), pageIndex, pageSize);
-            domainQuestions.ForEach(q => {
-                var question = _factory.GetQuestion();
-                questions.Add(_converter.Convert(q, question));
-            });
-            Utils.MinimizeContent(_parser, questions);
-            return questions;
+            return await GetQuestionsPage(pageIndex, pageSize);
         }
 
         public async override Task<PaginatedList<Question>> GetPage(int pageIndex, int pageSize, string sortOrder, string searchString)
         {
-            var domainQuestions = await _repo.GetPageAsync(pageIndex, pageSize, sortOrder, searchString);
-            var questions = _factory.GetQuestionsList(_repo.GetCount(), pageIndex, pageSize);
-            domainQuestions.ForEach(q => {
-                var question = _factory.GetQuestion();
-                questions.Add(_converter.Convert(q, question));
-            });
-            return questions;
+            return await GetQuestionsPage(pageIndex, pageSize, sortOrder, searchString);
         }
 
         public async override Task<Question> GetById(string id)
         {
             var domainQuestion = await ((IQuestionsRepository)_repo).GetById(id);
-            var question = _converter.Convert(domainQuestion, _factory.GetQuestion());
+            var question = _converter.Convert(domainQuestion);
             return question;
+        }
+
+        private async Task<PaginatedList<Question>> GetQuestionsPage(int pageIndex, int pageSize, string sortOrder = null, string searchString = null)
+        {
+            List<Domain.Question> domainQuestions; ;
+            if (sortOrder == null)
+            {
+                domainQuestions = await ((IQuestionsRepository)_repo).GetPageAsync(pageIndex, pageSize);
+            } else
+            {
+                domainQuestions = ((IQuestionsRepository)_repo).GetPage(pageIndex, pageSize, sortOrder, searchString);
+            }
+            var questions = _converter.Convert(domainQuestions);
+            if (sortOrder != null)
+            {
+                Utils.MinimizeContent(_parser, questions);
+            }
+            var questionsPage = _factory.GetQuestionsList(questions, _repo.GetCount(), pageSize, pageIndex);
+            return questionsPage;
         }
     }
 }
