@@ -53,9 +53,10 @@ namespace Synchronized.Repository
             throw new NotImplementedException();
         }
 
-        public Task UpdateAsync(T Entity)
+        public async Task UpdateAsync(T Entity)
         {
-            throw new NotImplementedException();
+            _set.Update(Entity);
+            await _context.SaveChangesAsync();
         }
     }
 }

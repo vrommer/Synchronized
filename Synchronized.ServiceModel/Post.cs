@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Synchronized.ServiceModel
 {
-    public abstract class Post
+    public class Post
     {
         public string Id { get; set; }
         public DateTime DatePosted { get; set; }

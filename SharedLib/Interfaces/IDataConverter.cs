@@ -7,6 +7,6 @@ namespace Synchronized.SharedLib.Interfaces
         where TTarget : class
     {
         TTarget Convert(TSource from);
-        List<TTarget> Convert(List<TSource> from);
+        List<TTarget> Convert(ICollection<TSource> from);
     }
 }

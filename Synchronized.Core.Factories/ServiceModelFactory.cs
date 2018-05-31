@@ -77,5 +77,15 @@ namespace Synchronized.Core.Factories
         {
             return new List<Comment>();
         }
+
+        public VotedPost GetVotedPost()
+        {
+            return new VotedPost
+            {
+                VoterIds = new List<string>(),
+                DeleterIds = new List<string>(),
+                FlaggerIds = new List<string>()                 
+            };
+        }
     }
 }

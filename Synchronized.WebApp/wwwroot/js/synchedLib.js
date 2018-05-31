@@ -22,9 +22,6 @@
     //}
 
     updatePostVotes(newPost) {
-        this.posts[newPost.id].upVotes = newPost.upVotes;
-        this.posts[newPost.id].downVotes = newPost.downVotes;
-        this.posts[newPost.id].sumVotes = newPost.upVotes - newPost.downVotes;
-        this.posts[newPost.id].voterIds = newPost.voterIds;
+        this.posts[newPost.id].points = newPost.points;
     }
 }

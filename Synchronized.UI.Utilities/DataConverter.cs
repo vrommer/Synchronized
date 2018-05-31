@@ -32,14 +32,20 @@ namespace Synchronized.UI.Utilities
             return to;
         }
 
-        public List<QuestionForHomePage> Convert(List<Question> from)
+        public List<QuestionForHomePage> Convert(ICollection<Question> from)
         {
             var questions = _factory.GetPaginatedList<QuestionForHomePage>(((PaginatedList<Question>)from).TotalPages, ((PaginatedList<Question>)from).PageIndex, ((PaginatedList<Question>)from).TotalSize);
 
-            from.ForEach(q => {
+            foreach (var q in from)
+            {
                 var question = Convert(q);
                 questions.Add(question);
-            });
+            }
+
+            //from.ForEach(q => {
+            //    var question = Convert(q);
+            //    questions.Add(question);
+            //});
 
             return questions;
         }
@@ -61,16 +67,20 @@ namespace Synchronized.UI.Utilities
             return answer;
         }
 
-        public List<AnswerViewModel> Convert(List<Answer> from)
+        public List<AnswerViewModel> Convert(ICollection<Answer> from)
         {
             var answers = _factory.GetAnswers();
 
             if (from != null)
             {
-                from.ForEach(a =>
+                foreach (var a in from)
                 {
                     answers.Add(((IAnswerConverter)this).Convert(a));
-                });
+                }
+                //from.ForEach(a =>
+                //{
+                //    answers.Add(((IAnswerConverter)this).Convert(a));
+                //});
             }
 
             return answers;
@@ -90,16 +100,20 @@ namespace Synchronized.UI.Utilities
             return comment;            
         }
 
-        public List<CommentViewModel> Convert(List<Comment> from)
+        public List<CommentViewModel> Convert(ICollection<Comment> from)
         {
             var comments = _factory.GetComments();
 
             if (from != null)
             {
-                from.ForEach(c =>
+                foreach (var c in from)
                 {
                     comments.Add(((ICommentConverter)this).Convert(c));
-                });
+                }
+                //from.ForEach(c =>
+                //{
+                //    comments.Add(((ICommentConverter)this).Convert(c));
+                //});
             }
 
             return comments;
@@ -125,14 +139,19 @@ namespace Synchronized.UI.Utilities
             return question;
         }
 
-        List<QuestionForQuestionsPage> IDataConverter<Question, QuestionForQuestionsPage>.Convert(List<Question> from)
+        List<QuestionForQuestionsPage> IDataConverter<Question, QuestionForQuestionsPage>.Convert(ICollection<Question> from)
         {
             var questions = _factory.GetPaginatedList<QuestionForQuestionsPage>(((PaginatedList<Question>)from).TotalPages, ((PaginatedList<Question>)from).PageIndex, ((PaginatedList<Question>)from).TotalSize);
 
-            from.ForEach(q => {
+            foreach (var q in from)
+            {
                 QuestionForQuestionsPage question = ((IQuestionsConverter)this).Convert(q);
                 questions.Add(question);
-            });
+            }
+            //from.ForEach(q => {
+            //    QuestionForQuestionsPage question = ((IQuestionsConverter)this).Convert(q);
+            //    questions.Add(question);
+            //});
 
             return questions;
         }
@@ -160,7 +179,7 @@ namespace Synchronized.UI.Utilities
             return question;
         }
 
-        List<QuestionForDetailsPage> IDataConverter<Question, QuestionForDetailsPage>.Convert(List<Question> from)
+        List<QuestionForDetailsPage> IDataConverter<Question, QuestionForDetailsPage>.Convert(ICollection<Question> from)
         {
             throw new NotImplementedException();
         }

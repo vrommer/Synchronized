@@ -1,17 +1,18 @@
 ﻿using Synchronized.Core.Interfaces;
 using Synchronized.Repository.Interfaces;
 using Synchronized.Core.Utilites;
-using Synchronized.ServiceModel;
 using Synchronized.Core.Utilities.Interfaces;
 using System.Threading.Tasks;
 using Synchronized.SharedLib.Utilities;
 using UtilsLib.HtmlUtils.HtmlParser;
 using Synchronized.Core.Factories.Interfaces;
 using System.Collections.Generic;
+using SharedLib.Infrastructure.Constants;
+using Synchronized.Domain;
 
 namespace Synchronized.Core
 {
-    public class QuestionsService : PostsService<Domain.Question, Question>, IQuestionsService
+    public class QuestionsService : PostsService<Question, ServiceModel.Question>, IQuestionsService
     {
         private HtmlParser _parser;
 
@@ -20,26 +21,26 @@ namespace Synchronized.Core
             _parser = parser;
         }
 
-        public async Task<PaginatedList<Question>> GetPage(int pageIndex, int pageSize)
+        public async Task<PaginatedList<ServiceModel.Question>> GetPage(int pageIndex, int pageSize)
         {
             return await GetQuestionsPage(pageIndex, pageSize);
         }
 
-        public async override Task<PaginatedList<Question>> GetPage(int pageIndex, int pageSize, string sortOrder, string searchString)
+        public async override Task<PaginatedList<ServiceModel.Question>> GetPage(int pageIndex, int pageSize, string sortOrder, string searchString)
         {
             return await GetQuestionsPage(pageIndex, pageSize, sortOrder, searchString);
         }
 
-        public async override Task<Question> GetById(string id)
+        public async override Task<ServiceModel.Question> GetById(string id)
         {
             var domainQuestion = await ((IQuestionsRepository)_repo).GetById(id);
             var question = _converter.Convert(domainQuestion);
             return question;
         }
 
-        private async Task<PaginatedList<Question>> GetQuestionsPage(int pageIndex, int pageSize, string sortOrder = null, string searchString = null)
+        private async Task<PaginatedList<ServiceModel.Question>> GetQuestionsPage(int pageIndex, int pageSize, string sortOrder = null, string searchString = null)
         {
-            List<Domain.Question> domainQuestions; ;
+            List<Question> domainQuestions; ;
             if (sortOrder == null)
             {
                 domainQuestions = await ((IQuestionsRepository)_repo).GetPageAsync(pageIndex, pageSize);
@@ -54,6 +55,76 @@ namespace Synchronized.Core
             }
             var questionsPage = _factory.GetQuestionsList(questions, _repo.GetCount(), pageSize, pageIndex);
             return questionsPage;
+        }
+
+        public async Task<ServiceModel.Question> VoteForQuestion(string postId, VoteType voteType, string userId)
+        {
+            var question = await ((IQuestionsRepository)_repo).GetById(postId);
+            var serviceQuestion = _converter.Convert(question);
+            var canVote = CanVote(userId, serviceQuestion);
+            if (canVote)
+            {
+                question.Votes.Add(new Vote
+                {
+                    VoterId = userId,
+                    VoteType = (int)voteType
+                });
+                await _repo.UpdateAsync(question);
+                serviceQuestion.VoterIds.Add(userId);
+                switch(voteType)
+                {
+                    case VoteType.UpVote:
+                        serviceQuestion.UpVotes++;
+                        break;
+                    default:
+                        serviceQuestion.DownVotes++;
+                        break;
+                }                
+            }
+            return serviceQuestion;
+        }
+
+        private bool CanVote(string userId, ServiceModel.VotedPost post)
+        {
+            if (string.IsNullOrEmpty(userId) || post == null)
+            {
+                return false;
+            }
+            return !post.VoterIds.Contains(userId);
+        }
+
+        /// <summary>
+        /// Vote for answer. UpVote or DownVote an Answer. Each user may Vote only once per Post.
+        /// </summary>
+        /// <param name="postId">The Id of the Answer</param>
+        /// <param name="voteType">One of { UpVote, DownVote }</param>
+        /// <param name="userId">THe Id of the voter</param>
+        /// <returns></returns>
+        public async Task<ServiceModel.Answer> VoteForAnswer(string postId, VoteType voteType, string userId)
+        {
+            var answer = await ((IQuestionsRepository)_repo).GetAnswerById(postId);
+            var serviceAnswer = _converter.Convert(answer);
+            var canVote = CanVote(userId, serviceAnswer);
+            if (canVote)
+            {
+                answer.Votes.Add(new Vote
+                {
+                    VoterId = userId,
+                    VoteType = (int)voteType
+                });
+                await ((IQuestionsRepository)_repo).UpdateAnswerAsync(answer);
+                serviceAnswer.VoterIds.Add(userId);
+                switch (voteType)
+                {
+                    case VoteType.UpVote:
+                        serviceAnswer.UpVotes++;
+                        break;
+                    default:
+                        serviceAnswer.DownVotes++;
+                        break;
+                }
+            }
+            return serviceAnswer; 
         }
     }
 }

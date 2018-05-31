@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SharedLib\Synchronized.SharedLib.csproj" />
     <ProjectReference Include="..\Synchronized.Core\Synchronized.Core.csproj" />
+    <ProjectReference Include="..\Synchronized.UI.Utilities\Synchronized.UI.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

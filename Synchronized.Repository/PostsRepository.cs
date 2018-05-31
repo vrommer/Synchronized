@@ -4,6 +4,7 @@ using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Synchronized.Repository
 {
@@ -14,9 +15,15 @@ namespace Synchronized.Repository
 
         }
 
-        public Task<VotedPost> GetVotedPostBy(Expression<Func<VotedPost, bool>> predicate)
+        public async Task<VotedPost> GetVotedPostBy(Expression<Func<VotedPost, bool>> predicate)
         {
-            throw new NotImplementedException();
+            var post = await _set
+                 .AsNoTracking()
+                 .OfType<VotedPost>()
+                 .Include(cp => cp.Votes)
+                 .Where(predicate)
+                 .SingleOrDefaultAsync();
+            return post;
         }
     }
 }

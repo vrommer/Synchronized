@@ -112,19 +112,19 @@ $(() => {
 
     //---------------------------------------------------------------------------
     function VoteUpQuestion() {
-        VoteForPost("/api/Posts/VoteUpQuestion", this);
+        VoteForPost("/api/Posts/VoteUpQuestion", this.id);
     }
 
     function VoteDownQuestion() {
-        VoteForPost("/api/Posts/VoteDownQuestion", this);
+        VoteForPost("/api/Posts/VoteDownQuestion", this.id);
     }
 
     function VoteUpAnswer() {
-        VoteForPost("/api/Posts/VoteUpAnswer", this);
+        VoteForPost("/api/Posts/VoteUpAnswer", this.id);
     }
 
     function VoteDownAnswer() {
-        VoteForPost("/api/Posts/VoteDownAnswer", this);
+        VoteForPost("/api/Posts/VoteDownAnswer", this.id);
     }
 
     function VoteForPost(url, post) {
@@ -150,7 +150,7 @@ $(() => {
         return new Promise((resolve, reject) => {
             try {
                 $(`#${updatedPost.id} .synched-points`)
-                    .html(questionViewModel.posts[updatedPost.id].sumVotes);
+                    .html(questionViewModel.posts[updatedPost.id].points);
                 resolve(updatedPost);
             } catch (err) {
                 reject(err)

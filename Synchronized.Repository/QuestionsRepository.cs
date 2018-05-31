@@ -112,5 +112,30 @@ namespace Synchronized.Repository
 
             return question;
         }
+
+        public async Task<Answer> GetAnswerById(string postId)
+        {
+            var answer = await _context.Set<Answer>().Where(a => a.Id == postId)
+                .Include(a => a.Votes)
+                .Include(a => a.Comments)
+                .Include(a => a.DeleteVotes)
+                .Include(a => a.Publisher)
+                .Include(a => a.Comments)
+                    .ThenInclude(c => c.Publisher)
+                .SingleOrDefaultAsync();
+            answer.Comments.ToList();
+            return answer;
+        }
+
+        public async Task UpdateAnswerAsync(Answer answer)
+        {
+            _context.Set<Answer>().Update(answer);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<Comment> GetCommentById(string commentId)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

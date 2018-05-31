@@ -15,5 +15,6 @@ namespace Synchronized.Core.Factories.Interfaces
         User GetUser();
         List<Answer> GetAnswersList();
         List<Comment> GetCommentsList();
+        VotedPost GetVotedPost();
     }
 }

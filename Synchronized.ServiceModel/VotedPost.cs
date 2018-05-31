@@ -2,7 +2,7 @@
 
 namespace Synchronized.ServiceModel
 {
-    public abstract class VotedPost: Post
+    public class VotedPost: Post
     {
         public int UpVotes { get; set; }
         public int DownVotes { get; set; }

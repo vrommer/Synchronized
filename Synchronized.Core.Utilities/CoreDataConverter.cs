@@ -19,12 +19,12 @@ namespace Synchronized.Core.Utilities
             _factory = factory;
         }
 
-        public List<ServiceModel.Post> Convert(List<Domain.Post> source)
+        public List<ServiceModel.Post> Convert(ICollection<Domain.Post> source)
         {
             throw new NotImplementedException();
         }
 
-        public List<ServiceModel.VotedPost> Convert(List<Domain.VotedPost> source)
+        public List<ServiceModel.VotedPost> Convert(ICollection<Domain.VotedPost> source)
         {
             throw new NotImplementedException();
         }
@@ -35,12 +35,12 @@ namespace Synchronized.Core.Utilities
         /// </summary>
         /// <param name="source">List of Domain.Question</param>
         /// <returns>List of ServiceModel.Question</returns>
-        public List<ServiceModel.Question> Convert(List<Domain.Question> source)
+        public List<ServiceModel.Question> Convert(ICollection<Domain.Question> source)
         {
             var questions = _factory.GetQuestionsList();
             if (source != null)
             {
-                source.ForEach(q =>
+                source.ToList().ForEach(q =>
                 {
                     questions.Add(Convert(q));
                 });
@@ -48,12 +48,12 @@ namespace Synchronized.Core.Utilities
             return questions;
         }
 
-        public List<ServiceModel.Answer> Convert(List<Domain.Answer> source)
+        public List<ServiceModel.Answer> Convert(ICollection<Domain.Answer> source)
         {
             var answers = _factory.GetAnswersList();
             if (source != null)
             {
-                source.ForEach(a =>
+                source.ToList().ForEach(a =>
                 {
                     answers.Add(Convert(a));
                 });
@@ -61,12 +61,12 @@ namespace Synchronized.Core.Utilities
             return answers;
         }
 
-        public List<ServiceModel.Comment> Convert(List<Domain.Comment> source)
+        public List<ServiceModel.Comment> Convert(ICollection<Domain.Comment> source)
         {
             var comments = _factory.GetCommentsList();
             if (source != null)
             {
-                source.ForEach(c =>
+                source.ToList().ForEach(c =>
                 {
                     comments.Add(Convert(c));
                 });
@@ -74,17 +74,17 @@ namespace Synchronized.Core.Utilities
             return comments;
         }
 
-        public List<User> Convert(List<ApplicationUser> source)
+        public List<User> Convert(ICollection<ApplicationUser> source)
         {
             throw new NotImplementedException();
         }
 
-        public List<ServiceModel.PostFlag> Convert(List<Domain.PostFlag> source)
+        public List<ServiceModel.PostFlag> Convert(ICollection<Domain.PostFlag> source)
         {
             throw new NotImplementedException();
         }
 
-        public List<PostDelete> Convert(List<DeleteVote> source)
+        public List<PostDelete> Convert(ICollection<DeleteVote> source)
         {
             throw new NotImplementedException();
         }
@@ -96,7 +96,35 @@ namespace Synchronized.Core.Utilities
 
         public ServiceModel.VotedPost Convert(Domain.VotedPost from)
         {
-            throw new NotImplementedException();
+            var post = _factory.GetVotedPost();
+            post.Body = String.Copy(from.Body);
+            if (from.Comments != null)
+            {
+                post.Comments = Convert(from.Comments.ToList());
+            }
+            if (from.DeleteVotes != null)
+            {
+                from.DeleteVotes.ToList().ForEach(v => {
+                    post.DeleterIds.Add(v.UserId);
+                });
+            }
+            if (from.PostFlags != null)
+            {
+                from.PostFlags.ToList().ForEach(f => {
+                    post.FlaggerIds.Add(f.UserId);
+                });
+            }
+            if (from.Votes != null)
+            {
+                from.Votes.ToList().ForEach(f => {
+                    post.VoterIds.Add(f.VoterId);
+                });
+            }
+            post.DatePosted = from.DatePosted;
+            post.DownVotes = from.Votes.Where(v => v.VoteType == (int)VoteType.DownVote).Count();
+            post.UpVotes = from.Votes.Where(v => v.VoteType == (int)VoteType.UpVote).Count();
+
+            return post;
         }
 
         public ServiceModel.Question Convert(Domain.Question from)
@@ -213,7 +241,7 @@ namespace Synchronized.Core.Utilities
 
         private void AddVotedPost(Domain.VotedPost from, ServiceModel.VotedPost to)
         {
-            to.Comments = Convert((List<Domain.Comment>)from.Comments);
+            to.Comments = Convert(from.Comments);
             if (from.Votes != null)
             {
                 from.Votes.ToList().ForEach(v =>

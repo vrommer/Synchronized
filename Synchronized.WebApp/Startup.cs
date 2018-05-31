@@ -21,6 +21,8 @@ using Synchronized.Core.Factories.Interfaces;
 using Synchronized.UI.Utilities;
 using Synchronized.UI.Utilities.Interfaces;
 using Synchronized.ViewModelFactories.Interfaces;
+using Synchronized.Core;
+using Synchronized.Repository;
 
 namespace Synchronized.WebApp
 {
@@ -119,6 +121,8 @@ namespace Synchronized.WebApp
                     x.AssemblyContainingType<IEmailSender>();
                     x.AssemblyContainingType<IQuestionsRepository>();
                     x.AssemblyContainingType<IQuestionsService>();
+                    x.AssemblyContainingType<ServiceModel.Post>();
+                    x.AssemblyContainingType<Post>();
                     x.AssemblyContainingType<ILocalService>();
                     x.AssemblyContainingType<IServiceModelFactory>();
                     x.AssemblyContainingType<IViewModelFactory>();
@@ -126,6 +130,8 @@ namespace Synchronized.WebApp
                     x.LookForRegistries();
                 });
                 _.For<IDataConverter>().Use<DataConverter>();
+                _.For<IPostsService<ServiceModel.VotedPost>>().Use<PostsService<VotedPost, ServiceModel.VotedPost>>();
+                _.For<IDataRepository<VotedPost>>().Use<PostsRepository<VotedPost>>();
                 _.Populate(services);
             });
             return container.GetNestedContainer().GetInstance<IServiceProvider>();
