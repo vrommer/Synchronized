@@ -8,8 +8,8 @@ $(() => {
 
     $(`#${questionViewModel.question.id} .vote-up-btn`).on("click", VoteUpQuestion.bind(questionViewModel.question))
     $(`#${questionViewModel.question.id} .vote-down-btn`).on("click", VoteDownQuestion.bind(questionViewModel.question))
-    $("#synched-quetion .comment-body").on("keypress", submitQuestionComment);
-    $("#synched-quetion .synched-flag").on("click", flagPost.bind(question));
+    $(`#${questionViewModel.question.id} .synched-flag`).on("click", flagPost.bind(question))
+    $("#synched-quetion .comment-body").on("keypress", submitQuestionComment);    
     $(`${questionViewModel.question.id} .synched-delete`).on("click", deletePost.bind(question));
 
     //questionViewModel.model.answers.forEach(answer => {
@@ -33,13 +33,14 @@ $(() => {
 
         $(`#${answer.id} .vote-up-btn`).on("click", VoteUpAnswer.bind(answer))
         $(`#${answer.id} .vote-down-btn`).on("click", VoteDownAnswer.bind(answer))
-        $(`#${answer.id} .comment-body`).on("keypress", submitAnswerComment.bind(answer));
         $(`#${answer.id} .synched-flag`).on("click", flagPost.bind(answer));
+        $(`#${answer.id} .comment-body`).on("keypress", submitAnswerComment.bind(answer));        
         $(`#${answer.id} .synched-delete`).on("click", deletePost.bind(answer));
     }
 
     allComments.forEach(comment => {
         $(`#${comment.id} .synched-delete`).on("click", deletePost.bind(comment));
+        $(`#${comment.id} .synched-flag`).on("click", flagPost.bind(answer));
         //$(`#${comment.id} .submit-comment`).on("click", submitComment.bind(comment));
     });
 
@@ -131,7 +132,7 @@ $(() => {
         ajaxRequest("POST", url, post)
             .then(updatePostVotes)
             .then(updatePointsInPage)
-            .then(updateHandler)
+            //.then(updateHandler)
             .catch(xhr => { console.log(xhr); });
     }
 

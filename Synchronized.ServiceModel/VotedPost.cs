@@ -9,7 +9,7 @@ namespace Synchronized.ServiceModel
         public int SumVotes { get => UpVotes - DownVotes; }
 
         public ICollection<Comment> Comments { get; set; }
-        public ICollection<string> VoterIds { get; set; }
+        public ICollection<string> VoterIds { get; set; }        
         public ICollection<string> DeleterIds { get; set; }
     }
 }

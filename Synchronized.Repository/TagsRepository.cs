@@ -7,22 +7,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Synchronized.Repository
 {
-    public class TagsRepository : DataRepositoryOld<Tag>, ITagsRepository
+    public class TagsRepository : DataRepository<Tag>, ITagsRepository
     {
         public TagsRepository(DbContext context) : base(context)
         {
         }
 
-        public async Task<Tag> FindTagByName(string name)
+        public Task<Tag> FindTagByName(string name)
         {
-            return await GetBy(t => t.Name.Equals(name)).FirstOrDefaultAsync();
+            throw new System.NotImplementedException();
         }
 
-        public async Task<List<Tag>> GetTagsPageAsync(int pageIndex, int pageSize)
+        public Task<List<Tag>> GetTagsPageAsync(int currentPage, int pageSize)
         {
-            return await GetPage(pageIndex, pageSize)
-                .Include(t => t.Publisher)
-                .ToListAsync();
+            throw new System.NotImplementedException();
         }
     }
 }

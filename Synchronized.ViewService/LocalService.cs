@@ -35,9 +35,9 @@ namespace Synchronized.ViewServices
             return questionsPage;
         }
 
-        public async Task<QuestionForDetailsPage> GetQuestionDetailsPageModel(string questionId)
+        public async Task<QuestionForDetailsPage> GetQuestionDetailsPageModel(string questionId, string userId)
         {
-            var question = await _questionsService.GetById(questionId);
+            var question = await _questionsService.ViewQuestion(questionId, userId);
             var questionForDetailsPage = ((IDetailsConverter)_converter).Convert(question);
             return questionForDetailsPage;
         }

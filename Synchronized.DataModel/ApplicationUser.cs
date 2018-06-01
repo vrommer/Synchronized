@@ -7,7 +7,7 @@ using System.Linq;
 namespace Synchronized.Domain
 {
     // Add profile data for application users by adding properties to the ApplicationUser class
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser, IEntity
     {
         public int Points { get; set; }
         public string ImageUri { get; set; }

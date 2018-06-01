@@ -10,6 +10,7 @@ namespace Synchronized.Core.Interfaces
     {
         Task<PaginatedList<ServiceModel.Question>> GetPage(int pageNumber, int pageSize);
         Task<ServiceModel.Question> VoteForQuestion(string postId, VoteType upVote, string userId);
-        Task<ServiceModel.Answer> VoteForAnswer(string postId, VoteType downVote, string id);
+        Task<ServiceModel.Answer> VoteForAnswer(string postId, VoteType downVote, string userId);
+        Task<ServiceModel.Question> ViewQuestion(string questionId, string userId);
     }
 }

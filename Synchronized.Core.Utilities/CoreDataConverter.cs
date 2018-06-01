@@ -135,13 +135,8 @@ namespace Synchronized.Core.Utilities
 
             var to = _factory.GetQuestion();
 
-            to.Answers = Convert(from.Answers);            
+            to.Answers = Convert(from.Answers);                      
 
-            if (from.Votes != null)
-            {
-                to.UpVotes = from.Votes.Where(v => v.VoteType == (int)VoteType.UpVote).Count();
-                to.DownVotes = from.Votes.Where(v => v.VoteType == (int)VoteType.DownVote).Count();
-            }            
             to.IsAnswered = from.Answered();
             to.Title = String.Copy(from.Title);
 
@@ -244,6 +239,8 @@ namespace Synchronized.Core.Utilities
             to.Comments = Convert(from.Comments);
             if (from.Votes != null)
             {
+                to.UpVotes = from.Votes.Where(v => v.VoteType == (int)VoteType.UpVote).Count();
+                to.DownVotes = from.Votes.Where(v => v.VoteType == (int)VoteType.DownVote).Count();
                 from.Votes.ToList().ForEach(v =>
                 {
                     to.VoterIds.Add(v.VoterId);

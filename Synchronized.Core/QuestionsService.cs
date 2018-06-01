@@ -9,10 +9,11 @@ using Synchronized.Core.Factories.Interfaces;
 using System.Collections.Generic;
 using SharedLib.Infrastructure.Constants;
 using Synchronized.Domain;
+using Synchronized.ServiceModel;
 
 namespace Synchronized.Core
 {
-    public class QuestionsService : PostsService<Question, ServiceModel.Question>, IQuestionsService
+    public class QuestionsService : PostsService<Domain.Question, ServiceModel.Question>, IQuestionsService
     {
         private HtmlParser _parser;
 
@@ -40,7 +41,7 @@ namespace Synchronized.Core
 
         private async Task<PaginatedList<ServiceModel.Question>> GetQuestionsPage(int pageIndex, int pageSize, string sortOrder = null, string searchString = null)
         {
-            List<Question> domainQuestions; ;
+            List<Domain.Question> domainQuestions; ;
             if (sortOrder == null)
             {
                 domainQuestions = await ((IQuestionsRepository)_repo).GetPageAsync(pageIndex, pageSize);
@@ -93,6 +94,15 @@ namespace Synchronized.Core
             return !post.VoterIds.Contains(userId);
         }
 
+        private bool CanView(string userId, ServiceModel.Question question)
+        {
+            if (string.IsNullOrEmpty(userId) || question == null)
+            {
+                return false;
+            }
+            return !question.ViewerIds.Contains(userId);
+        }
+
         /// <summary>
         /// Vote for answer. UpVote or DownVote an Answer. Each user may Vote only once per Post.
         /// </summary>
@@ -125,6 +135,24 @@ namespace Synchronized.Core
                 }
             }
             return serviceAnswer; 
+        }
+
+        public async Task<ServiceModel.Question> ViewQuestion(string questionId, string userId)
+        {
+            var question = await((IQuestionsRepository)_repo).GetById(questionId);
+            var serviceQuestion = _converter.Convert(question);
+            var canView = CanView(userId, serviceQuestion);
+            if (canView)
+            {
+                question.QuestionViews.Add(new Domain.QuestionView
+                {
+                    UserId = userId
+                });
+                await _repo.UpdateAsync(question);
+                serviceQuestion.VoterIds.Add(userId);
+                serviceQuestion.Views++;
+            }
+            return serviceQuestion;
         }
     }
 }

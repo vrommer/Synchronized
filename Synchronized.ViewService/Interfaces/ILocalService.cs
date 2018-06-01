@@ -8,6 +8,6 @@ namespace Synchronized.ViewServices.Interfaces
     {
         Task<PaginatedList<QuestionForHomePage>> GetHomePageModel(int PageNumber);
         Task<PaginatedList<ViewModel.QuestionsViewModels.QuestionForQuestionsPage>> GetQuestionsIndexPageModel(int pageNumber, string sortOrder, string searchTerm);
-        Task<ViewModel.QuestionsViewModels.QuestionForDetailsPage> GetQuestionDetailsPageModel(string questionId);
+        Task<ViewModel.QuestionsViewModels.QuestionForDetailsPage> GetQuestionDetailsPageModel(string questionId, string userId);
     }
 }

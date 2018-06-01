@@ -311,6 +311,31 @@ namespace Synchronized.Repository.Repositories
             throw new NotImplementedException();
         }
 
+        Task<ApplicationUser> IDataRepository<ApplicationUser>.GetById(string entityId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<ApplicationUser> GetPage(int pageNumber, int pageSize, string searchTerm, string filter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(ApplicationUser Entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(string entityId)
+        {
+            throw new NotImplementedException();
+        }
+
+        int IDataRepository<ApplicationUser>.GetCount()
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

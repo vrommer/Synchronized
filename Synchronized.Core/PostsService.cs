@@ -15,7 +15,7 @@ namespace Synchronized.Core
         where TEntity : Domain.Post
     {
 
-        public PostsService(IDataRepository<TEntity> repo, IServiceModelFactory factory, IDataConverter converter)  : base(repo, factory, converter) 
+        public PostsService(IPostsRepository<TEntity> repo, IServiceModelFactory factory, IDataConverter converter)  : base(repo, factory, converter) 
         {
         }
 
@@ -29,9 +29,24 @@ namespace Synchronized.Core
             throw new NotImplementedException();
         }
 
-        public Task<TServiceModel> FlagPost(string postId, string userId)
+        public async Task<bool> FlagPost(string postId, string userId)
         {
-            throw new NotImplementedException();
+
+            var post = await ((IPostsRepository<TEntity>)_repo).GetById(postId);            
+            var canFlag = post.PostFlags.Contains(new Domain.PostFlag {
+                PostId = postId,
+                UserId = userId
+            });
+            if (canFlag)
+            {
+                post.PostFlags.Add(new Domain.PostFlag
+                {
+                    UserId = userId
+                });
+            }
+            await _repo.UpdateAsync(post);
+
+            return canFlag;
         }
 
         public Task<VotedPost> GetVotedPostBy(Expression<Func<VotedPost, bool>> predicate)
@@ -41,10 +56,7 @@ namespace Synchronized.Core
 
         public async Task<T> VoteForPost<T>(string postId, VoteType voteType, string userId) where T: VotedPost
         {
-            var domainPost = await ((IPostsRepository<Domain.VotedPost>)_repo).GetVotedPostBy(p => p.Id.Equals(postId));
-            var serviceModelPost = _converter.Convert(domainPost);
-                     
-            return (T)serviceModelPost;
+            throw new NotImplementedException();
         }
 
         private async Task VoteForPostAsync<T>(bool canVote, VoteType voteType, string userId, T serviceModelPost, Domain.VotedPost domainPost) where T: VotedPost

@@ -12,17 +12,15 @@ namespace Synchronized.Repository
     {
         public PostsRepository(DbContext context): base(context)
         {
-
         }
 
-        public async Task<VotedPost> GetVotedPostBy(Expression<Func<VotedPost, bool>> predicate)
+        public async override Task<TModel> GetById(string postId)
         {
             var post = await _set
-                 .AsNoTracking()
-                 .OfType<VotedPost>()
-                 .Include(cp => cp.Votes)
-                 .Where(predicate)
-                 .SingleOrDefaultAsync();
+                .AsNoTracking()
+                .Include(p => p.PostFlags)
+                .Where(p => p.Id == postId)
+                .SingleOrDefaultAsync();
             return post;
         }
     }

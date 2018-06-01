@@ -7,12 +7,11 @@ using System.Linq;
 
 namespace Synchronized.Repository
 {
-    public class QuestionsRepository : PostsRepository<Question>,  IQuestionsRepository
+    public class QuestionsRepository : VotedPostsRepository<Question>,  IQuestionsRepository
     {
 
         public QuestionsRepository(DbContext context): base(context)
         {
-
         }
 
         public async Task<List<Question>> GetPageAsync(int pageIndex, int pageSize)

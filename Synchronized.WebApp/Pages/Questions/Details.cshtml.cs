@@ -33,23 +33,10 @@ namespace Synchronized.WebApp.Pages.Questions
 
         public async Task OnGetAsync(string id)
         {
-            //Model.ApplicationUser user = await GetCurrentUserAsync();
-            Question = await _localService.GetQuestionDetailsPageModel(id);
-            //QuestionViewModel = new DetailsViewModel(Question);
-
-            //if ( user!=null && !Question.QuestionViews.Contains(new QuestionView
-            //{
-            //    UserId = user.Id,
-            //    QuestionId = Question.Id
-            //}))
-            //{
-            //    // EF Core will not track entity with key
-            //    Question.QuestionViews.Add(new QuestionView {
-            //        //Question = Question,
-            //        User = user
-            //    });
-            //    _questionsService.Update(Question);
-            //}
+            string userId = null;
+            var usr = await GetCurrentUserAsync();
+            userId = usr?.Id;
+            Question = await _localService.GetQuestionDetailsPageModel(id, userId);
         }
 
         [BindProperty]
