@@ -12,19 +12,25 @@ namespace Synchronized.WebApp.Controllers
     [Produces("application/json")]
     public class PostsController : Controller
     {
-        private IQuestionsService _service;
+        private IQuestionsService _questionsService;
+        private IVotedPostService _votedPostsService;
+        private readonly IPostsService<Post> _postsService;
         private readonly IDataConverter _dataConverter;
         private readonly ILogger<PostsController> _logger;
         private readonly UserManager<Domain.ApplicationUser> _userManager;
 
         public PostsController(
-            IQuestionsService service,
+            IQuestionsService questionsService,
+            IVotedPostService votedPostsService,
+            IPostsService<Post> postsService,
             IDataConverter converter,
             ILogger<PostsController> logger,
             UserManager<Domain.ApplicationUser> userManager
         )
         {
-            _service = service;
+            _questionsService = questionsService;
+            _votedPostsService = votedPostsService;
+            _postsService = postsService;
             _dataConverter = converter;            
             _logger = logger;
             _userManager = userManager;
@@ -35,7 +41,7 @@ namespace Synchronized.WebApp.Controllers
         public async Task<IActionResult> VoteUpQuestion([FromBody]string postId)
         {
             string userId = await GetUserIdAsync();
-            var question = await _service.VoteForQuestion(postId, VoteType.UpVote, userId);            
+            var question = await _questionsService.VoteForQuestion(postId, VoteType.UpVote, userId);            
             var questionView = ((IQuestionsConverter)_dataConverter).Convert(question);
             return new ObjectResult(questionView);
         }
@@ -45,7 +51,7 @@ namespace Synchronized.WebApp.Controllers
         public async Task<IActionResult> VoteDownQuestion([FromBody]string postId)
         {
             string userId = await GetUserIdAsync();
-            var question = await _service.VoteForQuestion(postId, VoteType.DownVote, userId);
+            var question = await _questionsService.VoteForQuestion(postId, VoteType.DownVote, userId);
             var questionView = ((IQuestionsConverter)_dataConverter).Convert(question);
             return new ObjectResult(questionView);
         }
@@ -55,7 +61,7 @@ namespace Synchronized.WebApp.Controllers
         public async Task<IActionResult> VoteUpAnswer([FromBody]string postId)
         {
             string userId = await GetUserIdAsync();
-            var answer = await _service.VoteForAnswer(postId, VoteType.UpVote, userId);
+            var answer = await _questionsService.VoteForAnswer(postId, VoteType.UpVote, userId);
             var answerView = _dataConverter.Convert(answer);
             return new ObjectResult(answerView);
         }
@@ -65,7 +71,7 @@ namespace Synchronized.WebApp.Controllers
         public async Task<IActionResult> VoteDownAnswer([FromBody]string postId)
         {
             string userId = await GetUserIdAsync();
-            var answer = await _service.VoteForAnswer(postId, VoteType.DownVote, userId);
+            var answer = await _questionsService.VoteForAnswer(postId, VoteType.DownVote, userId);
             var answerView = _dataConverter.Convert(answer);
             return new ObjectResult(answerView);
         }
@@ -77,7 +83,7 @@ namespace Synchronized.WebApp.Controllers
         public async Task<IActionResult> FlagPost([FromBody]string postId)
         {
             string userId = await GetUserIdAsync();
-            var flagged = await _service.FlagPost(postId, userId);
+            var flagged = await _votedPostsService.FlagPost(postId, userId);
 
             if (!flagged)
             {
@@ -86,8 +92,7 @@ namespace Synchronized.WebApp.Controllers
             return Ok();
         }
 
-        // POST: /api/Posts/FlagAnswer
-        // POST: /api/Posts/FlagComment
+        // POST: /api/Posts/DeletePost
 
         // POST: api/Posts/AddComment
         [HttpPost]
@@ -107,13 +112,6 @@ namespace Synchronized.WebApp.Controllers
         public async Task<IActionResult> SubmitAnswerComment([FromBody]Domain.Comment comment)
         {
             return null;
-        }
-
-        private async Task<T> VoteForPost<T>(string postId, VoteType voteType) where T: VotedPost
-        {
-            var user = await GetCurrentUserAsync();
-            var post = await _service.VoteForPost<T>(postId, voteType, user.Id);
-            return post;
         }
 
         private async Task<string> GetUserIdAsync()

@@ -130,8 +130,13 @@ namespace Synchronized.WebApp
                     x.LookForRegistries();
                 });
                 _.For<IDataConverter>().Use<DataConverter>();
+                _.For<IPostsService<ServiceModel.Post>>().Use<PostsService<Post, ServiceModel.Post>>();
+                _.For<IVotedPostService>().Use<VotedPostsService>();
+                _.For<IVotedPostRepository>().Use<VotedPostsRepository>();
                 _.For<IPostsService<ServiceModel.VotedPost>>().Use<PostsService<VotedPost, ServiceModel.VotedPost>>();
+                _.For<IPostsRepository<Post>>().Use<PostsRepository<Post>>();
                 _.For<IDataRepository<VotedPost>>().Use<PostsRepository<VotedPost>>();
+                _.For<IPostsRepository<VotedPost>>().Use<PostsRepository<VotedPost>>();
                 _.Populate(services);
             });
             return container.GetNestedContainer().GetInstance<IServiceProvider>();

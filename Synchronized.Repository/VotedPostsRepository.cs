@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace Synchronized.Repository
 {
-    public class VotedPostsRepository<TEntity>: PostsRepository<TEntity>, IVotedPostRepository<TEntity> where TEntity: VotedPost
+    public class VotedPostsRepository: PostsRepository<VotedPost>, IVotedPostRepository
     {
         public VotedPostsRepository(DbContext context): base(context)
         {
         }
 
-        public async override Task<TEntity> GetById(string postId)
+        public async override Task<VotedPost> GetById(string postId)
         {
             var post = await _set
                 .AsNoTracking()

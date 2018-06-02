@@ -224,19 +224,12 @@ namespace Synchronized.Core.Utilities
                 to.PublisherName = from.Publisher.UserName;
             }
             to.PublisherId = String.Copy(from.PublisherId);
-            // Add flagger Ids
-            if (from.PostFlags != null)
-            {
-                foreach (var flagger in from.PostFlags)
-                {
-                    to.FlaggerIds.Add(flagger.UserId);
-                }
-            }
         }
 
         private void AddVotedPost(Domain.VotedPost from, ServiceModel.VotedPost to)
         {
             to.Comments = Convert(from.Comments);
+            // Add voter Ids
             if (from.Votes != null)
             {
                 to.UpVotes = from.Votes.Where(v => v.VoteType == (int)VoteType.UpVote).Count();
@@ -245,6 +238,14 @@ namespace Synchronized.Core.Utilities
                 {
                     to.VoterIds.Add(v.VoterId);
                 });
+            }
+            // Add flagger Ids
+            if (from.PostFlags != null)
+            {
+                foreach (var flagger in from.PostFlags)
+                {
+                    to.FlaggerIds.Add(flagger.UserId);
+                }
             }
         }
     }

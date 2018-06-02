@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Synchronized.Repository
 {
-    public class QuestionsRepository : VotedPostsRepository<Question>,  IQuestionsRepository
+    public class QuestionsRepository : PostsRepository<Question>,  IQuestionsRepository
     {
 
         public QuestionsRepository(DbContext context): base(context)
@@ -76,7 +76,7 @@ namespace Synchronized.Repository
             return questionsList;
         }
 
-        public async override Task<Question> GetById(string id)
+        public async Task<Question> GetQuestionById(string id)
         {
             var question = await _set
                 .AsNoTracking()

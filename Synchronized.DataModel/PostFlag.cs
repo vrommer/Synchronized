@@ -9,7 +9,7 @@ namespace Synchronized.Domain
         public string UserId { get; set; }
         public string PostId { get; set; }
 
-        public Post Post { get; set; }
+        public VotedPost Post { get; set; }
         public ApplicationUser User { get; set; }
 
         public override int GetHashCode()

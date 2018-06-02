@@ -70,11 +70,24 @@ $(() => {
                     resolve(data);
                 },
 
-                failure: data => {
-                    reject(data);
+                //statusCode: {
+                //    400: reject
+                //},
+
+                statusCode: {
+                    400: data => {
+                        reject(data);
+                    }
                 },
+
+                failure: data => {
+                    console.log("DEBUG: Failure!")
+                    /*reject(data)*/;
+                },
+
                 error: data => {
-                    reject(data);
+                    console.log("DEBUG: Error!")
+                    //reject(data);
                 }
             });
         });
@@ -207,8 +220,8 @@ $(() => {
 
     function flagPost() {
         return ajaxRequest("POST", "/api/Posts/FlagPost", this.id)
-            .then(() => { console.log("success!"); })
-            .catch(xhr => { console.log("error"); });            
+            .then(() => { alert("Your flag has been accapted!"); })
+            .catch(xhr => { alert("User not permitted to flag!"); });            
     }
 
     function deletePost() {

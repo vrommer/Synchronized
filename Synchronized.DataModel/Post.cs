@@ -10,9 +10,6 @@ namespace Synchronized.Domain
         public string PublisherId { get; set; }
         public string Body { get; set; }
 
-        public ICollection<PostFlag> PostFlags { get; set; }
-        public ICollection<DeleteVote> DeleteVotes { get; set; }
-
         public ApplicationUser Publisher { get; set; }
     }
 }

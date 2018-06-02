@@ -14,12 +14,10 @@ namespace Synchronized.Repository
         {
         }
 
-        public async override Task<TModel> GetById(string postId)
-        {
+        public async override Task<TModel> GetById(string id) {
             var post = await _set
                 .AsNoTracking()
-                .Include(p => p.PostFlags)
-                .Where(p => p.Id == postId)
+                .Where(p => p.Id == id)
                 .SingleOrDefaultAsync();
             return post;
         }

@@ -60,7 +60,7 @@ namespace Synchronized.Core
 
         public async Task<ServiceModel.Question> VoteForQuestion(string postId, VoteType voteType, string userId)
         {
-            var question = await ((IQuestionsRepository)_repo).GetById(postId);
+            var question = await ((IQuestionsRepository)_repo).GetQuestionById(postId);
             var serviceQuestion = _converter.Convert(question);
             var canVote = CanVote(userId, serviceQuestion);
             if (canVote)
@@ -139,7 +139,7 @@ namespace Synchronized.Core
 
         public async Task<ServiceModel.Question> ViewQuestion(string questionId, string userId)
         {
-            var question = await((IQuestionsRepository)_repo).GetById(questionId);
+            var question = await((IQuestionsRepository)_repo).GetQuestionById(questionId);
             var serviceQuestion = _converter.Convert(question);
             var canView = CanView(userId, serviceQuestion);
             if (canView)
