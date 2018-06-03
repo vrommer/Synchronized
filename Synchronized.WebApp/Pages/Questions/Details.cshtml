@@ -51,7 +51,7 @@
             {
                 <hr />
             }
-            <button type="button" class="btn btn-link synched-question-comment">Leave a comment</button>
+            <button type="button" class="btn btn-link synched-comment">Leave a comment</button>
             <div class="synched-comment-form">
                 <div class="form-group">
                     <textarea class="form-control comment-body" rows="2"></textarea>
@@ -99,16 +99,16 @@
                                     <button type="button" class="btn btn-link synched-edit">Edit</button>
                                     <button type="button" class="btn btn-link synched-delete">Delete</button>
                                 </div>
-                                    }
-                                </div>
                             }
+                        </div>
+                    }
                     else
                     {
                         <hr />
                     }   
                     @if (Model.Question.Answers.Count > 0)
                     {
-                        <button type="button" class="btn btn-link synched-question-comment">Leave a comment</button>
+                        <button type="button" class="btn btn-link synched-comment">Leave a comment</button>
                         <div class="synched-comment-form">
                             <div class="form-group">
                                 <textarea class="form-control comment-body" rows="2"></textarea>

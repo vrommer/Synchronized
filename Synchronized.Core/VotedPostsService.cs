@@ -19,25 +19,52 @@ namespace Synchronized.Core
         {
         }
 
-        public Task<VotedPost> CommentOnPost<VotedPost>(string postId, string userId, string commentBody)
+        public async Task<ServiceModel.Comment> CommentOnPost(string postId, string commentBody, string userId)
         {
-            throw new NotImplementedException();
+            var post = await((IVotedPostRepository)_repo).GetById(postId);
+            var canComment = (!String.IsNullOrEmpty(userId));
+            var comment = new Domain.Comment();
+            if (canComment)
+            {
+                comment.PublisherId = userId;
+                comment.Body = commentBody;
+                post.Comments.Add(comment);
+                await _repo.UpdateAsync(post);
+            }
+
+            var serviceModelComment = _converter.Convert(comment);
+            return serviceModelComment;
         }
 
-        public Task<bool> DeletePost(string postId, string userId)
+        public async Task<bool> DeletePost(string postId, string userId)
         {
-            throw new NotImplementedException();
+            var post = await((IVotedPostRepository)_repo).GetById(postId);
+            var canDelete = (!String.IsNullOrEmpty(userId) && !(post.DeleteVotes.Contains(new DeleteVote
+            {
+                PostId = postId,
+                UserId = userId
+            })));
+            if (canDelete)
+            {
+                post.DeleteVotes.Add(new DeleteVote
+                {
+                    UserId = userId
+                });
+            }
+            await _repo.UpdateAsync(post);
+
+            return canDelete;
         }
 
         public async Task<bool> FlagPost(string postId, string userId)
         {
 
             var post = await ((IVotedPostRepository)_repo).GetById(postId);
-            var canFlag = !(post.PostFlags.Contains(new Domain.PostFlag
+            var canFlag = (!String.IsNullOrEmpty(userId) && !(post.PostFlags.Contains(new Domain.PostFlag
             {
                 PostId = postId,
                 UserId = userId
-            }));
+            })));
             if (canFlag)
             {
                 post.PostFlags.Add(new Domain.PostFlag

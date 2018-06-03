@@ -1,10 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Synchronized.Domain;
 using Synchronized.Repository.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Synchronized.Repository
@@ -21,6 +18,8 @@ namespace Synchronized.Repository
                 .AsNoTracking()
                 .Include(p => p.Votes)
                 .Include(p => p.PostFlags)
+                .Include(p => p.DeleteVotes)
+                .Include(p => p.Comments)
                 .Where(p => p.Id == postId)
                 .SingleOrDefaultAsync();
             return post;

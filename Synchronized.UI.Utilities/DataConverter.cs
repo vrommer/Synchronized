@@ -95,6 +95,7 @@ namespace Synchronized.UI.Utilities
                 comment.Id = String.Copy(from.Id);
                 comment.PublisherId = String.Copy(from.PublisherId);
                 comment.PublisherName = String.Copy(from.PublisherName);
+                comment.VotedPostId = String.Copy(from.VotedPostId);
             }
 
             return comment;            

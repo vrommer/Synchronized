@@ -189,10 +189,7 @@ namespace Synchronized.Core.Utilities
         public ServiceModel.Comment Convert(Domain.Comment from)
         {
             var to = _factory.GetComment();
-            if (from.VotedPost != null)
-            {
-                to.VotedPostId = from.VotedPost.Id;
-            }
+            to.VotedPostId = String.Copy(from.PostId);
             // ServiceModel.Post 
             AddPostPart(from, to);
 
