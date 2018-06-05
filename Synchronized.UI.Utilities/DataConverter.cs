@@ -155,7 +155,9 @@ namespace Synchronized.UI.Utilities
 
         public Answer Convert(AnswerViewModel from)
         {
-            throw new NotImplementedException();
+            var answer = _serviceModelFactory.GetAnswer();
+            answer.Body = String.Copy(from.Body);
+            return answer;
         }
 
         public List<Answer> Convert(ICollection<AnswerViewModel> from)

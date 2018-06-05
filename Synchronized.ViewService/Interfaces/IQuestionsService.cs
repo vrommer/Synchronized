@@ -11,5 +11,6 @@ namespace Synchronized.ViewServices.Interfaces
         Task<PaginatedList<QuestionForQuestionsPage>> GetQuestionsIndexPageModel(int pageNumber, string sortOrder, string searchTerm);
         Task<QuestionForDetailsPage> GetQuestionDetailsPageModel(string questionId, string userId);
         Task<string> AskQuestion(AskViewModel question, string userId);
+        Task AnswerQuestion(AnswerViewModel answer, string userId, string questionId);
     }
 }

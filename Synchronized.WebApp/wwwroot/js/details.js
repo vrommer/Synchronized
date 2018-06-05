@@ -161,6 +161,10 @@ $(() => {
                 <button type="button" class="btn btn-link synched-edit">Edit</button>
                 <button type="button" class="btn btn-link synched-delete">Delete</button>
             </div>
+            <div class="synched-meta">
+                ${comment.publisherName}
+                ${comment.datePosted}
+            </div>
         `
         var comments = $(`#${this.id} .synched-comments`)
         if (!comments.length) {

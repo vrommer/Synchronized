@@ -11,6 +11,7 @@ namespace Synchronized.ViewModel
         public DateTime DatePosted { get; set; }
         public string PublisherName { get; set; }
         public string PublisherId { get; set; }
+        public string QuestionId { get; set; }
         public int Points { get; set; }
         public bool Accapted { get; set; }
 

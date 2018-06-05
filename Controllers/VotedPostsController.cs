@@ -4,9 +4,6 @@ using Microsoft.Extensions.Logging;
 using Synchronized.Core.Interfaces;
 using Synchronized.UI.Utilities.Interfaces;
 using Synchronized.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Synchronized.Controllers
@@ -59,8 +56,11 @@ namespace Synchronized.Controllers
         // Post: /api/VotedPosts/AddComment
         public async Task<IActionResult> CommentOnPost([FromBody] CommentViewModel viewModelComment)
         {
-            string userId = await GetUserIdAsync();
-            var comment = await _votedPostsService.CommentOnPost(viewModelComment.VotedPostId, viewModelComment.Body, userId);
+            var user = await GetUserAsync();
+            var userId = user.Id;
+            var userName = user.UserName;
+            //string userId = await GetUserIdAsync();
+            var comment = await _votedPostsService.CommentOnPost(viewModelComment.VotedPostId, viewModelComment.Body, userId, userName);
 
             return new ObjectResult(comment);
         }

@@ -11,6 +11,7 @@ using SharedLib.Infrastructure.Constants;
 using Synchronized.Domain;
 using Synchronized.ServiceModel;
 using System;
+using Synchronized.ViewModel;
 
 namespace Synchronized.Core
 {
@@ -162,6 +163,10 @@ namespace Synchronized.Core
             {
                 return null;
             }
+            if (!await TagsAreValid(question.Tags))
+            {
+                return null;
+            }
             var domainQuestion = _converter.Convert(question);
             try
             {
@@ -190,6 +195,14 @@ namespace Synchronized.Core
         private async Task<bool> TagIsValidAsync(string tagId)
         {
             return await ((IQuestionsRepository)_repo).GetQuestionTagById(tagId) != null;
+        }
+
+        public async Task AnswerQuestion(ServiceModel.Answer answer, string questionId)
+        {
+            var question = await ((IQuestionsRepository)_repo).GetQuestionById(questionId);
+            var domainAnswer = _converter.Convert(answer);
+            question.Answers.Add(domainAnswer);
+            await ((IQuestionsRepository)_repo).UpdateAsync(question);
         }
     }
 }

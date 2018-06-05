@@ -182,6 +182,7 @@ namespace Synchronized.Core.Utilities
         {
             var to = _serviceModelFactory.GetAnswer();
             to.IsAccepted = from.IsAccepted;
+            to.QuestionId = String.Copy(from.QuestionId);
             // ServiceModel.Post
             AddPostPart(from, to);
             // ServiceModel.VotedPost
@@ -242,7 +243,10 @@ namespace Synchronized.Core.Utilities
 
         public Domain.Answer Convert(ServiceModel.Answer from)
         {
-            throw new NotImplementedException();
+            var answer = _domainModelFactory.GetAnswer();
+            answer.PublisherId = String.Copy(from.PublisherId);
+            answer.Body = String.Copy(from.Body);
+            return answer;
         }
 
         public Domain.Comment Convert(ServiceModel.Comment from)

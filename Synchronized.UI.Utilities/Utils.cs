@@ -17,5 +17,7 @@ namespace Synchronized.UI.Utilities
             userId = user?.Id;
             return userId;
         }
+
+        public static async Task<ApplicationUser> GetUserAsync(HttpContext context, UserManager<ApplicationUser> userManager) => await userManager.GetUserAsync(context.User);
     }
 }

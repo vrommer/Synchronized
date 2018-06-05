@@ -10,6 +10,9 @@ using Synchronized.UI.Utilities.Interfaces;
 
 namespace Synchronized.ViewServices
 {
+    /// <summary>
+    /// This service provides functionality for working with questions
+    /// </summary>
     public class QuestionsService : Interfaces.IQuestionsService
     {
         private int pageSize = 20;
@@ -24,11 +27,20 @@ namespace Synchronized.ViewServices
             _factory = factory;
         }
 
+        public async Task AnswerQuestion(AnswerViewModel answer, string userId, string questionId)
+        {
+            if ((!String.IsNullOrEmpty(userId)) && (!String.IsNullOrEmpty(questionId)) && (answer != null))
+            {
+                var serviceModelAnswer = _converter.Convert(answer);
+                serviceModelAnswer.PublisherId = String.Copy(userId);
+                await _questionsService.AnswerQuestion(serviceModelAnswer, questionId);
+            }
+        }
+
         public async Task<string> AskQuestion(AskViewModel question, string userId)
         {
-            if (!await _questionsService.TagsAreValid(question.Tags)) return null;
             var serviceModelQuestion = _converter.Convert(question);
-            serviceModelQuestion.PublisherId = userId;
+            serviceModelQuestion.PublisherId = String.Copy(userId);
             var asked = await _questionsService.AskQuestion(serviceModelQuestion);
             return asked;
         }

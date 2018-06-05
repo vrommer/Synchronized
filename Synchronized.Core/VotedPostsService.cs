@@ -19,10 +19,10 @@ namespace Synchronized.Core
         {
         }
 
-        public async Task<ServiceModel.Comment> CommentOnPost(string postId, string commentBody, string userId)
+        public async Task<ServiceModel.Comment> CommentOnPost(string postId, string commentBody, string userId, string userName)
         {
             var post = await((IVotedPostRepository)_repo).GetById(postId);
-            var canComment = (!String.IsNullOrEmpty(userId));
+            var canComment = ((!String.IsNullOrEmpty(userId)) && (!String.IsNullOrEmpty(userId)));
             var comment = new Domain.Comment();
             if (canComment)
             {
@@ -33,6 +33,8 @@ namespace Synchronized.Core
             }
 
             var serviceModelComment = _converter.Convert(comment);
+            serviceModelComment.PublisherName = String.Copy(userName);
+            serviceModelComment.DatePosted = comment.DatePosted;
             return serviceModelComment;
         }
 

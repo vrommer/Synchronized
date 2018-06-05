@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Synchronized.ServiceModel;
 using Synchronized.UI.Utilities;
+using Synchronized.ViewModel;
 using Synchronized.ViewModel.QuestionsViewModels;
 using Synchronized.ViewServices.Interfaces;
+using System;
 using System.Threading.Tasks;
 
 namespace Synchronized.WebApp.Pages.Questions
@@ -17,7 +18,7 @@ namespace Synchronized.WebApp.Pages.Questions
 
         //private IQuestionsService _questionsService;
         private readonly ILogger<DetailsModel> _logger;
-        IQuestionsService _localService;
+        IQuestionsService _questionsService;
         private readonly UserManager<Domain.ApplicationUser> _userManager;
 
         public DetailsModel(
@@ -27,7 +28,7 @@ namespace Synchronized.WebApp.Pages.Questions
             UserManager<Domain.ApplicationUser> userManager
             )
         {
-            _localService = localService;
+            _questionsService = localService;
             _logger = logger;
             _userManager = userManager;
         }
@@ -35,11 +36,11 @@ namespace Synchronized.WebApp.Pages.Questions
         public async Task OnGetAsync(string id)
         {
             var userId = await Utils.GetUserIdAsync(HttpContext, _userManager);
-            Question = await _localService.GetQuestionDetailsPageModel(id, userId);
+            Question = await _questionsService.GetQuestionDetailsPageModel(id, userId);
         }
 
         [BindProperty]
-        public Answer Answer { get; set; }
+        public AnswerViewModel Answer { get; set; }
 
         public async Task<IActionResult> OnPostAsync(string id)
         {
@@ -47,8 +48,8 @@ namespace Synchronized.WebApp.Pages.Questions
             {
                 return Page();
             }
-
-            var ueserId = await Utils.GetUserIdAsync(HttpContext, _userManager);
+            var userId = await Utils.GetUserIdAsync(HttpContext, _userManager);
+            await _questionsService.AnswerQuestion(Answer, userId, id);
 
             return RedirectToPage("/Questions/Details", new { id = id });
         }
