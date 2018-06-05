@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Synchronized.ServiceModel;
+using Synchronized.UI.Utilities;
 using Synchronized.ViewModel.QuestionsViewModels;
 using Synchronized.ViewServices.Interfaces;
 using System.Threading.Tasks;
@@ -16,12 +17,12 @@ namespace Synchronized.WebApp.Pages.Questions
 
         //private IQuestionsService _questionsService;
         private readonly ILogger<DetailsModel> _logger;
-        ILocalService _localService;
+        IQuestionsService _localService;
         private readonly UserManager<Domain.ApplicationUser> _userManager;
 
         public DetailsModel(
             //IQuestionsService questionsService,
-            ILocalService localService,
+            IQuestionsService localService,
             ILogger<DetailsModel> logger,
             UserManager<Domain.ApplicationUser> userManager
             )
@@ -33,9 +34,7 @@ namespace Synchronized.WebApp.Pages.Questions
 
         public async Task OnGetAsync(string id)
         {
-            string userId = null;
-            var usr = await GetCurrentUserAsync();
-            userId = usr?.Id;
+            var userId = await Utils.GetUserIdAsync(HttpContext, _userManager);
             Question = await _localService.GetQuestionDetailsPageModel(id, userId);
         }
 
@@ -48,17 +47,10 @@ namespace Synchronized.WebApp.Pages.Questions
             {
                 return Page();
             }
-            var usr = await GetCurrentUserAsync();
 
-            //Question = _questionsService.FindQuestionById(id);
-            //Answer.PublisherId = usr.Id;
+            var ueserId = await Utils.GetUserIdAsync(HttpContext, _userManager);
 
-            //Question.Answers.Add(Answer);
-
-            //_questionsService.UpdateQuestion(Question);
             return RedirectToPage("/Questions/Details", new { id = id });
         }
-
-        private Task<Domain.ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
     }
 }

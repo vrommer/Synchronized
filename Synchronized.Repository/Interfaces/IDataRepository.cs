@@ -12,10 +12,9 @@ namespace Synchronized.Repository.Interfaces
         Task<T> GetById(string entityId);
         IQueryable<T> GetBy(Expression<Func<T, bool>> predicate);
         List<T> GetPage(int pageNumber, int pageSize, string searchTerm, string filter);
-        Task AddAsync(T entity);
+        Task<string> AddAsync(T entity);
         Task UpdateAsync(T Entity);
         Task DeleteAsync(string entityId);
-        int GetCount();
-
+        int GetCount();        
     }
 }

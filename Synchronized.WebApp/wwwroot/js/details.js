@@ -9,7 +9,7 @@ $(() => {
     $(`#${questionViewModel.question.id} .vote-up-btn`).on("click", VoteUpQuestion.bind(questionViewModel.question))
     $(`#${questionViewModel.question.id} .vote-down-btn`).on("click", VoteDownQuestion.bind(questionViewModel.question))
     $(`#${questionViewModel.question.id} .synched-flag`).on("click", flagPost.bind(question))
-    $(`#${questionViewModel.question.id} .comment-body`).on("keypress", submitComment.bind(question));    
+    $(`#${questionViewModel.question.id} .comment-body`).on("keydown", submitComment.bind(question));
     $(`#${questionViewModel.question.id} .synched-delete`).on("click", deleteVotedPost.bind(question));
 
     for (var id in questionViewModel.answers) {
@@ -21,7 +21,8 @@ $(() => {
         $(`#${answer.id} .vote-up-btn`).on("click", VoteUpAnswer.bind(answer))
         $(`#${answer.id} .vote-down-btn`).on("click", VoteDownAnswer.bind(answer))
         $(`#${answer.id} .synched-flag`).on("click", flagPost.bind(answer));
-        $(`#${answer.id} .comment-body`).on("keypress", submitComment.bind(answer));        
+        $(`#${answer.id} .comment-body`).on("keydown", submitComment.bind(answer));     
+        //$(`#${answer.id} .comment-body`).keydown(newLine);  
         $(`#${answer.id} .synched-delete`).on("click", deleteVotedPost.bind(answer));
     }
 
@@ -122,7 +123,7 @@ $(() => {
 
     function submitComment(event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
-        if (keycode == '13') {
+        if (keycode == '13' && event.ctrlKey) {
             var commentForm = $(`#${this.id} .synched-comment-form`);
             var commentBody = commentForm.find("textarea").val();
             ajaxRequest("POST", "/api/VotedPosts/CommentOnPost", { votedPostId: this.id, body: commentBody })
@@ -130,6 +131,14 @@ $(() => {
                 .then(hideComment.bind(this))                
                 .catch(function () { alert("Failure!") });
         }
+    }
+
+    function newLine(e) {
+        if (e.keyCode === 13 && e.ctrlKey) {
+            $(this).val(function (i, val) {
+                return val + "\n";
+            });
+        } 
     }
 
     function showComment() {

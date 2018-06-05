@@ -22,12 +22,12 @@ namespace Synchronized.WebApp.Pages.Questions
 
         private const int PAGE_SIZE = 20;
         //private readonly IQuestionsService _service;
-        private readonly ILocalService _localService;
+        private readonly IQuestionsService _localService;
         private readonly ILogger<IndexModel> _logger;
 
         public IndexModel(
             //IQuestionsService service,
-            ILocalService localService,
+            IQuestionsService localService,
             ILogger<IndexModel> logger
             )
         {

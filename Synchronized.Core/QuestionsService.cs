@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using SharedLib.Infrastructure.Constants;
 using Synchronized.Domain;
 using Synchronized.ServiceModel;
+using System;
 
 namespace Synchronized.Core
 {
@@ -139,7 +140,7 @@ namespace Synchronized.Core
 
         public async Task<ServiceModel.Question> ViewQuestion(string questionId, string userId)
         {
-            var question = await((IQuestionsRepository)_repo).GetQuestionById(questionId);
+            var question = await ((IQuestionsRepository)_repo).GetQuestionById(questionId);
             var serviceQuestion = _converter.Convert(question);
             var canView = CanView(userId, serviceQuestion);
             if (canView)
@@ -153,6 +154,42 @@ namespace Synchronized.Core
                 serviceQuestion.Views++;
             }
             return serviceQuestion;
+        }
+
+        public async Task<string> AskQuestion(ServiceModel.Question question)
+        {
+            if (question.PublisherId == null)
+            {
+                return null;
+            }
+            var domainQuestion = _converter.Convert(question);
+            try
+            {
+                var questionId = await ((IQuestionsRepository)_repo).AddAsync(domainQuestion);
+                return questionId;
+            } catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public async Task<bool> TagsAreValid(string tags)
+        {
+            var tagNamesArray = tags.Split(",");
+            for (int i = 0; i < tagNamesArray.Length; i++)
+            {
+                var tagIsValid = await TagIsValidAsync(tagNamesArray[i]);
+                if (!tagIsValid)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private async Task<bool> TagIsValidAsync(string tagId)
+        {
+            return await ((IQuestionsRepository)_repo).GetQuestionTagById(tagId) != null;
         }
     }
 }

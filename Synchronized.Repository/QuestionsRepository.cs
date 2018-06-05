@@ -9,9 +9,11 @@ namespace Synchronized.Repository
 {
     public class QuestionsRepository : PostsRepository<Question>,  IQuestionsRepository
     {
+        private DbSet<Tag> _tagsSet;
 
         public QuestionsRepository(DbContext context): base(context)
         {
+            _tagsSet = context.Set<Tag>();
         }
 
         public async Task<List<Question>> GetPageAsync(int pageIndex, int pageSize)
@@ -135,6 +137,11 @@ namespace Synchronized.Repository
         public async Task<Comment> GetCommentById(string commentId)
         {
             throw new System.NotImplementedException();
+        }
+
+        public async Task<Tag> GetQuestionTagById(string tagId)
+        {
+            return await _tagsSet.FindAsync(tagId);
         }
     }
 }

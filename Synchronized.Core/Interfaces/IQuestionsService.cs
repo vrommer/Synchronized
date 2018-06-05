@@ -1,8 +1,6 @@
-﻿using Synchronized.ServiceModel;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Synchronized.SharedLib.Utilities;
 using SharedLib.Infrastructure.Constants;
-using Synchronized.Domain;
 
 namespace Synchronized.Core.Interfaces
 {
@@ -12,5 +10,7 @@ namespace Synchronized.Core.Interfaces
         Task<ServiceModel.Question> VoteForQuestion(string postId, VoteType upVote, string userId);
         Task<ServiceModel.Answer> VoteForAnswer(string postId, VoteType downVote, string userId);
         Task<ServiceModel.Question> ViewQuestion(string questionId, string userId);
+        Task<string> AskQuestion(ServiceModel.Question question);
+        Task<bool> TagsAreValid(string tags);
     }
 }

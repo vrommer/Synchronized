@@ -14,5 +14,6 @@ namespace Synchronized.Repository.Interfaces
         Task<Answer> GetAnswerById(string postId);
         Task<Comment> GetCommentById(string commentId);
         Task UpdateAnswerAsync(Answer answer);
+        Task<Tag> GetQuestionTagById(string tagId);
     }
 }

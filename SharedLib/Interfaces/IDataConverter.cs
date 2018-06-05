@@ -3,10 +3,12 @@ using System.Collections.Generic;
 
 namespace Synchronized.SharedLib.Interfaces
 {
-    public interface IDataConverter<TSource, TTarget> where TSource: class
-        where TTarget : class
+    public interface IDataConverter<TFirst, TSecond> where TFirst: class
+        where TSecond : class
     {
-        TTarget Convert(TSource from);
-        List<TTarget> Convert(ICollection<TSource> from);
+        TSecond Convert(TFirst from);
+        TFirst Convert(TSecond from);
+        List<TSecond> Convert(ICollection<TFirst> from);
+        List<TFirst> Convert(ICollection<TSecond> from);
     }
 }

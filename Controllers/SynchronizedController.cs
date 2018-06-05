@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Synchronized.UI.Utilities;
 using Synchronized.UI.Utilities.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -24,12 +25,8 @@ namespace Synchronized.Controllers
 
         protected async Task<string> GetUserIdAsync()
         {
-            string userId = null;
-            var user = await GetCurrentUserAsync();
-            userId = user?.Id;
+            var userId = await  Utils.GetUserIdAsync(HttpContext, _userManager);
             return userId;
-        }
-
-        protected Task<Domain.ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+        }        
     }
 }

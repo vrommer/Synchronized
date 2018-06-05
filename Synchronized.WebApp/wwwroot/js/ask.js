@@ -1,13 +1,25 @@
-﻿$("textarea").jqte({
-    formats: [
-        ["p", "Normal"],
-        ["pre", "Code"]
-    ]
-});
+﻿$(() => {
 
-$('input[id=TagNames]').tagsInput({
-    'height': '44px',
-    'width': '100%'
-});
+    $(`.question-tags`).on("keydown", intercept);
+    $(`.question-tags`).on("keyup", intercept);
+    $(`.question-tags`).on("keypress", intercept);
+    $("textarea").jqte({
+        formats: [
+            ["p", "Normal"],
+            ["pre", "Code"]
+        ]
+    });
 
-$('.tagsinput').addClass('form-control');
+    $('.question-tags').tagsInput({
+        'height': '44px',
+        'width': '100%'
+    });
+
+    $('.question-tags').addClass('form-control');
+
+    function intercept(event) {
+        if (event.keyCode === 13) {
+            return false;
+        }
+    }
+});

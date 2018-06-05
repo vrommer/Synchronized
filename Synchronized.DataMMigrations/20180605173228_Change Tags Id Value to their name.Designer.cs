@@ -12,9 +12,10 @@ using System;
 namespace Synchronized.Data.Migrations
 {
     [DbContext(typeof(SynchronizedDbContext))]
-    partial class SynchronizedDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180605173228_Change Tags Id Value to their name")]
+    partial class ChangeTagsIdValuetotheirname
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

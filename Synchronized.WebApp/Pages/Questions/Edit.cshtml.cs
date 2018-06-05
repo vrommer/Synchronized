@@ -11,15 +11,12 @@ namespace Synchronized.WebApp.Pages.Questions
     public class EditModel : PageModel
     {
         private IQuestionsServiceOld _questionsService;
-        private ITagsService _tagsService;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public EditModel(IQuestionsServiceOld questionsService,
-            ITagsService tagsService,
             UserManager<ApplicationUser> userManager)
         {
             _questionsService = questionsService;
-            _tagsService = tagsService;
             _userManager = userManager;
         }
 
@@ -31,29 +28,7 @@ namespace Synchronized.WebApp.Pages.Questions
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-            ApplicationUser usr = await GetCurrentUserAsync();
-
-            Question.QuestionTags = new List<QuestionTag>();
-            Question.PublisherId = usr.Id;
-
-            string[] TageNamesArray = TagNames.Split(',');
-            for (int i = 0; i < TageNamesArray.Length; i++)
-            {
-                Tag tag = await _tagsService.FindTagByName(TageNamesArray[i]);
-                Question.QuestionTags.Add(new QuestionTag
-                {
-                    TagId = tag.Id
-                });
-            }
-
-            await _questionsService.CreateAsync(Question);
-            return RedirectToPage("/Index");
+            return null;
         }
-
-        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
     }
 }

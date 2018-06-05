@@ -7,20 +7,23 @@ using Synchronized.ViewModel;
 using Synchronized.ViewModel.QuestionsViewModels;
 using Synchronized.ViewModelFactories.Interfaces;
 using Synchronized.SharedLib.Utilities;
+using Synchronized.Core.Factories.Interfaces;
 
 namespace Synchronized.UI.Utilities
 {
     public class DataConverter : IDataConverter
     {
-        private IViewModelFactory _factory;
+        private IViewModelFactory _viewModelFacotry;
+        private IServiceModelFactory _serviceModelFactory;
 
-        public DataConverter(IViewModelFactory  factory)
+        public DataConverter(IViewModelFactory  viewModelFactory, IServiceModelFactory serviceModelFactory)
         {
-            _factory = factory;
+            _viewModelFacotry = viewModelFactory;
+            _serviceModelFactory = serviceModelFactory;
         }
         public QuestionForHomePage Convert(Question from)
         {
-            var to = _factory.GetQuestionForHomePage();
+            var to = _viewModelFacotry.GetQuestionForHomePage();
 
             to.Id = String.Copy(from.Id);
             to.HasAnswers = (from.Answers.Count > 0);
@@ -34,7 +37,7 @@ namespace Synchronized.UI.Utilities
 
         public List<QuestionForHomePage> Convert(ICollection<Question> from)
         {
-            var questions = _factory.GetPaginatedList<QuestionForHomePage>(((PaginatedList<Question>)from).TotalPages, ((PaginatedList<Question>)from).PageIndex, ((PaginatedList<Question>)from).TotalSize);
+            var questions = _viewModelFacotry.GetPaginatedList<QuestionForHomePage>(((PaginatedList<Question>)from).TotalPages, ((PaginatedList<Question>)from).PageIndex, ((PaginatedList<Question>)from).TotalSize);
 
             foreach (var q in from)
             {
@@ -52,7 +55,7 @@ namespace Synchronized.UI.Utilities
 
         public AnswerViewModel Convert(Answer from)
         {
-            var answer = _factory.GetAnswer();
+            var answer = _viewModelFacotry.GetAnswer();
 
             answer.Accapted = from.IsAccepted;
             answer.Body = String.Copy(from.Body);
@@ -69,7 +72,7 @@ namespace Synchronized.UI.Utilities
 
         public List<AnswerViewModel> Convert(ICollection<Answer> from)
         {
-            var answers = _factory.GetAnswers();
+            var answers = _viewModelFacotry.GetAnswers();
 
             if (from != null)
             {
@@ -88,7 +91,7 @@ namespace Synchronized.UI.Utilities
 
         public CommentViewModel Convert(Comment from)
         {
-            var comment = _factory.GetComment();
+            var comment = _viewModelFacotry.GetComment();
             if (from != null) { 
                 comment.Body = String.Copy(from.Body);
                 comment.DatePosted = from.DatePosted;
@@ -103,7 +106,7 @@ namespace Synchronized.UI.Utilities
 
         public List<CommentViewModel> Convert(ICollection<Comment> from)
         {
-            var comments = _factory.GetComments();
+            var comments = _viewModelFacotry.GetComments();
 
             if (from != null)
             {
@@ -120,9 +123,73 @@ namespace Synchronized.UI.Utilities
             return comments;
         }
 
+        public Question Convert(QuestionForHomePage from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Question> Convert(ICollection<QuestionForHomePage> from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Question Convert(QuestionForQuestionsPage from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Question> Convert(ICollection<QuestionForQuestionsPage> from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Question Convert(QuestionForDetailsPage from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Question> Convert(ICollection<QuestionForDetailsPage> from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Answer Convert(AnswerViewModel from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Answer> Convert(ICollection<AnswerViewModel> from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Comment Convert(CommentViewModel from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Comment> Convert(ICollection<CommentViewModel> from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Question Convert(AskViewModel from)
+        {
+            var question = _serviceModelFactory.GetQuestion();
+            question.Body = String.Copy(from.Body);
+            question.Title = String.Copy(from.Title);
+            question.Tags = String.Copy(from.Tags);
+            return question;
+        }
+
+        public List<Question> Convert(ICollection<AskViewModel> from)
+        {
+            throw new NotImplementedException();
+        }
+
         QuestionForQuestionsPage IDataConverter<Question, QuestionForQuestionsPage>.Convert(Question from)
         {
-            var question = _factory.GetQuestionForQuestionsPage();
+            var question = _viewModelFacotry.GetQuestionForQuestionsPage();
 
             question.AnswersCount = from.Answers.Count;
             question.Body = String.Copy(from.Body);
@@ -142,7 +209,7 @@ namespace Synchronized.UI.Utilities
 
         List<QuestionForQuestionsPage> IDataConverter<Question, QuestionForQuestionsPage>.Convert(ICollection<Question> from)
         {
-            var questions = _factory.GetPaginatedList<QuestionForQuestionsPage>(((PaginatedList<Question>)from).TotalPages, ((PaginatedList<Question>)from).PageIndex, ((PaginatedList<Question>)from).TotalSize);
+            var questions = _viewModelFacotry.GetPaginatedList<QuestionForQuestionsPage>(((PaginatedList<Question>)from).TotalPages, ((PaginatedList<Question>)from).PageIndex, ((PaginatedList<Question>)from).TotalSize);
 
             foreach (var q in from)
             {
@@ -159,7 +226,7 @@ namespace Synchronized.UI.Utilities
 
         QuestionForDetailsPage IDataConverter<Question, QuestionForDetailsPage>.Convert(Question from)
         {
-            var question = _factory.GetQuestionForDetailsPage();
+            var question = _viewModelFacotry.GetQuestionForDetailsPage();
 
             question.AnswersCount = from.Answers.Count;
             question.Body = String.Copy(from.Body);
@@ -181,6 +248,16 @@ namespace Synchronized.UI.Utilities
         }
 
         List<QuestionForDetailsPage> IDataConverter<Question, QuestionForDetailsPage>.Convert(ICollection<Question> from)
+        {
+            throw new NotImplementedException();
+        }
+
+        AskViewModel IDataConverter<Question, AskViewModel>.Convert(Question from)
+        {
+            throw new NotImplementedException();
+        }
+
+        List<AskViewModel> IDataConverter<Question, AskViewModel>.Convert(ICollection<Question> from)
         {
             throw new NotImplementedException();
         }

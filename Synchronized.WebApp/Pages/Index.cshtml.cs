@@ -17,15 +17,14 @@ namespace Synchronized.WebApp.Pages
         public string SearchString { get; set; }
         public string SortOrder { get; set; }
 
-        private const int PAGE_SIZE = 15; 
         //private readonly IQuestionsService _service;
-        private readonly ILocalService _localService;
+        private readonly IQuestionsService _localService;
         private readonly ILogger<IndexModel> _logger;
 
         public IndexModel(
             //IQuestionsService service, 
             ILogger<IndexModel> logger,
-            ILocalService localService
+            IQuestionsService localService
             )
         {
             //_service = service;
@@ -37,7 +36,6 @@ namespace Synchronized.WebApp.Pages
         public async Task OnGetAsync([MustBeInQueryParameterConvention]int? pageNumber, [MustBeInQueryParameterConvention]string sortOrder = null)
         {
             CurrentPage = pageNumber ?? 1;
-            //Questions = await _service.GetQuestionsPageAsync(CurrentPage, PAGE_SIZE);
             Questions = await _localService.GetHomePageModel(CurrentPage);
         }
     }

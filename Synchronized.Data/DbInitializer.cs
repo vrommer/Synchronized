@@ -265,7 +265,7 @@ namespace Synchronized.Data
             {
                 var tag = new Tag
                 {
-                    Name = tagNames[i],
+                    Id = tagNames[i],
                     Description = "Repurposing user stories with the possibility to be CMSable.",
                     PublisherId = UserIds[rand.Next(UserIds.Count)]
                 };

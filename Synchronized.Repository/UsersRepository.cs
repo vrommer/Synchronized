@@ -296,9 +296,10 @@ namespace Synchronized.Repository.Repositories
             return await GetPage(pageIndex, pageSize).ToListAsync();
         }
 
-        public async Task AddAsync(ApplicationUser entity)
+        public async Task<string> AddAsync(ApplicationUser entity)
         {
             await _userStore.CreateAsync(entity);
+            return entity.Id;
         }
 
         public void Update(ApplicationUser user)

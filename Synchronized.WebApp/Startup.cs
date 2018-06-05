@@ -23,6 +23,7 @@ using Synchronized.UI.Utilities.Interfaces;
 using Synchronized.ViewModelFactories.Interfaces;
 using Synchronized.Core;
 using Synchronized.Repository;
+using Synchronized.Domain.Factories.Interfaces;
 
 namespace Synchronized.WebApp
 {
@@ -120,12 +121,13 @@ namespace Synchronized.WebApp
                     x.TheCallingAssembly();
                     x.AssemblyContainingType<IEmailSender>();
                     x.AssemblyContainingType<IQuestionsRepository>();
-                    x.AssemblyContainingType<IQuestionsService>();
+                    x.AssemblyContainingType<Core.Interfaces.IQuestionsService>();
                     x.AssemblyContainingType<ServiceModel.Post>();
                     x.AssemblyContainingType<Post>();
-                    x.AssemblyContainingType<ILocalService>();
+                    x.AssemblyContainingType<ViewServices.Interfaces.IQuestionsService>();
                     x.AssemblyContainingType<IServiceModelFactory>();
                     x.AssemblyContainingType<IViewModelFactory>();
+                    x.AssemblyContainingType<IDomainModelFactory>();
                     x.WithDefaultConventions();
                     x.LookForRegistries();
                 });

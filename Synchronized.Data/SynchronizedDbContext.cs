@@ -34,6 +34,11 @@ namespace Synchronized.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+
+            builder.Entity<Tag>()
+                .Property(t => t.Id)
+                .ValueGeneratedNever();
+
             builder.Entity<Post>()
                 .Property(p => p.Id)
                 .ValueGeneratedOnAdd();

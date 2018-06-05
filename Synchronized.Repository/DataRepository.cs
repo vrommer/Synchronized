@@ -21,9 +21,11 @@ namespace Synchronized.Repository
             _set = context.Set<T>();
         }
 
-        public Task AddAsync(T entity)
+        public async Task<string> AddAsync(T entity)
         {
-            throw new NotImplementedException();
+            _set.Add(entity);
+            await _context.SaveChangesAsync();
+            return entity.Id;
         }
 
         public Task DeleteAsync(string entityId)

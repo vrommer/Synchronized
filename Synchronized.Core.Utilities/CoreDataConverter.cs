@@ -7,16 +7,19 @@ using Synchronized.ServiceModel;
 using Synchronized.Core.Factories.Interfaces;
 using System.Collections.Generic;
 using System;
+using Synchronized.Domain.Factories.Interfaces;
 
 namespace Synchronized.Core.Utilities
 {
     public class CoreDataConverter : IDataConverter
     {
-        private IServiceModelFactory _factory;
+        private IServiceModelFactory _serviceModelFactory;
+        private IDomainModelFactory _domainModelFactory;
 
-        public CoreDataConverter(IServiceModelFactory factory)
+        public CoreDataConverter(IServiceModelFactory serviceModelFactory, IDomainModelFactory domainModel)
         {
-            _factory = factory;
+            _serviceModelFactory = serviceModelFactory;
+            _domainModelFactory = domainModel;
         }
 
         public List<ServiceModel.Post> Convert(ICollection<Domain.Post> source)
@@ -37,7 +40,7 @@ namespace Synchronized.Core.Utilities
         /// <returns>List of ServiceModel.Question</returns>
         public List<ServiceModel.Question> Convert(ICollection<Domain.Question> source)
         {
-            var questions = _factory.GetQuestionsList();
+            var questions = _serviceModelFactory.GetQuestionsList();
             if (source != null)
             {
                 source.ToList().ForEach(q =>
@@ -50,7 +53,7 @@ namespace Synchronized.Core.Utilities
 
         public List<ServiceModel.Answer> Convert(ICollection<Domain.Answer> source)
         {
-            var answers = _factory.GetAnswersList();
+            var answers = _serviceModelFactory.GetAnswersList();
             if (source != null)
             {
                 source.ToList().ForEach(a =>
@@ -63,7 +66,7 @@ namespace Synchronized.Core.Utilities
 
         public List<ServiceModel.Comment> Convert(ICollection<Domain.Comment> source)
         {
-            var comments = _factory.GetCommentsList();
+            var comments = _serviceModelFactory.GetCommentsList();
             if (source != null)
             {
                 source.ToList().ForEach(c =>
@@ -96,7 +99,7 @@ namespace Synchronized.Core.Utilities
 
         public ServiceModel.VotedPost Convert(Domain.VotedPost from)
         {
-            var post = _factory.GetVotedPost();
+            var post = _serviceModelFactory.GetVotedPost();
             post.Body = String.Copy(from.Body);
             if (from.Comments != null)
             {
@@ -133,7 +136,7 @@ namespace Synchronized.Core.Utilities
             var builder = new StringBuilder();
             bool first = true;
 
-            var to = _factory.GetQuestion();
+            var to = _serviceModelFactory.GetQuestion();
 
             to.Answers = Convert(from.Answers);                      
 
@@ -156,11 +159,11 @@ namespace Synchronized.Core.Utilities
                 {
                     if (!first)
                     {
-                        builder.Append(",").Append(questionTag.Tag.Name);
+                        builder.Append(",").Append(questionTag.Tag.Id);
                     }
                     else
                     {
-                        builder.Append(questionTag.Tag.Name);
+                        builder.Append(questionTag.Tag.Id);
                         first = false;
                     }
                 }
@@ -177,7 +180,7 @@ namespace Synchronized.Core.Utilities
 
         public ServiceModel.Answer Convert(Domain.Answer from)
         {
-            var to = _factory.GetAnswer();
+            var to = _serviceModelFactory.GetAnswer();
             to.IsAccepted = from.IsAccepted;
             // ServiceModel.Post
             AddPostPart(from, to);
@@ -188,7 +191,7 @@ namespace Synchronized.Core.Utilities
 
         public ServiceModel.Comment Convert(Domain.Comment from)
         {
-            var to = _factory.GetComment();
+            var to = _serviceModelFactory.GetComment();
             to.VotedPostId = String.Copy(from.PostId);
             // ServiceModel.Post 
             AddPostPart(from, to);
@@ -207,6 +210,97 @@ namespace Synchronized.Core.Utilities
         }
 
         public PostDelete Convert(DeleteVote from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Domain.Post Convert(ServiceModel.Post from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Domain.VotedPost Convert(ServiceModel.VotedPost from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Domain.Question Convert(ServiceModel.Question from)
+        {
+            var question = _domainModelFactory.GetQuestion();
+            question.Title = String.Copy(from.Title);
+            question.Body = String.Copy(from.Body);
+            question.PublisherId = String.Copy(from.PublisherId);
+            var tageNamesArray = from.Tags.Split(',');
+            for (int i = 0; i<tageNamesArray.Length; i++)
+            {
+                var questionTag = _domainModelFactory.GetQuestionTag();
+                questionTag.TagId = String.Copy(tageNamesArray[i]);
+                question.QuestionTags.Add(questionTag);
+            }
+            return question;
+        }
+
+        public Domain.Answer Convert(ServiceModel.Answer from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Domain.Comment Convert(ServiceModel.Comment from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ApplicationUser Convert(User from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Domain.PostFlag Convert(ServiceModel.PostFlag from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DeleteVote Convert(PostDelete from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Domain.Post> Convert(ICollection<ServiceModel.Post> from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Domain.VotedPost> Convert(ICollection<ServiceModel.VotedPost> from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Domain.Question> Convert(ICollection<ServiceModel.Question> from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Domain.Answer> Convert(ICollection<ServiceModel.Answer> from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Domain.Comment> Convert(ICollection<ServiceModel.Comment> from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<ApplicationUser> Convert(ICollection<User> from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Domain.PostFlag> Convert(ICollection<ServiceModel.PostFlag> from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<DeleteVote> Convert(ICollection<PostDelete> from)
         {
             throw new NotImplementedException();
         }
