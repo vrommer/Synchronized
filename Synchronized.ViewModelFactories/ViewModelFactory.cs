@@ -4,6 +4,8 @@ using Synchronized.ViewModel;
 using Synchronized.ViewModel.QuestionsViewModels;
 using Synchronized.ViewModelFactories.Interfaces;
 using System;
+using Synchronized.ViewModel.TagsViewModels;
+using System.Threading.Tasks;
 
 namespace Synchronized.ViewModelFactories
 {
@@ -66,6 +68,16 @@ namespace Synchronized.ViewModelFactories
         public List<CommentViewModel> GetComments()
         {
             return new List<CommentViewModel>();
+        }
+
+        public TagViewModel GetTag()
+        {
+            return new TagViewModel();
+        }
+
+        public List<TagViewModel> GetTags()
+        {
+            return new List<TagViewModel>();
         }
     }
 }

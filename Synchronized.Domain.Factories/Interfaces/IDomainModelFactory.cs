@@ -7,6 +7,7 @@ namespace Synchronized.Domain.Factories.Interfaces
     public interface IDomainModelFactory
     {
         Question GetQuestion();
+        List<Question> GetQuestionsList();
         Answer GetAnswer();
         Comment GetComment();
         QuestionTag GetQuestionTag();

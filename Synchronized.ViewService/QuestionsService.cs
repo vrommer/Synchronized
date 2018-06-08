@@ -1,10 +1,8 @@
-﻿using Synchronized.ViewServices.Interfaces;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Synchronized.SharedLib.Utilities;
 using Synchronized.ViewModel;
 using Synchronized.ViewModel.QuestionsViewModels;
-using Synchronized.Core.Interfaces;
 using Synchronized.ViewModelFactories.Interfaces;
 using Synchronized.UI.Utilities.Interfaces;
 
@@ -17,10 +15,10 @@ namespace Synchronized.ViewServices
     {
         private int pageSize = 20;
         private Core.Interfaces.IQuestionsService _questionsService;
-        private IDataConverter _converter;
+        private IPostsConverter _converter;
         private IViewModelFactory _factory;
 
-        public QuestionsService(Core.Interfaces.IQuestionsService questionsService, IDataConverter converter, IViewModelFactory factory)
+        public QuestionsService(Core.Interfaces.IQuestionsService questionsService, IPostsConverter converter, IViewModelFactory factory)
         {
             _questionsService = questionsService;
             _converter = converter;

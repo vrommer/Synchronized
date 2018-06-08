@@ -15,7 +15,7 @@ namespace Synchronized.Controllers
 
         public VotedPostsController(
             IVotedPostService votedPostsService,
-            IDataConverter converter,
+            IPostsConverter converter,
             ILogger<VotedPostsController> logger,
             UserManager<Domain.ApplicationUser> userManager
         ): base(converter, userManager)

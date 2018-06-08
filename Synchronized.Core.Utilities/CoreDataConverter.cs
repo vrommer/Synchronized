@@ -309,6 +309,34 @@ namespace Synchronized.Core.Utilities
             throw new NotImplementedException();
         }
 
+        public ServiceModel.Tag Convert(Domain.Tag from)
+        {
+            var serviceTag =_serviceModelFactory.GetTag();
+            serviceTag.Description = from.Description;
+            serviceTag.Name = from.Id;
+            return serviceTag;
+        }
+
+        public Domain.Tag Convert(ServiceModel.Tag from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<ServiceModel.Tag> Convert(ICollection<Domain.Tag> from)
+        {
+            var tags = _serviceModelFactory.GetTagsList();
+            foreach (var t in from)
+            {
+                tags.Add(Convert(t));
+            }
+            return tags;
+        }
+
+        public List<Domain.Tag> Convert(ICollection<ServiceModel.Tag> from)
+        {
+            throw new NotImplementedException();
+        }
+
         private void AddPostPart(Domain.Post from, ServiceModel.Post to)
         {
             to.Id = String.Copy(from.Id);

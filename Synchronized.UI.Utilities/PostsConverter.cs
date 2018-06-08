@@ -11,7 +11,7 @@ using Synchronized.Core.Factories.Interfaces;
 
 namespace Synchronized.UI.Utilities
 {
-    public class DataConverter : IDataConverter
+    public class DataConverter : IPostsConverter
     {
         private IViewModelFactory _viewModelFacotry;
         private IServiceModelFactory _serviceModelFactory;

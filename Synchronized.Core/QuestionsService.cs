@@ -9,13 +9,11 @@ using Synchronized.Core.Factories.Interfaces;
 using System.Collections.Generic;
 using SharedLib.Infrastructure.Constants;
 using Synchronized.Domain;
-using Synchronized.ServiceModel;
 using System;
-using Synchronized.ViewModel;
 
 namespace Synchronized.Core
 {
-    public class QuestionsService : PostsService<Domain.Question, ServiceModel.Question>, IQuestionsService
+    public class QuestionsService : PostsService<Question, ServiceModel.Question>, IQuestionsService
     {
         private HtmlParser _parser;
 

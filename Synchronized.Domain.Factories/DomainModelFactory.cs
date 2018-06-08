@@ -24,6 +24,11 @@ namespace Synchronized.Domain.Factories
             return question;
         }
 
+        public List<Question> GetQuestionsList()
+        {
+            return new List<Question>();
+        }
+
         public QuestionTag GetQuestionTag()
         {
             return new QuestionTag();

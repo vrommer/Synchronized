@@ -22,15 +22,8 @@ $(() => {
         $(`#${answer.id} .vote-down-btn`).on("click", VoteDownAnswer.bind(answer))
         $(`#${answer.id} .synched-flag`).on("click", flagPost.bind(answer));
         $(`#${answer.id} .comment-body`).on("keydown", submitComment.bind(answer));     
-        //$(`#${answer.id} .comment-body`).keydown(newLine);  
         $(`#${answer.id} .synched-delete`).on("click", deleteVotedPost.bind(answer));
     }
-
-    //allComments.forEach(comment => {
-    //    $(`#${comment.id} .synched-delete`).on("click", deleteVotedPost.bind(comment));
-    //    $(`#${comment.id} .synched-flag`).on("click", flagPost.bind(answer));
-    //    //$(`#${comment.id} .submit-comment`).on("click", submitComment.bind(comment));
-    //});
 
     $(".synched-comment").on("click", showComment);
 
@@ -153,25 +146,8 @@ $(() => {
         $(`#${this.id} .synched-comment-form`).hide().find("textarea").val("");
     }
 
-    function addNewCommentToPage(comment) { 
-        var text = `
-            <hr />
-            <div class="comment-content" id="${comment.id}">
-                <div>${comment.body}</div>
-                <button type="button" class="btn btn-link synched-edit">Edit</button>
-                <button type="button" class="btn btn-link synched-delete">Delete</button>
-            </div>
-            <div class="synched-meta">
-                ${comment.publisherName}
-                ${comment.datePosted}
-            </div>
-        `
-        var comments = $(`#${this.id} .synched-comments`)
-        if (!comments.length) {
-            comments = $('<div class="synched-comments"></div>')
-            $(`#${this.id} .synched-meta`).after(comments);
-        }
-        comments.append(text);
+    function addNewCommentToPage(comment) {
+        location.reload();
     }
 
     function deleteVotedPost() {

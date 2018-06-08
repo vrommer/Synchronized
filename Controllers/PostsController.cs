@@ -22,7 +22,7 @@ namespace Synchronized.WebApp.Controllers
             IQuestionsService questionsService,
             IVotedPostService votedPostsService,
             IPostsService<Post> postsService,
-            IDataConverter converter,
+            IPostsConverter converter,
             ILogger<PostsController> logger,
             UserManager<Domain.ApplicationUser> userManager
         ): base(converter, userManager)

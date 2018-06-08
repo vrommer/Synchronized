@@ -9,11 +9,11 @@ namespace Synchronized.Controllers
 {
     public class SynchronizedController: Controller
     {
-        protected readonly IDataConverter _dataConverter;
+        protected readonly IPostsConverter _dataConverter;
         protected readonly UserManager<ApplicationUser> _userManager;
 
         public SynchronizedController(
-            IDataConverter converter,
+            IPostsConverter converter,
             UserManager<ApplicationUser> userManager
         )
         {

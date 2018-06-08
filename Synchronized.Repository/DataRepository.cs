@@ -50,7 +50,7 @@ namespace Synchronized.Repository
             return _set.Count();
         }
 
-        public virtual List<T> GetPage(int pageNumber, int pageSize, string searchTerm, string filter)
+        public virtual List<T> GetPage(int pageNumber, int pageSize, string searchTerm, string sortOrder)
         {
             throw new NotImplementedException();
         }

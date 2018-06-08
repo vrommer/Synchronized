@@ -15,7 +15,7 @@ namespace Synchronized.Controllers
 
         public QuestionsController(
             IQuestionsService questionsService,
-            IDataConverter converter,
+            IPostsConverter converter,
             ILogger<QuestionsController> logger,
             UserManager<Domain.ApplicationUser> userManager
         ) : base(converter, userManager)

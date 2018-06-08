@@ -87,5 +87,20 @@ namespace Synchronized.Core.Factories
                 FlaggerIds = new List<string>()                 
             };
         }
+
+        public Tag GetTag()
+        {
+            return new Tag();           
+        }
+
+        public List<Tag> GetTagsList()
+        {
+            return new List<Tag>();
+        }
+
+        public PaginatedList<Tag> GetTagsList(List<Tag> tags, int count, int pageSize, int pageIndex)
+        {
+            return new PaginatedList<Tag>(tags, count, pageIndex, pageSize);
+        }
     }
 }

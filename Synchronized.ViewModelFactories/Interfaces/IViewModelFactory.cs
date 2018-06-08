@@ -3,6 +3,7 @@ using Synchronized.SharedLib.Utilities;
 using Synchronized.ViewModel;
 using Synchronized.ViewModel.QuestionsViewModels;
 using System;
+using Synchronized.ViewModel.TagsViewModels;
 
 namespace Synchronized.ViewModelFactories.Interfaces
 {
@@ -19,5 +20,7 @@ namespace Synchronized.ViewModelFactories.Interfaces
         CommentViewModel GetComment();
         List<AnswerViewModel> GetAnswers();
         List<CommentViewModel> GetComments();
+        TagViewModel GetTag();
+        List<TagViewModel> GetTags();
     }
 }

@@ -12,7 +12,7 @@ namespace Synchronized.Core
 {
     public class DataService<TEntity, TServiceModel> : IDataService<TServiceModel>
         where TEntity : class, IEntity
-        where TServiceModel : ServiceModel.Post
+        where TServiceModel : class
     {
         public DataService(IDataRepository<TEntity> repo, IServiceModelFactory factory, IDataConverter converter)
         {
@@ -37,6 +37,7 @@ namespace Synchronized.Core
 
         public virtual Task<PaginatedList<TServiceModel>> GetPage(int pageNumber, int pageSize, string sortOrder, string filter)
         {
+
             throw new NotImplementedException();
         }
     }
