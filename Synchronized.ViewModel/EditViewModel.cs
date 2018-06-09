@@ -1,6 +1,6 @@
-﻿namespace Synchronized.ViewModel.QuestionsViewModels
+﻿namespace Synchronized.ViewModel
 {
-    public class AskViewModel
+    public class EditViewModel
     {
         public string Title { get; set; }
         public string Body { get; set; }

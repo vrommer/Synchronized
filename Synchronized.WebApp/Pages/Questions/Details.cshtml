@@ -26,7 +26,8 @@
                     @Html.Raw(Model.Question.Body)
                 </div>
             </div>
-            <button type="button" class="btn btn-link synched-edit">Edit</button>
+            @*<a class="flex-sm-fill text-sm-center nav-link" asp-page="/Questions/Index" asp-route-sortOrder="@Model.DateSort">Date posted</a>*@
+            <a asp-page="/Questions/Edit" asp-route-id="@Model.Question.Id" class="btn btn-link synched-edit">Edit</a>
             <button type="button" class="btn btn-link synched-flag">Flag</button>
             <button type="button" class="btn btn-link synched-delete">Delete</button>
             <div class="synched-meta">

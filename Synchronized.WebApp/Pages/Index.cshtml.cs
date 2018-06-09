@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Synchronized.SharedLib.Utilities;
-using Synchronized.ViewModel;
+using Synchronized.ViewModel.QuestionsViewModels;
 using Synchronized.ViewServices.Interfaces;
 using Synchronized.WebApp.Conventions;
 using System.Threading.Tasks;

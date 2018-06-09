@@ -11,7 +11,6 @@ namespace Synchronized.Core.Interfaces
         Task<bool> FlagPost(string postId, string userId);
         Task<bool> DeletePost(string postId, string userId);
         Task<VotedPost> GetVotedPostBy(Expression<Func<VotedPost, bool>> predicate);
-        //Task<VotedPost> VoteForPost<VotedPost>(string postId, VoteType voteType, string userId);
         Task<Comment> CommentOnPost(string postId, string commentBody, string userId, string userName);
     }
 }

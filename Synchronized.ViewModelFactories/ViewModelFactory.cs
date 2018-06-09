@@ -5,7 +5,6 @@ using Synchronized.ViewModel.QuestionsViewModels;
 using Synchronized.ViewModelFactories.Interfaces;
 using System;
 using Synchronized.ViewModel.TagsViewModels;
-using System.Threading.Tasks;
 using Synchronized.ViewModel.UsersViewModels;
 
 namespace Synchronized.ViewModelFactories
@@ -84,6 +83,18 @@ namespace Synchronized.ViewModelFactories
         public UserViewModel GetUser()
         {
             return new UserViewModel();
+        }
+
+        public EditViewModel GetEditViewModel()
+        {
+            return new EditViewModel();
+        }
+
+        public T GetOfType<T>()
+        {
+            Type t = typeof(T);
+            object obj = Activator.CreateInstance(t);
+            return (T)obj;
         }
     }
 }

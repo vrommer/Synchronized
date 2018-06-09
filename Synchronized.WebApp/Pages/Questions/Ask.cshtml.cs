@@ -39,11 +39,10 @@ namespace Synchronized.WebApp.Pages.Questions
             var userId = await Utils.GetUserIdAsync(HttpContext, _userManager);
             
             var questionId = await _service.AskQuestion(Question, userId);
-            if (string.IsNullOrEmpty(questionId))
+            if (string.IsNullOrWhiteSpace(questionId))
             {
                 return RedirectToPage("/Index");
             }
-            //return RedirectToPage($"/Questions/Details/{questionId}");
             return RedirectToPage("/Questions/Details/", new { id = questionId });
         }
     }

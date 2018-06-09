@@ -10,10 +10,11 @@ namespace Synchronized.ViewModelFactories.Interfaces
 {
     public interface IViewModelFactory
     {
+        // Generic method for creating any kind of object
+        T GetOfType<T>();
+
         QuestionForHomePage GetQuestionForHomePage();
-
         QuestionForQuestionsPage GetQuestionForQuestionsPage();
-
         QuestionForDetailsPage GetQuestionForDetailsPage();
         List<QuestionForHomePage> GetHomePageQuestionsList();
         PaginatedList<T> GetPaginatedList<T>(int count, int pageIndex, int pageSize);
@@ -24,5 +25,6 @@ namespace Synchronized.ViewModelFactories.Interfaces
         UserViewModel GetUser();
         TagViewModel GetTag();
         List<TagViewModel> GetTags();
+        EditViewModel GetEditViewModel();
     }
 }

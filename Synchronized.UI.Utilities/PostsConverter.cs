@@ -189,6 +189,34 @@ namespace Synchronized.UI.Utilities
             throw new NotImplementedException();
         }
 
+        public EditViewModel Convert(VotedPost from)
+        {
+            var editPostViewModel = _viewModelFacotry.GetOfType<EditViewModel>();
+            editPostViewModel.Body = String.Copy(from.Body);
+            // If from is of type ServiceModel.Question
+            if (from.GetType().Equals(typeof(Question)))
+            {
+                editPostViewModel.Title = String.Copy(((Question)from).Title);
+                editPostViewModel.Tags = String.Copy(((Question)from).Tags);
+            }
+            return editPostViewModel;
+        }
+
+        public VotedPost Convert(EditViewModel from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<EditViewModel> Convert(ICollection<VotedPost> from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<VotedPost> Convert(ICollection<EditViewModel> from)
+        {
+            throw new NotImplementedException();
+        }
+
         QuestionForQuestionsPage IDataConverter<Question, QuestionForQuestionsPage>.Convert(Question from)
         {
             var question = _viewModelFacotry.GetQuestionForQuestionsPage();

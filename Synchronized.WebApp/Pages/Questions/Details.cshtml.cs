@@ -6,29 +6,25 @@ using Synchronized.UI.Utilities;
 using Synchronized.ViewModel;
 using Synchronized.ViewModel.QuestionsViewModels;
 using Synchronized.ViewServices.Interfaces;
-using System;
 using System.Threading.Tasks;
 
 namespace Synchronized.WebApp.Pages.Questions
 {
     public class DetailsModel : PageModel
     {
-        //public Question Question { get; set; }
         public QuestionForDetailsPage Question { get; set; }
 
-        //private IQuestionsService _questionsService;
         private readonly ILogger<DetailsModel> _logger;
         IQuestionsService _questionsService;
         private readonly UserManager<Domain.ApplicationUser> _userManager;
 
         public DetailsModel(
-            //IQuestionsService questionsService,
-            IQuestionsService localService,
+            IQuestionsService questionsService,
             ILogger<DetailsModel> logger,
             UserManager<Domain.ApplicationUser> userManager
             )
         {
-            _questionsService = localService;
+            _questionsService = questionsService;
             _logger = logger;
             _userManager = userManager;
         }

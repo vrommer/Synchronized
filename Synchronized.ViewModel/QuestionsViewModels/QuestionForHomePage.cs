@@ -1,4 +1,4 @@
-﻿namespace Synchronized.ViewModel
+﻿namespace Synchronized.ViewModel.QuestionsViewModels
 {
     public class QuestionForHomePage
     {

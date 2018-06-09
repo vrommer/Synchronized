@@ -1,12 +1,9 @@
-﻿using SharedLib.Infrastructure.Constants;
-using Synchronized.ServiceModel;
-using System;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using Synchronized.ServiceModel;
 
 namespace Synchronized.Core.Interfaces
 {
     public interface IPostsService<TEntity>: IDataService<TEntity> where TEntity: Post
     {
+
     }
 }

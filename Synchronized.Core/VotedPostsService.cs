@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Synchronized.Core.Factories.Interfaces;
 using Synchronized.Core.Utilities.Interfaces;
 using Synchronized.Domain;
@@ -8,7 +6,6 @@ using Synchronized.Repository.Interfaces;
 using Synchronized.Core.Interfaces;
 using System.Threading.Tasks;
 using SharedLib.Infrastructure.Constants;
-using Synchronized.ServiceModel;
 using System.Linq.Expressions;
 
 namespace Synchronized.Core
@@ -17,6 +14,29 @@ namespace Synchronized.Core
     {
         public VotedPostsService(IVotedPostRepository repo, IServiceModelFactory factory, IDataConverter converter) : base(repo, factory, converter)
         {
+        }
+
+        public async override Task<ServiceModel.VotedPost> GetById(string id)
+        {
+            var domainPost = await _repo.GetById(id);
+            // If this domainPost is of type Domain.Question
+            if (domainPost.GetType().Equals(typeof(Question))) {
+                var corePost = _converter.Convert((Question)domainPost);
+                return corePost; // var Can only be assigned once and cannot be declared or re-assigned
+            }
+            // If this domainPost is of type Domain.Answer
+            else if (domainPost.GetType().Equals(typeof(Answer)))
+            {
+                var corePost = _converter.Convert((Answer)domainPost);
+                return corePost;
+            }
+            // In every other case treat domainPost as a Domain.VotedPost
+            else
+            {
+                var corePost = _converter.Convert(domainPost);
+                return corePost;
+            }
+
         }
 
         public async Task<ServiceModel.Comment> CommentOnPost(string postId, string commentBody, string userId, string userName)
