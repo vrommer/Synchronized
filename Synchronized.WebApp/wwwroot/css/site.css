@@ -107,6 +107,39 @@
     border: none;
 }
 
+.app-user-details {
+    width: 36rem;
+    margin: 0 auto;
+}
+
+#app-user-image,
+#app-user-info,
+#app-user-rating {
+    display: inline-block;
+}
+
+#app-user-image,
+#app-user-info {
+    float: left;
+}
+
+#app-user-info {
+    margin-left: 15px;
+}
+
+#app-user-rating {
+    float: right;
+}
+
+#app-about-user {
+    display: block !important;
+}
+
+#app-edit-user {
+    font-size: 0.8em;
+    float: right;
+}
+
 /* Questions 
 ---------------*/
 .details-date,

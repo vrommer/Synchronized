@@ -14,9 +14,11 @@ namespace Synchronized.Core
         {
         }
 
-        public override Task<PaginatedList<User>> GetPage(int pageIndex, int pageSize, string sortOrder, string searchTerm)
+        public async override Task<User> GetById(string id)
         {
-            return base.GetPage(pageIndex, pageSize, sortOrder, searchTerm);
+            var user = await _repo.GetById(id);
+            var coreUser = _converter.Convert(user);
+            return coreUser;
         }
 
         public PaginatedList<User> GetUsersPage(int pageIndex, int pageSize, string sortOrder, string searchTerm)

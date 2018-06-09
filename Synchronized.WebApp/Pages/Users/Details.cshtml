@@ -6,20 +6,24 @@
 
 <h2>Details</h2>
 
-<div>
-    <h4>User</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.ApplicationUser.UserName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ApplicationUser.UserName)
-        </dd>
-
-    </dl>
+<div class="card app-user-details">
+    <div class="card-header">
+        <div id="app-edit-user"><a href="#">edit</a></div>
+    </div>
+    <div class="card-body">
+        <div>
+            <div id="app-user-image"><img src="@Model.ViewUser.ImageUri" /></div>
+            <div id="app-user-info">
+                <h5>@Model.ViewUser.Name</h5>
+                <div>@Model.ViewUser.Address</div>
+                <div>Member since: </div>
+                <div>Label1, Label2</div>
+                <div>Role</div>
+            </div>
+            <div id="app-user-rating">@Model.ViewUser.Points</div>
+        </div>        
+    </div>
+    <div class="card-footer">
+        <div id="app-about-user"><h5>About</h5></div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Back to List", "Index")
-</p>

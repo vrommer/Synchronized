@@ -312,9 +312,11 @@ namespace Synchronized.Repository.Repositories
             throw new NotImplementedException();
         }
 
-        Task<ApplicationUser> IDataRepository<ApplicationUser>.GetById(string entityId)
+        async Task<ApplicationUser> IDataRepository<ApplicationUser>.GetById(string entityId)
         {
-            throw new NotImplementedException();
+            var user = await _set.AsNoTracking()
+                .Where(u => u.Id.Equals(entityId)).FirstOrDefaultAsync();
+            return user;
         }
 
         public override List<ApplicationUser> GetPage(int pageIndex, int pageSize, string searchTerm, string filter)

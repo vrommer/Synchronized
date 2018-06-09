@@ -3,6 +3,7 @@ using Synchronized.ViewServices.Interfaces;
 using Synchronized.ViewModel.UsersViewModels;
 using Synchronized.ViewModelFactories.Interfaces;
 using Synchronized.UI.Utilities.Interfaces;
+using System.Threading.Tasks;
 
 namespace Synchronized.ViewServices
 {
@@ -18,6 +19,13 @@ namespace Synchronized.ViewServices
             _usersService = usersService;
             _converter = dataConverter;
             _factory = factory;
+        }
+
+        public async Task<UserViewModel> GetDetailsPage(string id)
+        {
+            var user = await _usersService.GetById(id);
+            var viewUser = _converter.Convert(user);
+            return viewUser;
         }
 
         public PaginatedList<UserViewModel> GetIndexPage(int pageIndex)
