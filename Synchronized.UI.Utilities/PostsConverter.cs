@@ -11,12 +11,12 @@ using Synchronized.Core.Factories.Interfaces;
 
 namespace Synchronized.UI.Utilities
 {
-    public class DataConverter : IPostsConverter
+    public class PostsConverter : IPostsConverter
     {
         private IViewModelFactory _viewModelFacotry;
         private IServiceModelFactory _serviceModelFactory;
 
-        public DataConverter(IViewModelFactory  viewModelFactory, IServiceModelFactory serviceModelFactory)
+        public PostsConverter(IViewModelFactory  viewModelFactory, IServiceModelFactory serviceModelFactory)
         {
             _viewModelFacotry = viewModelFactory;
             _serviceModelFactory = serviceModelFactory;

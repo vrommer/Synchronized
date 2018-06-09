@@ -6,6 +6,7 @@ using Synchronized.ViewModelFactories.Interfaces;
 using System;
 using Synchronized.ViewModel.TagsViewModels;
 using System.Threading.Tasks;
+using Synchronized.ViewModel.UsersViewModels;
 
 namespace Synchronized.ViewModelFactories
 {
@@ -78,6 +79,11 @@ namespace Synchronized.ViewModelFactories
         public List<TagViewModel> GetTags()
         {
             return new List<TagViewModel>();
+        }
+
+        public UserViewModel GetUser()
+        {
+            return new UserViewModel();
         }
     }
 }

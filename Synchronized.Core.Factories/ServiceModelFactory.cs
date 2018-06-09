@@ -63,6 +63,11 @@ namespace Synchronized.Core.Factories
             return new User();
         }
 
+        public List<User> GetUsersList()
+        {
+            return new List<User>();
+        }
+
         public List<Question> GetQuestionsList()
         {
             return new List<Question>();
@@ -98,9 +103,14 @@ namespace Synchronized.Core.Factories
             return new List<Tag>();
         }
 
-        public PaginatedList<Tag> GetTagsList(List<Tag> tags, int count, int pageSize, int pageIndex)
+        public PaginatedList<Tag> GetTagsPage(List<Tag> tags, int count, int pageSize, int pageIndex)
         {
             return new PaginatedList<Tag>(tags, count, pageIndex, pageSize);
+        }
+
+        public PaginatedList<User> GetUsersPage(List<User> users, int count, int pageSize, int pageIndex)
+        {
+            return new PaginatedList<User>(users, count, pageIndex, pageIndex);           
         }
     }
 }

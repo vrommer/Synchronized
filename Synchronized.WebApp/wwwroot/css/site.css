@@ -84,16 +84,38 @@
     margin-top: 40px;
 }
 
+.synched-user-card a {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.synched-user-card a:hover {
+    text-decoration: none;
+}
+
+.app-user-image {
+    height: 70px;
+}
+
+.user-header-details {
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: top;
+}
+
+.app-usercard-item {
+    background-color: #dfdfdf;
+    border: none;
+}
+
 /* Questions 
 ---------------*/
-
 .details-date,
 .details-points,
 .details-points + i,
 .details-answers,
 .details-answers + i,
 .details-views,
-.details-views + i{
+.details-views + i {
     font-size: 1.2em;
 }
 

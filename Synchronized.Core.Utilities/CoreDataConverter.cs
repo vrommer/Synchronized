@@ -79,7 +79,12 @@ namespace Synchronized.Core.Utilities
 
         public List<User> Convert(ICollection<ApplicationUser> source)
         {
-            throw new NotImplementedException();
+            var users = _serviceModelFactory.GetUsersList();
+            foreach (var u in source)
+            {
+                users.Add(Convert(u));
+            }
+            return users;
         }
 
         public List<ServiceModel.PostFlag> Convert(ICollection<Domain.PostFlag> source)
@@ -202,7 +207,13 @@ namespace Synchronized.Core.Utilities
 
         public User Convert(ApplicationUser from)
         {
-            throw new NotImplementedException();
+            var serviceUser = _serviceModelFactory.GetUser();
+            serviceUser.Id = String.Copy(from.Id);
+            serviceUser.Name = String.Copy(from.UserName);
+            serviceUser.Email = String.Copy(from.Email);
+            serviceUser.Address = from.Address != null ? String.Copy(from.Address): "";
+            serviceUser.ImageUri = from.ImageUri != null ? String.Copy(from.ImageUri): "";
+            return serviceUser;
         }
 
         public ServiceModel.PostFlag Convert(Domain.PostFlag from)
@@ -312,8 +323,8 @@ namespace Synchronized.Core.Utilities
         public ServiceModel.Tag Convert(Domain.Tag from)
         {
             var serviceTag =_serviceModelFactory.GetTag();
-            serviceTag.Description = from.Description;
-            serviceTag.Name = from.Id;
+            serviceTag.Description = String.Copy(from.Description);
+            serviceTag.Name = String.Copy(from.Id);
             return serviceTag;
         }
 

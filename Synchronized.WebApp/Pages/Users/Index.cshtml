@@ -17,32 +17,22 @@
                 {
                     if (counter < modelArray.Length)
                     {
-
-                        @*<div class="col-md-3">
-                            <article>
-                                <div class="card synched-tag-card">
-                                    <div class="card-body">
-                                        <a asp-page="/Tags/Details" asp-route-id="@modelArray[counter].Id" class="card-link">
-                                            <input name=@tagsInputName id=@tagsInputName value=@modelArray[counter].Name />
-                                        </a>
-                                        <p class="card-text">@modelArray[counter].Description</p>
-                                    </div>
-                                </div>
-                            </article>
-                        </div>*@
                         <div class="col-md-3">
                             <article>
-                                <div class="card synched-user-card" style="height: 10rem;">
-                                    <div class="card-block user-card">
-                                        <img class="app-user-image" src=@modelArray[counter].ImageUri alt="user image"/>
-                                        <div class="user-header-details">
-                                            @*<h6 class="app-user-header">@modelArray[counter].UserName</h6>*@
-                                            <a href="/Users/Details/@modelArray[counter].Id">@modelArray[counter].UserName</a>
-                                            <p>@modelArray[counter].Address</p>
-                                        </div>
-                                        <p>@modelArray[counter].Points</p>                                              
-                                    </div>
-                                    }
+                                <div class="card synched-user-card">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item app-usercard-item">
+                                            <img class="app-user-image" src="@modelArray[counter].ImageUri" alt="user image" />
+                                            <div class="user-header-details">
+                                                <h5><a href="/Users/Details/@modelArray[counter].Id">@modelArray[counter].Name</a></h5>
+                                                <p>@modelArray[counter].Address</p>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item app-usercard-item">
+                                            <div>@modelArray[counter].Points</div>
+                                            <div>label1 label2 label3</div>
+                                        </li>
+                                    </ul>
                                 </div>
                             </article>
                         </div>

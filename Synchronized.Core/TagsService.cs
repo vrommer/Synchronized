@@ -18,7 +18,7 @@ namespace Synchronized.Core
         {
             var tags = ((ITagsRepository)_repo).GetPage(pageIndex, pageSize, sortOrder, searchTerm);
             var coreTags = _converter.Convert(tags);
-            var tagsPage = _factory.GetTagsList(coreTags, _repo.GetCount(), pageSize, pageIndex);
+            var tagsPage = _factory.GetTagsPage(coreTags, _repo.GetCount(), pageSize, pageIndex);
             return tagsPage;
         }
     }

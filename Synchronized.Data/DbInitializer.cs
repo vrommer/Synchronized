@@ -111,7 +111,12 @@ namespace Synchronized.Data
                 var roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
             }
 
-            var joseph = new ApplicationUser { Email = "mail1@example.com", EmailConfirmed = true, UserName = "joseph" };
+            var joseph = new ApplicationUser {
+                Email = "mail1@example.com",
+                EmailConfirmed = true,
+                UserName = "joseph",
+                ImageUri = "/pictures/user_default.png"
+            };
 
             var result = await userManager.CreateAsync(joseph, password);
 
@@ -133,6 +138,7 @@ namespace Synchronized.Data
                 {
                     Email = "mail" + i + "@example.com",
                     UserName = userNames[i],
+                    ImageUri = "/pictures/user_default.png",
                     Points = rand.Next(maxPoints)
                 };
                 users.Add(user);

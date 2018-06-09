@@ -118,6 +118,7 @@ namespace Synchronized.WebApp
                 _.Scan(x =>
                 {
                     x.TheCallingAssembly();
+                    x.AssemblyContainingType<IPostsConverter>();
                     x.AssemblyContainingType<IEmailSender>();
                     x.AssemblyContainingType<IQuestionsRepository>();
                     x.AssemblyContainingType<IQuestionsService>();
@@ -130,7 +131,7 @@ namespace Synchronized.WebApp
                     x.WithDefaultConventions();
                     x.LookForRegistries();
                 });
-                _.For<IPostsConverter>().Use<DataConverter>();
+                //_.For<IPostsConverter>().Use<DataConverter>();
                 _.For<IPostsService<ServiceModel.Post>>().Use<PostsService<Post, ServiceModel.Post>>();
                 _.For<IVotedPostService>().Use<VotedPostsService>();
                 _.For<IVotedPostRepository>().Use<VotedPostsRepository>();
@@ -138,7 +139,7 @@ namespace Synchronized.WebApp
                 _.For<IPostsRepository<Post>>().Use<PostsRepository<Post>>();
                 _.For<IDataRepository<VotedPost>>().Use<PostsRepository<VotedPost>>();
                 _.For<IPostsRepository<VotedPost>>().Use<PostsRepository<VotedPost>>();
-                _.For<ITagsConverter>().Use<TagsConverter>();
+                //_.For<ITagsConverter>().Use<TagsConverter>();
                 _.Populate(services);
             });
             return container.GetNestedContainer().GetInstance<IServiceProvider>();

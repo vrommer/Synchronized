@@ -13,13 +13,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Synchronized.Repository.Repositories
 {
-    public class UsersRepository : IUsersRepository, IUserStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>, IUserRoleStore<ApplicationUser>, 
+    public class UsersRepository : DataRepository<ApplicationUser>, IUsersRepository, IUserStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>, IUserRoleStore<ApplicationUser>, 
         IUserSecurityStampStore<ApplicationUser>, IUserEmailStore<ApplicationUser>, IQueryableUserStore<ApplicationUser>, 
         IUserLoginStore<ApplicationUser>, IUserTwoFactorStore<ApplicationUser>, IUserLockoutStore<ApplicationUser>, IUserPhoneNumberStore<ApplicationUser>
     {
         private readonly UserStore<ApplicationUser> _userStore;
 
-        public UsersRepository(DbContext context)
+        public UsersRepository(DbContext context): base(context)
         {
             _userStore = new UserStore<ApplicationUser>(context);
         }
@@ -317,24 +317,50 @@ namespace Synchronized.Repository.Repositories
             throw new NotImplementedException();
         }
 
-        public List<ApplicationUser> GetPage(int pageNumber, int pageSize, string searchTerm, string filter)
+        public override List<ApplicationUser> GetPage(int pageIndex, int pageSize, string searchTerm, string filter)
         {
-            throw new NotImplementedException();
-        }
+            var tags = _set.AsNoTracking()
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize);
 
-        public Task UpdateAsync(ApplicationUser Entity)
-        {
-            throw new NotImplementedException();
-        }
+            //switch (sortOrder)
+            //{
+            //    case "Date":
+            //        questions = questions.OrderBy(q => q.DatePosted.ToString());
+            //        break;
+            //    case "date_desc":
+            //        questions = questions.OrderByDescending(q => q.DatePosted.ToString());
+            //        break;
+            //    case "Answers":
+            //        questions = questions.OrderBy(q => q.Answers.Count);
+            //        break;
+            //    case "answers_desc":
+            //        questions = questions.OrderByDescending(q => q.Answers.Count);
+            //        break;
+            //    case "Views":
+            //        questions = questions.OrderBy(q => q.QuestionViews.Count);
+            //        break;
+            //    case "views_desc":
+            //        questions = questions.OrderByDescending(q => q.QuestionViews.Count);
+            //        break;
+            //    case "Points":
+            //        questions = questions.OrderBy(q => q.Votes.Count);
+            //        break;
+            //    case "points_desc":
+            //        questions = questions.OrderByDescending(q => q.Votes.Count);
+            //        break;
+            //    default:
+            //        questions = questions.OrderByDescending(q => q.Answers.Count);
+            //        break;
+            //}
 
-        public Task DeleteAsync(string entityId)
-        {
-            throw new NotImplementedException();
+            var tagsList = tags.ToList();
+            return tagsList;
         }
 
         int IDataRepository<ApplicationUser>.GetCount()
         {
-            throw new NotImplementedException();
+            return _set.Count();
         }
 
         #endregion

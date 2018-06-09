@@ -28,8 +28,8 @@ namespace Synchronized.UI.Utilities
         public TagViewModel Convert(Tag from)
         {
             var viewTag = _viewModelFactory.GetTag();
-            viewTag.Description = from.Description;
-            viewTag.Name = from.Name;
+            viewTag.Description = String.Copy(from.Description);
+            viewTag.Name = String.Copy(from.Name);
             return viewTag;
         }
 

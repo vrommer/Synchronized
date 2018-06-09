@@ -14,10 +14,12 @@ namespace Synchronized.Core.Factories.Interfaces
         List<Question> GetQuestionsList();
         List<Tag> GetTagsList();
         User GetUser();
+        List<User> GetUsersList();
         List<Answer> GetAnswersList();
         List<Comment> GetCommentsList();
         VotedPost GetVotedPost();
         Tag GetTag();
-        PaginatedList<Tag> GetTagsList(List<Tag> tags, int count, int pageSize, int pageIndex);
+        PaginatedList<Tag> GetTagsPage(List<Tag> tags, int count, int pageSize, int pageIndex);
+        PaginatedList<User> GetUsersPage(List<User> users, int count, int pageSize, int pageIndex);
     }
 }

@@ -4,6 +4,7 @@ using Synchronized.ViewModel;
 using Synchronized.ViewModel.QuestionsViewModels;
 using System;
 using Synchronized.ViewModel.TagsViewModels;
+using Synchronized.ViewModel.UsersViewModels;
 
 namespace Synchronized.ViewModelFactories.Interfaces
 {
@@ -20,6 +21,7 @@ namespace Synchronized.ViewModelFactories.Interfaces
         CommentViewModel GetComment();
         List<AnswerViewModel> GetAnswers();
         List<CommentViewModel> GetComments();
+        UserViewModel GetUser();
         TagViewModel GetTag();
         List<TagViewModel> GetTags();
     }

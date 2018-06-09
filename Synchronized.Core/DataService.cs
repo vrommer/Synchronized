@@ -35,9 +35,8 @@ namespace Synchronized.Core
             throw new NotImplementedException();
         }
 
-        public virtual Task<PaginatedList<TServiceModel>> GetPage(int pageNumber, int pageSize, string sortOrder, string filter)
+        public virtual Task<PaginatedList<TServiceModel>> GetPage(int pageIndex, int pageSize, string sortOrder, string searchTerm)
         {
-
             throw new NotImplementedException();
         }
     }
