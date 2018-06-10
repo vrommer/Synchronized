@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Synchronized.SharedLib.Utilities;
 using Synchronized.Core.Factories.Interfaces;
+using System;
 
 namespace Synchronized.Core.Factories
 {
@@ -111,6 +112,12 @@ namespace Synchronized.Core.Factories
         public PaginatedList<User> GetUsersPage(List<User> users, int count, int pageSize, int pageIndex)
         {
             return new PaginatedList<User>(users, count, pageIndex, pageIndex);           
+        }
+
+        public T GetOfType<T>()
+        {
+            object obj = Activator.CreateInstance(typeof(T));
+            return ((T)obj);
         }
     }
 }

@@ -39,6 +39,7 @@
 /* Ask
 ---------*/
 
+#synched-edit,
 #synched-ask,
 #synched-answer {
     margin: 40px;
@@ -48,21 +49,25 @@
     box-shadow: 10px 10px 30px grey;
 }
 
+#synched-edit .tagsinput,
 #synched-ask .tagsinput,
 #synched-answer .jqte_tool_label {
     overflow-y: hidden;
 }
 
+#synched-edit .jqte_tool_label,
 #synched-ask .jqte_tool_label,
 #synched-answer .jqte_tool_label{
     box-sizing: unset;
 }
 
+#synched-edit .jqte_editor,
 #synched-ask .jqte_editor,
 #synched-answer .jqte_editor{
     height: 300px;
 }
 
+#synched-edit .jqte,
 #synched-ask .jqte,
 #synched-answer .jqte{
     border: none;

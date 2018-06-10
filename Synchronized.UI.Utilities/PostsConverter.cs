@@ -192,6 +192,7 @@ namespace Synchronized.UI.Utilities
         public EditViewModel Convert(VotedPost from)
         {
             var editPostViewModel = _viewModelFacotry.GetOfType<EditViewModel>();
+            editPostViewModel.Id = String.Copy(from.Id);
             editPostViewModel.Body = String.Copy(from.Body);
             // If from is of type ServiceModel.Question
             if (from.GetType().Equals(typeof(Question)))

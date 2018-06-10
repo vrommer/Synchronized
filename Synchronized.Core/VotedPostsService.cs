@@ -7,6 +7,7 @@ using Synchronized.Core.Interfaces;
 using System.Threading.Tasks;
 using SharedLib.Infrastructure.Constants;
 using System.Linq.Expressions;
+using Synchronized.ServiceModel;
 
 namespace Synchronized.Core
 {
@@ -16,18 +17,31 @@ namespace Synchronized.Core
         {
         }
 
+        public async override Task<bool> Update(ServiceModel.VotedPost post)
+        {
+            var domainPost = await _repo.GetById(post.Id);
+            domainPost.Body = String.Copy(post.Body);
+            if (domainPost.GetType().Equals(typeof(Domain.Question)))
+            {
+                ((Domain.Question)domainPost).Title = String.Copy(((ServiceModel.Question)post).Title);
+                //((Domain.Question)domainPost).QuestionTags = _converter.Convert(((ServiceModel.Question)post).Tags);
+            }
+            await _repo.UpdateAsync(domainPost);
+            return true;
+        }
+
         public async override Task<ServiceModel.VotedPost> GetById(string id)
         {
             var domainPost = await _repo.GetById(id);
             // If this domainPost is of type Domain.Question
-            if (domainPost.GetType().Equals(typeof(Question))) {
-                var corePost = _converter.Convert((Question)domainPost);
+            if (domainPost.GetType().Equals(typeof(Domain.Question))) {
+                var corePost = _converter.Convert((Domain.Question)domainPost);
                 return corePost; // var Can only be assigned once and cannot be declared or re-assigned
             }
             // If this domainPost is of type Domain.Answer
-            else if (domainPost.GetType().Equals(typeof(Answer)))
+            else if (domainPost.GetType().Equals(typeof(Domain.Answer)))
             {
-                var corePost = _converter.Convert((Answer)domainPost);
+                var corePost = _converter.Convert((Domain.Answer)domainPost);
                 return corePost;
             }
             // In every other case treat domainPost as a Domain.VotedPost

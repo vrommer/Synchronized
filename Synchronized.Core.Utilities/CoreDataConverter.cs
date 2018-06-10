@@ -348,6 +348,24 @@ namespace Synchronized.Core.Utilities
             throw new NotImplementedException();
         }
 
+        public List<QuestionTag> Convert(string tags)
+        {
+            var questionTags = _domainModelFactory.GetInstance<List<QuestionTag>>(); 
+            var tageNamesArray = tags.Split(',');
+            for (int i = 0; i < tageNamesArray.Length; i++)
+            {
+                var questionTag = _domainModelFactory.GetQuestionTag();
+                questionTag.TagId = String.Copy(tageNamesArray[i]);
+                questionTags.Add(questionTag);
+            }
+            return questionTags;
+        }
+
+        public string Convert(List<QuestionTag> tags)
+        {
+            throw new NotImplementedException();
+        }
+
         private void AddPostPart(Domain.Post from, ServiceModel.Post to)
         {
             to.Id = String.Copy(from.Id);

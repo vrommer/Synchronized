@@ -86,7 +86,8 @@
                 <div class="col-md-10">
                     <div>@Html.Raw(answer.Body)</div>
                     <button type="button" class="btn btn-link synched-accept">Accept Answer</button>
-                    <button type="button" class="btn btn-link synched-edit">Edit</button>
+                    @*<button type="button" class="btn btn-link synched-edit">Edit</button>*@
+                    <a asp-page="/Questions/Edit" asp-route-id="@answer.Id" class="btn btn-link synched-edit">Edit</a>
                     <button type="button" class="btn btn-link synched-flag">Flag</button>
                     <button type="button" class="btn btn-link synched-delete">Delete</button>
                     <div class="synched-meta">

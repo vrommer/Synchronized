@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Synchronized.Domain;
+using System;
 using System.Collections.Generic;
 
 namespace Synchronized.ServiceModel

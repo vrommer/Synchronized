@@ -1,10 +1,7 @@
 ﻿using Synchronized.ViewServices.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Synchronized.ViewModel;
 using System.Threading.Tasks;
-using Synchronized.ServiceModel;
 using Synchronized.UI.Utilities.Interfaces;
 using Synchronized.ViewModelFactories.Interfaces;
 
@@ -29,9 +26,24 @@ namespace Synchronized.ViewServices
             return viewModel;
         }
 
-        public Task<string> UpdatePost(EditViewModel post)
+        public async Task<bool> UpdatePost(EditViewModel post)
         {
-            throw new NotImplementedException();
+            if (!String.IsNullOrEmpty(post.Title))
+            {
+                var corePost = _factory.GetOfType<ServiceModel.Question>();
+                corePost.Id = String.Copy(post.Id);
+                corePost.Body = String.Copy(post.Body);
+                corePost.Title = String.Copy(post.Title);
+                await _postsService.Update(corePost);
+            }
+            else
+            {
+                var corePost = _factory.GetOfType<ServiceModel.VotedPost>();
+                corePost.Id = String.Copy(post.Id);
+                corePost.Body = String.Copy(post.Body);
+                await _postsService.Update(corePost);
+            }
+            return true;
         }
     }
 }

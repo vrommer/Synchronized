@@ -1,4 +1,6 @@
-﻿namespace Synchronized.ServiceModel
+﻿using Synchronized.Domain;
+
+namespace Synchronized.ServiceModel
 {
     public class Tag
     {

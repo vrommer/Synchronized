@@ -20,6 +20,7 @@ namespace Synchronized.Core.Factories.Interfaces
         VotedPost GetVotedPost();
         Tag GetTag();
         PaginatedList<Tag> GetTagsPage(List<Tag> tags, int count, int pageSize, int pageIndex);
+        T GetOfType<T>();
         PaginatedList<User> GetUsersPage(List<User> users, int count, int pageSize, int pageIndex);
     }
 }

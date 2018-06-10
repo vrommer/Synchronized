@@ -10,5 +10,6 @@ namespace Synchronized.Core.Interfaces
         Task<T> GetBy(Expression<Func<T, bool>> predicate);
         Task<T> GetById(string Id);
         Task<PaginatedList<T>> GetPage(int pageNumber, int pageSize, string sortOrder, string filter);
+        Task<bool> Update(T entity);
     }
 }

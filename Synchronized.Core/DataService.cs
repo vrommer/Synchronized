@@ -32,11 +32,17 @@ namespace Synchronized.Core
 
         public virtual Task<TServiceModel> GetById(string Id)
         {
+
             throw new NotImplementedException();
         }
 
         public virtual Task<PaginatedList<TServiceModel>> GetPage(int pageIndex, int pageSize, string sortOrder, string searchTerm)
         {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task<bool> Update(TServiceModel entity)
+        {            
             throw new NotImplementedException();
         }
     }

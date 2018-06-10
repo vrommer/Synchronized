@@ -43,7 +43,7 @@ namespace Synchronized.WebApp.Pages.Questions
             {
                 return RedirectToPage("/Index");
             }
-            return RedirectToPage("/Questions/Details/", new { id = questionId });
+            return RedirectToPage("/Questions/Details", new { id = questionId });
         }
     }
 }
