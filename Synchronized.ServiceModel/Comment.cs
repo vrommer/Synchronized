@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Synchronized.ServiceModel
+﻿namespace Synchronized.ServiceModel
 {
     public class Comment: Post
     {

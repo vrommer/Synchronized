@@ -35,15 +35,16 @@ namespace Synchronized.WebApp.Pages.Questions
             Post = await _service.GetPostForEdit(id);
         }
 
-        public async Task<IActionResult> OnPostAsync(string postId)
+        public async Task<IActionResult> OnPostAsync(string id, string questionId)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-            Post.Id = String.Copy(postId);
+            Post.Id = String.Copy(id);
+            Post.QuestionId = String.Copy(questionId);
             var userId = await Utils.GetUserIdAsync(HttpContext, _userManager);
-            await _service.UpdatePost(Post);
+            var postId = await _service.UpdatePost(Post);
 
             return RedirectToPage("/Questions/Details", new { id = postId });
         }

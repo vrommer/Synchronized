@@ -199,6 +199,11 @@ namespace Synchronized.UI.Utilities
             {
                 editPostViewModel.Title = String.Copy(((Question)from).Title);
                 editPostViewModel.Tags = String.Copy(((Question)from).Tags);
+                editPostViewModel.QuestionId = String.Copy(from.Id);
+            }
+            else
+            {
+                editPostViewModel.QuestionId = String.Copy(((Answer)from).QuestionId);
             }
             return editPostViewModel;
         }

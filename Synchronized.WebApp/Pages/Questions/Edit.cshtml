@@ -8,7 +8,7 @@
     <div class="offset-md-2 col-md-8">
         <section>
             <div asp-validation-summary="All"></div>
-            <form method="POST" id="synched-edit" asp-route-postId="@Model.Post.Id">
+            <form method="POST" id="synched-edit" asp-route-id="@Model.Post.Id" asp-route-questionId="@Model.Post.QuestionId">
                 <h4>Edit</h4>
                 <hr />
                 @if (!String.IsNullOrWhiteSpace(Model.Post.Title)) { 
