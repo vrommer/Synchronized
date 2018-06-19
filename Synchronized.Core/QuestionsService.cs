@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using SharedLib.Infrastructure.Constants;
 using Synchronized.Domain;
 using System;
+using Synchronized.ViewModel;
 
 namespace Synchronized.Core
 {
@@ -201,6 +202,17 @@ namespace Synchronized.Core
             var domainAnswer = _converter.Convert(answer);
             question.Answers.Add(domainAnswer);
             await ((IQuestionsRepository)_repo).UpdateAsync(question);
+        }
+
+        public async Task AcceptAnswer(AnswerViewModel answer, string userId)
+        {
+            var canAccept = ((!String.IsNullOrEmpty(userId)) && (answer.QuestionPublisherId.Equals(userId)));
+            if (canAccept)
+            {
+                var domainAnswer = await ((IQuestionsRepository)_repo).GetAnswerById(answer.Id);
+                domainAnswer.IsAccepted = true;
+                await _repo.UpdateAsync(domainAnswer);
+            }            
         }
     }
 }

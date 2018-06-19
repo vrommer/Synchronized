@@ -12,6 +12,7 @@ namespace Synchronized.ViewModel
         public string PublisherName { get; set; }
         public string PublisherId { get; set; }
         public string QuestionId { get; set; }
+        public string QuestionPublisherId { get; set; }
         public int Points { get; set; }
         public bool Accapted { get; set; }
 

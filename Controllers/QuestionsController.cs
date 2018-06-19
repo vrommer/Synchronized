@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SharedLib.Infrastructure.Constants;
 using Synchronized.Core.Interfaces;
 using Synchronized.UI.Utilities.Interfaces;
+using Synchronized.ViewModel;
 using System.Threading.Tasks;
 
 namespace Synchronized.Controllers
@@ -24,7 +25,7 @@ namespace Synchronized.Controllers
             _logger = logger;
         }
 
-        // POST: /api/Posts/VoteUpQuestion
+        // POST: /api/Questions/VoteUpQuestion
         [HttpPost]
         public async Task<IActionResult> VoteUpQuestion([FromBody]string postId)
         {
@@ -34,7 +35,7 @@ namespace Synchronized.Controllers
             return new ObjectResult(questionView);
         }
 
-        // POST: /api/Posts/VoteDownQuestion
+        // POST: /api/Questions/VoteDownQuestion
         [HttpPost]
         public async Task<IActionResult> VoteDownQuestion([FromBody]string postId)
         {
@@ -44,7 +45,7 @@ namespace Synchronized.Controllers
             return new ObjectResult(questionView);
         }
 
-        // POST: /api/Posts/VoteUpQuestion
+        // POST: /api/Questions/VoteUpQuestion
         [HttpPost]
         public async Task<IActionResult> VoteUpAnswer([FromBody]string postId)
         {
@@ -54,7 +55,7 @@ namespace Synchronized.Controllers
             return new ObjectResult(answerView);
         }
 
-        // POST: /api/Posts/VoteUpQuestion
+        // POST: /api/Questions/VoteUpQuestion
         [HttpPost]
         public async Task<IActionResult> VoteDownAnswer([FromBody]string postId)
         {
@@ -62,6 +63,15 @@ namespace Synchronized.Controllers
             var answer = await _questionsService.VoteForAnswer(postId, VoteType.DownVote, userId);
             var answerView = _dataConverter.Convert(answer);
             return new ObjectResult(answerView);
+        }
+
+        // POST: /api/Questions/AcceptAnswer
+        [HttpPost]
+        public async Task<IActionResult> AcceptAnswer([FromBody]AnswerViewModel answer)
+        {
+            string userId = await GetUserIdAsync();
+            await _questionsService.AcceptAnswer(answer, userId);
+            return new ObjectResult(answer);
         }
     }
 }

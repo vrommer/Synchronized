@@ -188,6 +188,7 @@ namespace Synchronized.Core.Utilities
             var to = _serviceModelFactory.GetAnswer();
             to.IsAccepted = from.IsAccepted;
             to.QuestionId = String.Copy(from.QuestionId);
+            to.QuestionPublisherId = String.Copy(from.Question.PublisherId);
             // ServiceModel.Post
             AddPostPart(from, to);
             // ServiceModel.VotedPost

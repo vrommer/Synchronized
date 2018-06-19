@@ -1,4 +1,10 @@
 ﻿@page "{id}"
+
+@using Microsoft.AspNetCore.Identity
+@using Synchronized.Domain
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
 @model Synchronized.WebApp.Pages.Questions.DetailsModel
 @{
     ViewData["Title"] = "Details";
@@ -16,8 +22,17 @@
                 @Html.DisplayFor(model => model.Question.Points)
             </div>
             <div class="synched-vote-buttons">
-                <button class="synched-vote-btn vote-up-btn"><i class="fa fa-plus-square"></i></button>
-                <button class="synched-vote-btn vote-down-btn"><i class="fa fa-minus-square"></i></button>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <button class="synched-vote-btn vote-up-btn"><i class="fa fa-plus-square"></i></button>
+                    <button class="synched-vote-btn vote-down-btn"><i class="fa fa-minus-square"></i></button>
+                }
+                else
+                {
+                    <button class="synched-vote-btn synched-action"><i class="fa fa-plus-square"></i></button>
+                    <button class="synched-vote-btn synched-action"><i class="fa fa-minus-square"></i></button>
+                }
+                
             </div>
         </div>
         <div id="question-content" class="col-md-10">
@@ -26,10 +41,18 @@
                     @Html.Raw(Model.Question.Body)
                 </div>
             </div>
-            @*<a class="flex-sm-fill text-sm-center nav-link" asp-page="/Questions/Index" asp-route-sortOrder="@Model.DateSort">Date posted</a>*@
-            <a asp-page="/Questions/Edit" asp-route-id="@Model.Question.Id" class="btn btn-link synched-edit">Edit</a>
-            <button type="button" class="btn btn-link synched-flag">Flag</button>
-            <button type="button" class="btn btn-link synched-delete">Delete</button>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <a asp-page="/Questions/Edit" asp-route-id="@Model.Question.Id" class="btn btn-link synched-edit">Edit</a>
+                <button type="button" class="btn btn-link synched-flag">Flag</button>
+                <button type="button" class="btn btn-link synched-delete">Delete</button>
+            }
+            else
+            {
+                <a asp-page="/Account/Login" class="btn btn-link">Edit</a>
+                <a asp-page="/Account/Login" class="btn btn-link">Flag</a>
+                <a asp-page="/Account/Login" class="btn btn-link">Delete</a>
+            }
             <div class="synched-meta">
                 @Html.DisplayFor(model => model.Question.PublisherName)
                 @Html.DisplayFor(model => model.Question.DatePosted)
@@ -42,8 +65,16 @@
                         <hr />
                         <div class="comment-content" id="@comment.Id">
                             <div>@comment.Body</div>
-                            <button type="button" class="btn btn-link synched-edit">Edit</button>
-                            <button type="button" class="btn btn-link synched-delete">Delete</button>
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <button type="button" class="btn btn-link synched-edit">Edit</button>
+                                <button type="button" class="btn btn-link synched-delete">Delete</button>
+                            }
+                            else
+                            {
+                                <a asp-page="/Account/Login" class="btn btn-link">Edit</a>
+                                <a asp-page="/Account/Login" class="btn btn-link">Delete</a>
+                            }
                             <div class="synched-meta">
                                 @comment.PublisherName
                                 @comment.DatePosted
@@ -80,16 +111,40 @@
                     <div class="answer-number">@counter.</div>
                     @{ counter++; }
                     <div class="synched-points">@answer.Points</div>
-                    <button class="synched-vote-btn vote-up-btn"><i class="fa fa-plus-square"></i></button>
-                    <button class="synched-vote-btn vote-down-btn"><i class="fa fa-minus-square"></i></button>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <button class="synched-vote-btn vote-up-btn"><i class="fa fa-plus-square"></i></button>
+                        <button class="synched-vote-btn vote-down-btn"><i class="fa fa-minus-square"></i></button>
+                    }
+                    else
+                    {
+                        <button class="synched-vote-btn synched-action"><i class="fa fa-plus-square"></i></button>
+                        <button class="synched-vote-btn synched-action"><i class="fa fa-minus-square"></i></button>
+                    }
                 </div>
                 <div class="col-md-10">
                     <div>@Html.Raw(answer.Body)</div>
-                    <button type="button" class="btn btn-link synched-accept">Accept Answer</button>
-                    @*<button type="button" class="btn btn-link synched-edit">Edit</button>*@
-                    <a asp-page="/Questions/Edit" asp-route-id="@answer.Id" class="btn btn-link synched-edit">Edit</a>
-                    <button type="button" class="btn btn-link synched-flag">Flag</button>
-                    <button type="button" class="btn btn-link synched-delete">Delete</button>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        @if ((!Model.Question.IsAnswered) && (Model.UserId.Equals(Model.Question.PublisherId)))
+                        {
+                            <button type="button" class="btn btn-link synched-accept">Accept Answer</button>
+                        }
+                        <a asp-page="/Questions/Edit" asp-route-id="@answer.Id" class="btn btn-link synched-edit">Edit</a>
+                        <button type="button" class="btn btn-link synched-flag">Flag</button>
+                        <button type="button" class="btn btn-link synched-delete">Delete</button>
+                    }
+                    else
+                    {
+                        @if (!Model.Question.IsAnswered)
+                        {
+                            <a asp-page="/Account/Login" class="btn btn-link">Accept Answer</a>
+                        }
+                        <a asp-page="/Account/Login" class="btn btn-link">Edit</a>
+                        <a asp-page="/Account/Login" class="btn btn-link">Flag</a>
+                        <a asp-page="/Account/Login" class="btn btn-link">Delete</a>
+                    }
+
                     <div class="synched-meta">
                         @answer.PublisherName
                         @answer.DatePosted
@@ -102,8 +157,16 @@
                                 <div class="comment-content" id="@comment.Id">
                                     <hr />
                                     <div>@comment.Body</div>
-                                    <button type="button" class="btn btn-link synched-edit">Edit</button>
-                                    <button type="button" class="btn btn-link synched-delete">Delete</button>
+                                    @if (SignInManager.IsSignedIn(User))
+                                    {
+                                        <button type="button" class="btn btn-link synched-edit">Edit</button>
+                                        <button type="button" class="btn btn-link synched-delete">Delete</button>
+                                    }
+                                    else
+                                    {
+                                        <a asp-page="/Account/Login" class="btn btn-link">Edit</a>
+                                        <a asp-page="/Account/Login" class="btn btn-link">Delete</a>
+                                    }
                                     <div class="synched-meta">
                                         @comment.PublisherName
                                         @comment.DatePosted
@@ -132,15 +195,30 @@
         }      
     </div>
 
-    <form method="POST" id="synched-answer" asp-route-id="@Model.Question.Id">
-        <div class="answer-header-container">
-            <div class="synched-message answers-header">Your answer</div>
-        </div>
-        <div class="form-group">
-            <textarea asp-for="Answer.Body"></textarea>
-        </div>
-        <button type="submit" class="btn btn-secondary">Submit</button>
-    </form>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <form method="POST" id="synched-answer" asp-route-id="@Model.Question.Id">
+            <div class="answer-header-container">
+                <div class="synched-message answers-header">Your answer</div>
+            </div>
+            <div class="form-group">
+                <textarea asp-for="Answer.Body"></textarea>
+            </div>
+            <button type="submit" class="btn btn-secondary">Submit</button>
+        </form>
+    }
+    else
+    {
+        <form method="GET" asp-page="/Account/Login" id="synched-answer">
+            <div class="answer-header-container">
+                <div class="synched-message answers-header">Your answer</div>
+            </div>
+            <div class="form-group">
+                <textarea></textarea>
+            </div>
+            <button type="submit" class="btn btn-secondary">Submit</button>
+        </form>
+    }
 </section>
 
 @section Styles {

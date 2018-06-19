@@ -15,5 +15,6 @@ namespace Synchronized.Core.Interfaces
         Task<string> AskQuestion(Question question);
         Task<bool> TagsAreValid(string tags);
         Task AnswerQuestion(Answer answer, string questionId);
+        Task AcceptAnswer(AnswerViewModel answer, string userId);
     }
 }

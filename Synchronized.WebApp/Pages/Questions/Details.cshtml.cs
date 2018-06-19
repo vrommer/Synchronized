@@ -13,6 +13,7 @@ namespace Synchronized.WebApp.Pages.Questions
     public class DetailsModel : PageModel
     {
         public QuestionForDetailsPage Question { get; set; }
+        public string UserId { get; set; }
 
         private readonly ILogger<DetailsModel> _logger;
         IQuestionsService _questionsService;
@@ -32,6 +33,7 @@ namespace Synchronized.WebApp.Pages.Questions
         public async Task OnGetAsync(string id)
         {
             var userId = await Utils.GetUserIdAsync(HttpContext, _userManager);
+            UserId = userId;
             Question = await _questionsService.GetQuestionDetailsPageModel(id, userId);
         }
 

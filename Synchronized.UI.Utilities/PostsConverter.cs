@@ -64,6 +64,8 @@ namespace Synchronized.UI.Utilities
             answer.Points = from.SumVotes;
             answer.PublisherId = String.Copy(from.PublisherId);
             answer.PublisherName = String.Copy(from.PublisherName);
+            answer.QuestionId = String.Copy(from.QuestionId);
+            answer.QuestionPublisherId = String.Copy(from.QuestionPublisherId);
 
             answer.Comments = Convert((List<Comment>)from.Comments);
 

@@ -3,27 +3,32 @@
 var allComments = [];
 
 $(() => {
+    var votedPosts = {};
+    votedPosts[questionViewModel.question.id] = questionViewModel.question;
+
+    for (var pointer in questionViewModel.answers) {
+        var answer = questionViewModel.answers[pointer];
+        $.merge(allComments, answer.comments);
+        votedPosts[answer.id] = answer;
+    }
+
+    for (var id in votedPosts) {
+        if (id !== question.id) {
+            $(`#${id} .vote-up-btn`).on("click", VoteUpAnswer.bind(votedPosts[id]))
+            $(`#${id} .vote-down-btn`).on("click", VoteDownAnswer.bind(votedPosts[id]))
+            $(`#${id} .synched-accept`).on("click", AcceptAnswer.bind(votedPosts[id]))
+        } else 
+        {
+            $(`#${id} .vote-up-btn`).on("click", VoteUpQuestion.bind(votedPosts[id]))
+            $(`#${id} .vote-down-btn`).on("click", VoteDownQuestion.bind(votedPosts[id]))
+        }
+        $(`#${id} .synched-action`).on("click", Act.bind(votedPosts[id]))
+        $(`#${id} .synched-flag`).on("click", flagPost.bind(votedPosts[id]))
+        $(`#${id} .comment-body`).on("keydown", submitComment.bind(votedPosts[id]));
+        $(`#${id} .synched-delete`).on("click", deleteVotedPost.bind(votedPosts[id]));
+    }
 
     $.merge(allComments, question.comments);
-
-    $(`#${questionViewModel.question.id} .vote-up-btn`).on("click", VoteUpQuestion.bind(questionViewModel.question))
-    $(`#${questionViewModel.question.id} .vote-down-btn`).on("click", VoteDownQuestion.bind(questionViewModel.question))
-    $(`#${questionViewModel.question.id} .synched-flag`).on("click", flagPost.bind(question))
-    $(`#${questionViewModel.question.id} .comment-body`).on("keydown", submitComment.bind(question));
-    $(`#${questionViewModel.question.id} .synched-delete`).on("click", deleteVotedPost.bind(question));
-
-    for (var id in questionViewModel.answers) {
-        var answer = questionViewModel.answers[id];
-        $.merge(allComments, answer.comments);
-
-        answers[answer.id] = answer;
-
-        $(`#${answer.id} .vote-up-btn`).on("click", VoteUpAnswer.bind(answer))
-        $(`#${answer.id} .vote-down-btn`).on("click", VoteDownAnswer.bind(answer))
-        $(`#${answer.id} .synched-flag`).on("click", flagPost.bind(answer));
-        $(`#${answer.id} .comment-body`).on("keydown", submitComment.bind(answer));     
-        $(`#${answer.id} .synched-delete`).on("click", deleteVotedPost.bind(answer));
-    }
 
     $(".synched-comment").on("click", showComment);
 
@@ -33,6 +38,10 @@ $(() => {
             ["pre", "Code"]
         ]
     });
+
+    function Act() {
+        window.location.href = '/Account/Login';
+    }
 
     function ajaxRequest(method, url, data) {
         return new Promise((resolve, reject) => {
@@ -82,6 +91,14 @@ $(() => {
 
     function VoteDownAnswer() {
         VoteForPost("/api/Questions/VoteDownAnswer", this.id);
+    }
+
+    function AcceptAnswer() {
+        ajaxRequest("POST", "/api/Questions/AcceptAnswer", this)
+            .then(() => {                
+                location.reload(); 
+            })
+            .catch(xhr => { console.log(xhr); });
     }
 
     function VoteForPost(url, post) {
