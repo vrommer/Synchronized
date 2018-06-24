@@ -14,7 +14,7 @@ namespace Synchronized.Repository.Interfaces
         List<T> GetPage(int pageNumber, int pageSize, string searchTerm, string sortOrder);
         Task<string> AddAsync(T entity);
         Task UpdateAsync<TEntity>(TEntity Entity) where TEntity: class;
-        Task DeleteAsync(string entityId);
+        Task DeleteAsync(T entity);
         int GetCount();        
     }
 }

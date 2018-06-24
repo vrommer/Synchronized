@@ -86,7 +86,14 @@
 /* Users 
 ---------------*/
 .synched-user-card {
-    margin-top: 40px;
+    margin-top: 40px;   
+}
+
+.synched-user-card > ul.list-group {
+    background: -moz-linear-gradient(-45deg, #f1eded 0%, #ede9e9 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(-45deg, #f1eded 0%,#ede9e9 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(135deg, #f1eded 0%,#ede9e9 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f1eded', endColorstr='#ede9e9',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
 
 .synched-user-card a {
@@ -108,9 +115,10 @@
 }
 
 .app-usercard-item {
-    background-color: #dfdfdf;
+    background-color: transparent;
     border: none;
 }
+
 
 .app-user-details {
     width: 36rem;
@@ -244,6 +252,10 @@ article.question {
 
 .synched-vote-btn:hover {
     cursor: pointer;
+}
+
+#accapted {
+    background: linear-gradient(#cbe896, white) !important;
 }
 
 .answer-number {

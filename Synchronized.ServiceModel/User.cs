@@ -9,5 +9,6 @@ namespace Synchronized.ServiceModel
         public string Address { get; set; }
         public string Email { get; set; }
         public string ImageUri { get; set; }
+        public int Points { get; set; }
     }
 }

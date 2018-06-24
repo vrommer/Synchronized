@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Synchronized.SharedLib.Utilities;
+using Synchronized.UI.Utilities;
 using Synchronized.ViewModel.QuestionsViewModels;
 using Synchronized.ViewServices.Interfaces;
 using Synchronized.WebApp.Conventions;
@@ -16,8 +18,8 @@ namespace Synchronized.WebApp.Pages
         public string SearchString { get; set; }
         public string SortOrder { get; set; }
 
-        private readonly IQuestionsService _questionsService;
         private readonly ILogger<IndexModel> _logger;
+        private readonly IQuestionsService _questionsService;        
 
         public IndexModel(
             ILogger<IndexModel> logger,

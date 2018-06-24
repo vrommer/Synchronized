@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Synchronized.Domain;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace Synchronized.Repository
 {
@@ -14,6 +15,14 @@ namespace Synchronized.Repository
     {
         protected DbContext _context;
         protected DbSet<T> _set;
+        protected ILogger<Object> _logger;
+
+        public DataRepository(DbContext context, ILogger<DataRepository<T>> logger)
+        {
+            _context = context;
+            _set = context.Set<T>();
+            _logger = logger;
+        }
 
         public DataRepository(DbContext context)
         {
@@ -28,9 +37,10 @@ namespace Synchronized.Repository
             return entity.Id;
         }
 
-        public Task DeleteAsync(string entityId)
+        public async Task DeleteAsync(T entity)
         {
-            throw new NotImplementedException();
+            _context.Remove(entity);
+            await _context.SaveChangesAsync();
         }
 
         public IQueryable<T> GetBy(Expression<Func<T, bool>> predicate)

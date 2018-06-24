@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Synchronized.Domain
+@using Synchronized.SharedLib
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
@@ -19,7 +20,10 @@
         {
             <li class="navbar-brand"><a asp-page="/Account/Login" class="nav-link">Ask</a></li>
         }
-        <li class="navbar-brand"><a asp-page="/Questions/Review" class="nav-link">Review</a></li>
+        @if (SignInManager.IsSignedIn(User) && User.IsInRole(Constants.EDITOR))
+        {
+            <li class="navbar-brand"><a asp-page="/Questions/Review" class="nav-link">Review</a></li>
+        }        
     </ul>
 </div>
 

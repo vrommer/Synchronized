@@ -11,17 +11,15 @@ namespace Synchronized.Controllers
     public class VotedPostsController: SynchronizedController
     {
         private IVotedPostService _votedPostsService;
-        private readonly ILogger<VotedPostsController> _logger;
 
         public VotedPostsController(
             IVotedPostService votedPostsService,
             IPostsConverter converter,
             ILogger<VotedPostsController> logger,
             UserManager<Domain.ApplicationUser> userManager
-        ): base(converter, userManager)
+        ): base(converter, userManager, logger)
         {
             _votedPostsService = votedPostsService;
-            _logger = logger;
         }
 
         // POST: /api/Posts/FlagPost
@@ -30,8 +28,10 @@ namespace Synchronized.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> FlagPost([FromBody]string postId)
         {
-            string userId = await GetUserIdAsync();
-            var flagged = await _votedPostsService.FlagPost(postId, userId);
+            var user = await GetUserAsync();
+            var userId = user.Id;
+            var userPoints = user.Points;
+            var flagged = await _votedPostsService.FlagPost(postId, userId, userPoints);
 
             if (!flagged)
             {
@@ -43,8 +43,10 @@ namespace Synchronized.Controllers
         // POST: /api/VotedPosts/DeletePost
         public async Task<IActionResult> DeletePost([FromBody] string postId)
         {
-            string userId = await GetUserIdAsync();
-            var deleted = await _votedPostsService.DeletePost(postId, userId);
+            var user = await GetUserAsync();
+            var userPoints = user != null ? user.Points : 0;
+            var userId = user != null ? user.Id : "";
+            var deleted = await _votedPostsService.DeletePost(postId, userId, userPoints);
 
             if (!deleted)
             {
@@ -57,12 +59,17 @@ namespace Synchronized.Controllers
         public async Task<IActionResult> CommentOnPost([FromBody] CommentViewModel viewModelComment)
         {
             var user = await GetUserAsync();
-            var userId = user.Id;
-            var userName = user.UserName;
-            //string userId = await GetUserIdAsync();
-            var comment = await _votedPostsService.CommentOnPost(viewModelComment.VotedPostId, viewModelComment.Body, userId, userName);
+            var userPoints = user != null ? user.Points : 0;
+            var userId = user != null ? user.Id : "";
+            var userName = user != null ? user.UserName : "";
+            var comment = await _votedPostsService.CommentOnPost(viewModelComment.VotedPostId, viewModelComment.Body, userId, userName, userPoints);
+            if (comment == null)
+            {
+                return BadRequest();
+            }
+            var viewComment = _dataConverter.Convert(comment);
 
-            return new ObjectResult(comment);
+            return new ObjectResult(viewComment);
         }
     }
 }

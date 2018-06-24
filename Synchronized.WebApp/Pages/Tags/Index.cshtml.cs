@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Synchronized.SharedLib.Utilities;
+using Synchronized.UI.Utilities;
 using Synchronized.ViewModel.TagsViewModels;
 using Synchronized.ViewServices.Interfaces;
 using Synchronized.WebApp.Conventions;
@@ -18,18 +20,19 @@ namespace Synchronized.WebApp.Pages.Tags
 
         private readonly ITagsService _tagsService;
         private readonly ILogger<IndexModel> _logger;
+        private readonly UserManager<Domain.ApplicationUser> _userManager;
 
 
         public IndexModel(
             ITagsService tagsService,
             ILogger<IndexModel> logger
-            )
+        )
         {
             _tagsService = tagsService;
             _logger = logger;
         }
 
-        public void OnGet([MustBeInQueryParameterConvention]int? pageNumber, [MustBeInQueryParameterConvention]string sortOrder = null)
+        public async Task OnGetAsync([MustBeInQueryParameterConvention]int? pageNumber, [MustBeInQueryParameterConvention]string sortOrder = null)
         {
             CurrentPage = pageNumber ?? 1;
             Tags = _tagsService.GetIndexPage(CurrentPage);

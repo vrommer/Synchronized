@@ -10,6 +10,7 @@ using System.Linq;
 using System;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Synchronized.Repository.Repositories
 {
@@ -19,7 +20,7 @@ namespace Synchronized.Repository.Repositories
     {
         private readonly UserStore<ApplicationUser> _userStore;
 
-        public UsersRepository(DbContext context): base(context)
+        public UsersRepository(DbContext context, ILogger<UsersRepository> logger): base(context, logger)
         {
             _userStore = new UserStore<ApplicationUser>(context);
         }
@@ -321,7 +322,8 @@ namespace Synchronized.Repository.Repositories
 
         public override List<ApplicationUser> GetPage(int pageIndex, int pageSize, string searchTerm, string filter)
         {
-            var tags = _set.AsNoTracking()
+            _logger.LogInformation("Entering GetPage.");
+            var users = _set.AsNoTracking()
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize);
 
@@ -356,8 +358,15 @@ namespace Synchronized.Repository.Repositories
             //        break;
             //}
 
-            var tagsList = tags.ToList();
-            return tagsList;
+            var usersList = users.ToList();
+            usersList.ForEach(u => {
+                _logger.LogDebug("User --->\n\t\tAddress: {0}\n" +
+                    "\t\tEmail: {1}\n" +
+                    "\t\tName: {2}\n" +
+                    "\t\tPoints: {3}", u.Address, u.Email, u.UserName, u.Points);
+            });
+            _logger.LogInformation("Leaving GetPage.");
+            return usersList;
         }
 
         int IDataRepository<ApplicationUser>.GetCount()

@@ -17,12 +17,13 @@ using Microsoft.Extensions.Logging;
 using Synchronized.Repository.Interfaces;
 using Synchronized.Core.Interfaces;
 using Synchronized.Core.Factories.Interfaces;
-using Synchronized.UI.Utilities;
 using Synchronized.UI.Utilities.Interfaces;
 using Synchronized.ViewModelFactories.Interfaces;
 using Synchronized.Core;
 using Synchronized.Repository;
 using Synchronized.Domain.Factories.Interfaces;
+using Synchronized.SharedLib;
+using Synchronized.WebApp.Requirements;
 
 namespace Synchronized.WebApp
 {
@@ -61,6 +62,11 @@ namespace Synchronized.WebApp
             services.AddMvc()
                 .AddRazorPagesOptions(options =>
                 {
+                    options.Conventions.AuthorizePage("/Questions/Review", "RequireEditorRole");
+                    options.Conventions.AuthorizePage("/Questions/Edit", "RequireEditorRole");
+                })
+                .AddRazorPagesOptions(options =>
+                {
                     options.Conventions.AuthorizeFolder("/Account/Manage");
                     options.Conventions.AuthorizePage("/Account/Logout");
                 })
@@ -68,6 +74,17 @@ namespace Synchronized.WebApp
                     options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireSignedInRole", policy => policy.RequireRole(Constants.SIGNED_USER));
+                options.AddPolicy("RequireVoterRole", policy => policy.RequireRole(Constants.VOTER));
+                options.AddPolicy("RequireEditorRole", policy => policy.RequireRole(Constants.EDITOR));
+                options.AddPolicy("RequireModeratorRole", policy => policy.RequireRole(Constants.MODERATOR));
+
+                options.AddPolicy("HasEnoughPointsToEdit", policy => 
+                    policy.Requirements.Add(new NumberOfPointsRequirement(Constants.EDIT_POINST)));
+            });
 
 
             // Register no-op EmailSender used by account confirmation and password reset during development
@@ -107,6 +124,7 @@ namespace Synchronized.WebApp
                     name: "api",
                     template: "api/{controller}/{action}");
             });
+
         }
         
         private IServiceProvider ConfigureIoC(IServiceCollection services)
@@ -132,11 +150,11 @@ namespace Synchronized.WebApp
                     x.LookForRegistries();
                 });
                 //_.For<IPostsConverter>().Use<DataConverter>();
-                _.For<IPostsService<ServiceModel.Post>>().Use<PostsService<Post, ServiceModel.Post>>();
+                _.For<IPostsService<ServiceModel.Comment>>().Use<PostsService<Comment, ServiceModel.Comment>>();
                 _.For<IVotedPostService>().Use<VotedPostsService>();
                 _.For<IVotedPostRepository>().Use<VotedPostsRepository>();
                 _.For<IPostsService<ServiceModel.VotedPost>>().Use<PostsService<VotedPost, ServiceModel.VotedPost>>();
-                _.For<IPostsRepository<Post>>().Use<PostsRepository<Post>>();
+                _.For<IPostsRepository<Comment>>().Use<PostsRepository<Comment>>();
                 _.For<IDataRepository<VotedPost>>().Use<PostsRepository<VotedPost>>();
                 _.For<IPostsRepository<VotedPost>>().Use<PostsRepository<VotedPost>>();
                 //_.For<ITagsConverter>().Use<TagsConverter>();

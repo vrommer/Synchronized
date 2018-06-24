@@ -8,6 +8,7 @@ using Synchronized.Core.Factories.Interfaces;
 using System.Collections.Generic;
 using System;
 using Synchronized.Domain.Factories.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Synchronized.Core.Utilities
 {
@@ -15,11 +16,13 @@ namespace Synchronized.Core.Utilities
     {
         private IServiceModelFactory _serviceModelFactory;
         private IDomainModelFactory _domainModelFactory;
+        private ILogger<CoreDataConverter> _logger;
 
-        public CoreDataConverter(IServiceModelFactory serviceModelFactory, IDomainModelFactory domainModel)
+        public CoreDataConverter(IServiceModelFactory serviceModelFactory, IDomainModelFactory domainModel, ILogger<CoreDataConverter> logger)
         {
             _serviceModelFactory = serviceModelFactory;
             _domainModelFactory = domainModel;
+            _logger = logger;
         }
 
         public List<ServiceModel.Post> Convert(ICollection<Domain.Post> source)
@@ -66,6 +69,7 @@ namespace Synchronized.Core.Utilities
 
         public List<ServiceModel.Comment> Convert(ICollection<Domain.Comment> source)
         {
+            _logger.LogInformation("Entering Convert.");
             var comments = _serviceModelFactory.GetCommentsList();
             if (source != null)
             {
@@ -74,16 +78,19 @@ namespace Synchronized.Core.Utilities
                     comments.Add(Convert(c));
                 });
             }
+            _logger.LogInformation("Leaving Convert.");
             return comments;
         }
 
         public List<User> Convert(ICollection<ApplicationUser> source)
         {
+            _logger.LogInformation("Entering Convert.");
             var users = _serviceModelFactory.GetUsersList();
             foreach (var u in source)
             {
                 users.Add(Convert(u));
             }
+            _logger.LogInformation("Leaving Convert.");
             return users;
         }
 
@@ -188,7 +195,10 @@ namespace Synchronized.Core.Utilities
             var to = _serviceModelFactory.GetAnswer();
             to.IsAccepted = from.IsAccepted;
             to.QuestionId = String.Copy(from.QuestionId);
-            to.QuestionPublisherId = String.Copy(from.Question.PublisherId);
+            if (from.Question != null)
+            {
+                to.QuestionPublisherId = String.Copy(from.Question.PublisherId);
+            }
             // ServiceModel.Post
             AddPostPart(from, to);
             // ServiceModel.VotedPost
@@ -214,6 +224,7 @@ namespace Synchronized.Core.Utilities
             serviceUser.Email = String.Copy(from.Email);
             serviceUser.Address = from.Address != null ? String.Copy(from.Address): "";
             serviceUser.ImageUri = from.ImageUri != null ? String.Copy(from.ImageUri): "";
+            serviceUser.Points = from.Points;
             return serviceUser;
         }
 

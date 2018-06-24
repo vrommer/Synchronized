@@ -68,7 +68,7 @@
                             @if (SignInManager.IsSignedIn(User))
                             {
                                 <button type="button" class="btn btn-link synched-edit">Edit</button>
-                                <button type="button" class="btn btn-link synched-delete">Delete</button>
+                                <button type="button" class="btn btn-link synched-delete-comment">Delete</button>
                             }
                             else
                             {
@@ -87,7 +87,14 @@
             {
                 <hr />
             }
-            <button type="button" class="btn btn-link synched-comment">Leave a comment</button>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <button type="button" class="btn btn-link synched-comment">Leave a comment</button>
+            }
+            else
+            {
+                <button type="button" class="btn btn-link synched-action">Leave a comment</button>
+            }            
             <div class="synched-comment-form">
                 <div class="form-group">
                     <textarea class="form-control comment-body" rows="2"></textarea>
@@ -108,7 +115,15 @@
             {
             <div class="row synched-answer" id="@answer.Id">
                 <div class="app-stats col-md-1">
-                    <div class="answer-number">@counter.</div>
+                    @if (answer.Accapted)
+                    {
+                        <div id="accapted" class="answer-number">@counter.</div>
+                    }
+                    else
+                    {
+                        <div class="answer-number">@counter.</div>
+                    }                    
+
                     @{ counter++; }
                     <div class="synched-points">@answer.Points</div>
                     @if (SignInManager.IsSignedIn(User))
@@ -160,7 +175,7 @@
                                     @if (SignInManager.IsSignedIn(User))
                                     {
                                         <button type="button" class="btn btn-link synched-edit">Edit</button>
-                                        <button type="button" class="btn btn-link synched-delete">Delete</button>
+                                        <button type="button" class="btn btn-link synched-delete-comment">Delete</button>
                                     }
                                     else
                                     {
@@ -181,7 +196,14 @@
                     }   
                     @if (Model.Question.Answers.Count > 0)
                     {
-                        <button type="button" class="btn btn-link synched-comment">Leave a comment</button>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <button type="button" class="btn btn-link synched-comment">Leave a comment</button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-link synched-action">Leave a comment</button>
+                        }                        
                         <div class="synched-comment-form">
                             <div class="form-group">
                                 <textarea class="form-control comment-body" rows="2"></textarea>

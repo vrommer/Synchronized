@@ -117,6 +117,7 @@ namespace Synchronized.Repository
         public async Task<Answer> GetAnswerById(string postId)
         {
             var answer = await _context.Set<Answer>().Where(a => a.Id == postId)
+                .Include(a => a.Question)
                 .Include(a => a.Votes)
                 .Include(a => a.Comments)
                 .Include(a => a.DeleteVotes)

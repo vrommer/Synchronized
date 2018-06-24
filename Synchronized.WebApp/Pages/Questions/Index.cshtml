@@ -12,12 +12,6 @@
         <a class="flex-sm-fill text-sm-center nav-link" asp-page="/Questions/Index" asp-route-sortOrder="@Model.PointsSort">Points</a>
     </nav>
 }
-
-@{
-    var prevDisabled = !Model.Questions.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.Questions.HasNextPage ? "disabled" : "";
-}
-
 <section>
     <div class="container">
         @{
@@ -82,6 +76,11 @@
     <script src="~/js/questions.js" asp-append-version="true"></script>
 }
 
+@{
+    var prevDisabled = !Model.Questions.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Questions.HasNextPage ? "disabled" : "";
+}
+
 <a asp-page="/Questions/Index" asp-route-pageNumber="@(Model.Questions.PageIndex - 1)"
    asp-route-sortOrder="@Model.SortOrder" class="btn btn-default @prevDisabled">
     Previous
@@ -95,6 +94,6 @@
     </a>
 }
 <a asp-page="/Questions/Index" asp-route-pageNumber="@(Model.Questions.PageIndex + 1)"
-   asp-route-sortOrder="@Model.SortOrder" class="btn btn-default">
+   asp-route-sortOrder="@Model.SortOrder" class="btn btn-default @nextDisabled">
     Next
 </a>

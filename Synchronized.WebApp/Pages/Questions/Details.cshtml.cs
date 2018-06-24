@@ -23,7 +23,7 @@ namespace Synchronized.WebApp.Pages.Questions
             IQuestionsService questionsService,
             ILogger<DetailsModel> logger,
             UserManager<Domain.ApplicationUser> userManager
-            )
+        )
         {
             _questionsService = questionsService;
             _logger = logger;
@@ -32,9 +32,8 @@ namespace Synchronized.WebApp.Pages.Questions
 
         public async Task OnGetAsync(string id)
         {
-            var userId = await Utils.GetUserIdAsync(HttpContext, _userManager);
-            UserId = userId;
-            Question = await _questionsService.GetQuestionDetailsPageModel(id, userId);
+            UserId = await Utils.GetUserIdAsync(HttpContext, _userManager); ;
+            Question = await _questionsService.GetQuestionDetailsPageModel(id, UserId);
         }
 
         [BindProperty]

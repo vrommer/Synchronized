@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Synchronized.WebApp.Pages.Tags
 {
     public class DetailsModel : PageModel
     {
-        public void OnGet()
-        {
+        private readonly ILogger<IndexModel> _logger;
 
+        public DetailsModel(
+            ILogger<IndexModel> logger
+            )
+        {
+            _logger = logger;
         }
     }
 }

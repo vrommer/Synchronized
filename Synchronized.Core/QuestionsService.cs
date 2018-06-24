@@ -11,6 +11,8 @@ using SharedLib.Infrastructure.Constants;
 using Synchronized.Domain;
 using System;
 using Synchronized.ViewModel;
+using Microsoft.Extensions.Logging;
+using Synchronized.SharedLib;
 
 namespace Synchronized.Core
 {
@@ -18,7 +20,7 @@ namespace Synchronized.Core
     {
         private HtmlParser _parser;
 
-        public QuestionsService(IQuestionsRepository repo, IServiceModelFactory factory, IDataConverter converter, HtmlParser parser) : base(repo, factory, converter)
+        public QuestionsService(IQuestionsRepository repo, IServiceModelFactory factory, IDataConverter converter, HtmlParser parser, ILogger<QuestionsService> logger) : base(repo, factory, converter, logger)
         {
             _parser = parser;
         }
@@ -42,7 +44,7 @@ namespace Synchronized.Core
 
         private async Task<PaginatedList<ServiceModel.Question>> GetQuestionsPage(int pageIndex, int pageSize, string sortOrder = null, string searchString = null)
         {
-            List<Domain.Question> domainQuestions; ;
+            List<Question> domainQuestions; ;
             if (sortOrder == null)
             {
                 domainQuestions = await ((IQuestionsRepository)_repo).GetPageAsync(pageIndex, pageSize);
@@ -59,13 +61,20 @@ namespace Synchronized.Core
             return questionsPage;
         }
 
-        public async Task<ServiceModel.Question> VoteForQuestion(string postId, VoteType voteType, string userId)
+        public async Task<ServiceModel.Question> VoteForQuestion(string postId, VoteType voteType, string userId, int userPoints)
         {
             var question = await ((IQuestionsRepository)_repo).GetQuestionById(postId);
             var serviceQuestion = _converter.Convert(question);
-            var canVote = CanVote(userId, serviceQuestion);
+            var canVote = CanVote(userId, userPoints, voteType, serviceQuestion);
             if (canVote)
             {
+                if (voteType == VoteType.UpVote)
+                {
+                    question.Publisher.Points = question.Publisher.Points + 5;
+                } else
+                {
+                    question.Publisher.Points = question.Publisher.Points - 2;
+                }
                 question.Votes.Add(new Vote
                 {
                     VoterId = userId,
@@ -81,18 +90,25 @@ namespace Synchronized.Core
                     default:
                         serviceQuestion.DownVotes++;
                         break;
-                }                
+                }
+                return serviceQuestion;
             }
-            return serviceQuestion;
+            return null;
         }
 
-        private bool CanVote(string userId, ServiceModel.VotedPost post)
+        private bool CanVote(string userId, int userPoints, VoteType voteType, ServiceModel.VotedPost post)
         {
             if (string.IsNullOrEmpty(userId) || post == null)
             {
                 return false;
             }
-            return !post.VoterIds.Contains(userId);
+            // If user upvotes and can upvote or user downvotes and can downvote
+            if (((voteType == VoteType.UpVote) && (Constants.VOTE_UP_POINTS <= userPoints)) ||
+                ((voteType == VoteType.DownVote) && (Constants.VOTE_DOWN_POINTS <= userPoints)))
+            {
+                return !post.VoterIds.Contains(userId);
+            }
+            return false;
         }
 
         private bool CanView(string userId, ServiceModel.Question question)
@@ -111,11 +127,11 @@ namespace Synchronized.Core
         /// <param name="voteType">One of { UpVote, DownVote }</param>
         /// <param name="userId">THe Id of the voter</param>
         /// <returns></returns>
-        public async Task<ServiceModel.Answer> VoteForAnswer(string postId, VoteType voteType, string userId)
+        public async Task<ServiceModel.Answer> VoteForAnswer(string postId, VoteType voteType, string userId, int userPoints)
         {
             var answer = await ((IQuestionsRepository)_repo).GetAnswerById(postId);
             var serviceAnswer = _converter.Convert(answer);
-            var canVote = CanVote(userId, serviceAnswer);
+            var canVote = CanVote(userId, userPoints, voteType, serviceAnswer);
             if (canVote)
             {
                 answer.Votes.Add(new Vote
@@ -134,8 +150,9 @@ namespace Synchronized.Core
                         serviceAnswer.DownVotes++;
                         break;
                 }
+                return serviceAnswer;
             }
-            return serviceAnswer; 
+            return null;
         }
 
         public async Task<ServiceModel.Question> ViewQuestion(string questionId, string userId)

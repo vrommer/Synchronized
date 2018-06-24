@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Synchronized.SharedLib.Utilities;
 using Synchronized.Core.Utilities.Interfaces;
 using Synchronized.Core.Factories.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Synchronized.Core
 {
@@ -14,16 +15,18 @@ namespace Synchronized.Core
         where TEntity : class, IEntity
         where TServiceModel : class
     {
-        public DataService(IDataRepository<TEntity> repo, IServiceModelFactory factory, IDataConverter converter)
+        public DataService(IDataRepository<TEntity> repo, IServiceModelFactory factory, IDataConverter converter, ILogger<Object> logger)
         {
             _repo = repo;
             _factory = factory;
             _converter = converter;
+            _logger = logger;
         }
 
         protected IDataRepository<TEntity> _repo;
         protected IServiceModelFactory _factory;
         protected IDataConverter _converter;
+        protected ILogger<object> _logger;
 
         public virtual Task<TServiceModel> GetBy(Expression<Func<TServiceModel, bool>> predicate)
         {

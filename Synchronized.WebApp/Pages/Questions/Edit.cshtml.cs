@@ -15,17 +15,14 @@ namespace Synchronized.WebApp.Pages.Questions
     {
         private IPostsService _service;
         private ILogger<DetailsModel> _logger;
-        private UserManager<ApplicationUser> _userManager;
 
         public EditModel(
             IPostsService service,
-            ILogger<DetailsModel> logger,
-            UserManager<ApplicationUser> userManager
+            ILogger<DetailsModel> logger
         )
         {
             _service = service;
             _logger = logger;
-            _userManager = userManager;
         }
         [BindProperty]
         public EditViewModel Post { get; set; }
@@ -43,7 +40,6 @@ namespace Synchronized.WebApp.Pages.Questions
             }
             Post.Id = String.Copy(id);
             Post.QuestionId = String.Copy(questionId);
-            var userId = await Utils.GetUserIdAsync(HttpContext, _userManager);
             var postId = await _service.UpdatePost(Post);
 
             return RedirectToPage("/Questions/Details", new { id = postId });

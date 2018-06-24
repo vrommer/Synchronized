@@ -17,10 +17,6 @@
         };
     }
 
-    //updatePostVotes(newPost) {
-    //    this.posts[newPost.id] = newPost;
-    //}
-
     updatePostVotes(newPost) {
         this.posts[newPost.id].points = newPost.points;
     }

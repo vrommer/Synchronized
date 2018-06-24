@@ -30,6 +30,10 @@ $(() => {
 
     $.merge(allComments, question.comments);
 
+    for (var id in allComments) {
+        $(`#${allComments[id].id} .synched-delete-comment`).on("click", deleteComment.bind(allComments[id]))
+    }
+
     $(".synched-comment").on("click", showComment);
 
     $("#synched-answer textarea").jqte({
@@ -105,7 +109,7 @@ $(() => {
         ajaxRequest("POST", url, post)
             .then(updatePostVotes)
             .then(updatePointsInPage)
-            .catch(xhr => { console.log(xhr); });
+            .catch(xhr => { alert("User not allowed to vote."); });
     }
 
     function updatePostVotes(updatedPost) {
@@ -137,9 +141,8 @@ $(() => {
             var commentForm = $(`#${this.id} .synched-comment-form`);
             var commentBody = commentForm.find("textarea").val();
             ajaxRequest("POST", "/api/VotedPosts/CommentOnPost", { votedPostId: this.id, body: commentBody })
-                .then(addNewCommentToPage.bind(this))
-                .then(hideComment.bind(this))                
-                .catch(function () { alert("Failure!") });
+                .then(reloadPage)              
+                .catch(function () { alert("User not alllowed to comment!") });
         }
     }
 
@@ -154,16 +157,12 @@ $(() => {
     function showComment() {
         $(this).find("+ .synched-comment-form").show()
         .animate({
-            height: "135px",
+            height: "80px",
             width: "100%"
         }, 500);
     }
 
-    function hideComment() {    
-        $(`#${this.id} .synched-comment-form`).hide().find("textarea").val("");
-    }
-
-    function addNewCommentToPage(comment) {
+    function reloadPage() {
         location.reload();
     }
 
@@ -171,5 +170,11 @@ $(() => {
         return ajaxRequest("POST", "/api/VotedPosts/DeletePost", this.id)
             .then(() => { alert("Your vote has been accapted!") })
             .catch(() => { alert("User can't delete this post!") });
+    }
+
+    function deleteComment() {
+        return ajaxRequest("POST", "/api/Comments/DeletePost", this.id)
+            .then(reloadPage)              
+            .catch(function () { alert("Failure!") });
     }
 });

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Synchronized.SharedLib.Utilities;
+using Synchronized.UI.Utilities;
 using Synchronized.ViewModel.QuestionsViewModels;
 using Synchronized.ViewServices.Interfaces;
 using Synchronized.WebApp.Conventions;
@@ -39,6 +41,7 @@ namespace Synchronized.WebApp.Pages.Questions
         public async Task OnGetAsync([MustBeInQueryParameterConvention]int? pageNumber, [MustBeInQueryParameterConvention]string sortOrder = null,
             [MustBeInQueryParameterConvention]string searchString = null)
         {
+            _logger.LogInformation("Starting OnGetAsync");
             SearchString = searchString ?? "";
             SortOrder = sortOrder ?? "";
             DateSort = sortOrder == "Date" ? "date_desc" : "Date";
@@ -48,8 +51,8 @@ namespace Synchronized.WebApp.Pages.Questions
 
             CurrentPage = pageNumber ?? (CurrentPage == 0 ? 1 : CurrentPage);
 
-            //Questions = await _service.GetQuestionsIndexPage(CurrentPage, PAGE_SIZE, sortOrder, SearchString);
             Questions = await _localService.GetQuestionsIndexPageModel(CurrentPage, SortOrder, SearchString);
+            _logger.LogInformation("Exiting OnGetAsync");
         }
     }
 }

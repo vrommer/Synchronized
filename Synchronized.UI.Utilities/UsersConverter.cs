@@ -5,6 +5,7 @@ using Synchronized.ServiceModel;
 using Synchronized.ViewModel.UsersViewModels;
 using Synchronized.ViewModelFactories.Interfaces;
 using Synchronized.Core.Factories.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Synchronized.UI.Utilities
 {
@@ -13,21 +14,26 @@ namespace Synchronized.UI.Utilities
 
         private IViewModelFactory _viewModelFactory;
         private IServiceModelFactory _serviceModelFactory;
+        ILogger<UsersConverter> _logger;
 
-        public UsersConverter(IViewModelFactory viewModelFactory, IServiceModelFactory serviceModelFactory)
+        public UsersConverter(IViewModelFactory viewModelFactory, IServiceModelFactory serviceModelFactory, ILogger<UsersConverter> logger)
         {
             _viewModelFactory = viewModelFactory;
             _serviceModelFactory = serviceModelFactory;
+            _logger = logger;
         }
 
         public UserViewModel Convert(User from)
         {
+            _logger.LogInformation("Entering Conver.");
             var user = _viewModelFactory.GetUser();
             user.Address = String.Copy(from.Address);
             user.Id = String.Copy(from.Id);
             user.ImageUri = String.Copy(from.ImageUri);
             user.Name = String.Copy(from.Name);
             user.Email = String.Copy(from.Email);
+            user.Points = from.Points;
+            _logger.LogInformation("Leaving Conver.");
             return user;
         }
 

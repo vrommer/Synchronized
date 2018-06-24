@@ -31,8 +31,17 @@ namespace Synchronized.WebApp.Pages.Users
 
         public void OnGet([MustBeInQueryParameterConvention]int? pageNumber, [MustBeInQueryParameterConvention]string sortOrder = null)
         {
+            _logger.LogInformation("Entering Synchronized.WebApp.Pages.Users.Index");
             CurrentPage = pageNumber ?? 1;
             Users = _service.GetIndexPage(CurrentPage);
+            foreach (var user in Users)
+            {
+                _logger.LogDebug("User --->\n\t\tAddress: {0}\n" +
+                    "\t\tEmail: {1}\n" +
+                    "\t\tName: {2}\n" +
+                    "\t\tPoints: {3}", user.Address, user.Email, user.Name, user.Points);
+            }            
+            _logger.LogInformation("Leaving Synchronized.WebApp.Pages.Users.Index");
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Synchronized.Domain;
+using Synchronized.SharedLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace Synchronized.Data
 
         static SynchronizedDbContext context;
         static Random rand = new Random();
-        static int maxPoints = 1000;
+        static int maxPoints = 6000;
         static int totalViews = 15;
         static int numOfQuestions = 5;
         static int numOfAnswers = 5;
@@ -45,7 +46,7 @@ namespace Synchronized.Data
                 "Viktoriya \u2764", "Vadim", "Yossi", "Nati", "Isaac", "Oren", "Allen \u2764", "Nir", "Netta", "Katty", "Soffi", "Ira", "Marina", "Igal", "Juli", "Aprana", "Prasana", "Tigran", "Anton", "Sergey", "Dima", "Michael",
                 "Alex", "Kostya", "Max", "Lee", "Keren", "Dina", "Maayan", "Idan", "Adam", "Ari", "Arik", "Yariv", "Naor", "Oron", "Yevgeni", "Bruce", "Kim", "Joseph", "Ido", "Jack", "John", "Romeo",
                 "Roman", "Rita", "Irena", "Vladislav", "Rostislav", "Josh", "Kevin", "Devin", "Miika", "Luca", "Fabio", "Fredd", "Leon", "Arthur", "Boris", "David", "Eithan", "Stephany", "Christine", "Alon", "Alona", "Olga",
-                "Sharon", "Hellen", "Hulio", "Enrique", "Darwin", "Stephan", "Joe", "Hillary", "Barak", "Benjamin", "Ashton", "Cameron", "Kventin", "Guy", "Ahmed", "Muhammad", "Gadir", "Kamila", "Polina", "Pola", "Marga", "Sandra"
+                "Sharon", "Hellen", "Hulio", "Enrique", "Darwin", "Stephan", "Joe", "Hillary", "Barak", "Benjamin", "Ashton", "Alexa", "Cameron", "Kventin", "Guy", "Ahmed", "Muhammad", "Gadir", "Kamila", "Polina", "Pola", "Marga", "Sandra"
             };
 
             List<string> tagNames = new List<string>
@@ -93,6 +94,15 @@ namespace Synchronized.Data
                 "asp.net-core"
             };
 
+            List<string> roles = new List<string>
+            {
+                Constants.SIGNED_USER,
+                Constants.VOTER,
+                Constants.EDITOR,
+                Constants.MODERATOR
+
+            };
+
             // number of tags
             numOfTags = tagNames.Count();
 
@@ -101,15 +111,18 @@ namespace Synchronized.Data
                 return;   // DB has been seeded
             }
 
-            string roleName = "Moderator";
+            foreach (string role in roles)
+            {
+                var roleExists = await roleManager.RoleExistsAsync(role);
+                if (!roleExists)
+                {
+                    var roleResult = await roleManager.CreateAsync(new IdentityRole(role));
+                }
+            }
+
             string password = "Abcd@1234";
 
-            bool roleExists = await roleManager.RoleExistsAsync(roleName);
-
-            if (!roleExists)
-            {
-                var roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
-            }
+            //bool roleExists = await roleManager.RoleExistsAsync(roleName);
 
             var joseph = new ApplicationUser {
                 Email = "mail1@example.com",
@@ -120,11 +133,11 @@ namespace Synchronized.Data
 
             var result = await userManager.CreateAsync(joseph, password);
 
-            bool userIsInRole = await userManager.IsInRoleAsync(joseph, roleName);
+            bool userIsInRole = await userManager.IsInRoleAsync(joseph, Constants.MODERATOR);
 
             if (result.Succeeded && !userIsInRole)
             {
-                result = await userManager.AddToRoleAsync(joseph, roleName);
+                result = await userManager.AddToRoleAsync(joseph, Constants.MODERATOR);
             }
 
             /***********************************************************************
@@ -141,11 +154,22 @@ namespace Synchronized.Data
                     ImageUri = "/pictures/user_default.png",
                     Points = rand.Next(maxPoints)
                 };
-                users.Add(user);
-
+                var roleNames = GetUserRole(user.Points);
                 result = await userManager.CreateAsync(user, password);
+                for (int j = 0; j < roleNames.Count; j++)
+                {                    
+                    if (result.Succeeded)
+                    {
+                        userIsInRole = await userManager.IsInRoleAsync(joseph, roleNames[j]);
+                    }
+                    if (result.Succeeded && !userIsInRole)
+                    {
+                        result = await userManager.AddToRoleAsync(user, roleNames[j]);
+                    }
+                }
                 if (result.Succeeded)
                 {
+                    users.Add(user);
                     UserIds.Add(user.Id);
                 }
             }
@@ -345,55 +369,29 @@ namespace Synchronized.Data
             ***********************************************************************/
         }
 
-        public static async Task<List<ApplicationUser>> CreateUsers(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        private static List<String> GetUserRole(int points)
         {
-            string[] userNames =
+            List<string> roleNames = new List<string>
             {
-                "Viktoriya \u2764", "Vadim", "Yossi", "Nati", "Isaac", "Oren", "Allen \u2764", "Nir", "Netta", "Katty", "Soffi", "Ira", "Marina", "Igal", "Juli", "Aprana", "Prasana", "Tigran", "Anton", "Sergey", "Dima", "Michael",
-                "Alex", "Kostya", "Max", "Lee", "Keren", "Dina", "Maayan", "Idan", "Adam", "Ari", "Arik", "Yariv", "Naor", "Oron", "Yevgeni", "Bruce", "Kim", "Joseph", "Ido", "Jack", "John", "Romeo",
-                "Roman", "Rita", "Irena", "Vladislav", "Rostislav", "Josh", "Kevin", "Devin", "Miika", "Luca", "Fabio", "Fredd", "Leon", "Arthur", "Boris", "David", "Eithan", "Stephany", "Christine", "Alon", "Alona", "Olga",
-                "Sharon", "Hellen", "Hulio", "Enrique", "Darwin", "Stephan", "Joe", "Hillary", "Barak", "Benjamin", "Ashton", "Cameron", "Kventin", "Guy", "Ahmed", "Muhammad", "Gadir", "Kamila", "Polina", "Pola", "Marga", "Sandra"
+                Constants.SIGNED_USER
             };
-            string roleName = "Moderator";
-            string password = "Abcd@1234";
-
-            bool roleExists = await roleManager.RoleExistsAsync(roleName);
-
-            if (!roleExists)
+            string[] roles = new string []{ Constants.SIGNED_USER };            
+            if (15 <= points)
             {
-                var roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+                roleNames.Add(Constants.VOTER);
+                roles.Append(Constants.VOTER);
             }
-
-            var joseph = new ApplicationUser { Email = "mail1@example.com", EmailConfirmed = true, UserName = "joseph" };
-
-            var result = await userManager.CreateAsync(joseph, password);
-
-            bool userIsInRole = await userManager.IsInRoleAsync(joseph, roleName);
-
-            if (result.Succeeded && !userIsInRole)
+            if (500 <= points)
             {
-                result = await userManager.AddToRoleAsync(joseph, roleName);
+                roles.Append(Constants.EDITOR);
+                roleNames.Add(Constants.EDITOR);
             }
-            var users = new List<ApplicationUser>();
-            for (int i = 0; i < userNames.Length; i++)
+            if (3000 <= points)
             {
-                users.Add(new ApplicationUser
-                {
-                    Email = "mail" + i + "@example.com",
-                    UserName = userNames[i],
-                    Points = rand.Next(maxPoints)
-                });
+                roles.Append(Constants.MODERATOR);
+                roleNames.Add(Constants.MODERATOR);
             }
-
-            users.ForEach(async item =>
-            {
-                result = await userManager.CreateAsync(item, password);
-                if (result.Succeeded)
-                {
-                    UserIds.Add(item.Id);
-                }
-            });
-            return users;
+            return roleNames;
         }
     }
 }

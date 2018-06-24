@@ -8,12 +8,14 @@ using System.Threading.Tasks;
 using SharedLib.Infrastructure.Constants;
 using System.Linq.Expressions;
 using Synchronized.ServiceModel;
+using Microsoft.Extensions.Logging;
+using Synchronized.SharedLib;
 
 namespace Synchronized.Core
 {
     public class VotedPostsService : PostsService<Domain.VotedPost, ServiceModel.VotedPost>, IVotedPostService
     {
-        public VotedPostsService(IVotedPostRepository repo, IServiceModelFactory factory, IDataConverter converter) : base(repo, factory, converter)
+        public VotedPostsService(IVotedPostRepository repo, IServiceModelFactory factory, IDataConverter converter, ILogger<VotedPostsService> logger) : base(repo, factory, converter, logger)
         {
         }
 
@@ -53,10 +55,10 @@ namespace Synchronized.Core
 
         }
 
-        public async Task<ServiceModel.Comment> CommentOnPost(string postId, string commentBody, string userId, string userName)
+        public async Task<ServiceModel.Comment> CommentOnPost(string postId, string commentBody, string userId, string userName, int userPoints)
         {
             var post = await((IVotedPostRepository)_repo).GetById(postId);
-            var canComment = ((!String.IsNullOrEmpty(userId)) && (!String.IsNullOrEmpty(userId)));
+            var canComment = ((!String.IsNullOrEmpty(userId)) && (!String.IsNullOrEmpty(userId)) && Constants.COMMENT_POINTS <= userPoints);
             var comment = new Domain.Comment();
             if (canComment)
             {
@@ -64,18 +66,19 @@ namespace Synchronized.Core
                 comment.Body = commentBody;
                 post.Comments.Add(comment);
                 await _repo.UpdateAsync(post);
+                var serviceModelComment = _converter.Convert(comment);
+                serviceModelComment.PublisherName = String.Copy(userName);
+                serviceModelComment.DatePosted = comment.DatePosted;
+                return serviceModelComment;
             }
-
-            var serviceModelComment = _converter.Convert(comment);
-            serviceModelComment.PublisherName = String.Copy(userName);
-            serviceModelComment.DatePosted = comment.DatePosted;
-            return serviceModelComment;
+            return null;
         }
 
-        public async Task<bool> DeletePost(string postId, string userId)
+        public override async Task<bool> DeletePost(string postId, string userId, int userPoints)
         {
             var post = await((IVotedPostRepository)_repo).GetById(postId);
-            var canDelete = (!String.IsNullOrEmpty(userId) && !(post.DeleteVotes.Contains(new DeleteVote
+            var canDelete = (Constants.DELETE_POINST <= userPoints && !String.IsNullOrEmpty(userId) && 
+                !(post.DeleteVotes.Contains(new DeleteVote
             {
                 PostId = postId,
                 UserId = userId
@@ -92,11 +95,10 @@ namespace Synchronized.Core
             return canDelete;
         }
 
-        public async Task<bool> FlagPost(string postId, string userId)
+        public async Task<bool> FlagPost(string postId, string userId, int userPoints)
         {
-
             var post = await ((IVotedPostRepository)_repo).GetById(postId);
-            var canFlag = (!String.IsNullOrEmpty(userId) && !(post.PostFlags.Contains(new Domain.PostFlag
+            var canFlag = (Constants.MARK_FOR_REVIEW_POINTS <= userPoints && !String.IsNullOrEmpty(userId) && !(post.PostFlags.Contains(new Domain.PostFlag
             {
                 PostId = postId,
                 UserId = userId

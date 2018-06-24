@@ -5,12 +5,13 @@ using Synchronized.Repository.Interfaces;
 using Synchronized.ServiceModel;
 using Synchronized.SharedLib.Utilities;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Synchronized.Core
 {
     public class TagsService : DataService<Domain.Tag, Tag>, ITagsService
     {
-        public TagsService(ITagsRepository repo, IServiceModelFactory factory, IDataConverter converter) : base(repo, factory, converter)
+        public TagsService(ITagsRepository repo, IServiceModelFactory factory, IDataConverter converter, ILogger<TagsService> logger) : base(repo, factory, converter, logger)
         {
         }
 
