@@ -30,7 +30,7 @@ namespace Synchronized.Repository
             _set = context.Set<T>();
         }
 
-        public async Task<string> AddAsync(T entity)
+        public virtual async Task<string> AddAsync(T entity)
         {
             _set.Add(entity);
             await _context.SaveChangesAsync();
@@ -43,7 +43,7 @@ namespace Synchronized.Repository
             await _context.SaveChangesAsync();
         }
 
-        public IQueryable<T> GetBy(Expression<Func<T, bool>> predicate)
+        public virtual IQueryable<T> GetBy(Expression<Func<T, bool>> predicate)
         {
             IQueryable<T> results = _set.AsNoTracking()
                 .Where(predicate);
@@ -55,7 +55,7 @@ namespace Synchronized.Repository
             throw new NotImplementedException();
         }
 
-        public int GetCount()
+        public virtual int GetCount()
         {
             return _set.Count();
         }
@@ -73,7 +73,7 @@ namespace Synchronized.Repository
 
         public virtual async Task UpdateAsync<TEntity>(TEntity Entity) where TEntity: class
         {
-            _context.Set<TEntity>().Update(Entity);
+            _context.Update(Entity);
             await _context.SaveChangesAsync();
         }
     }

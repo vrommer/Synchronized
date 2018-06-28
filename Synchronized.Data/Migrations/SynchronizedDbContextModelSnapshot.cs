@@ -11,7 +11,7 @@ using System;
 
 namespace Synchronized.Data.Migrations
 {
-    [DbContext(typeof(SynchronizedDbContext))]
+    [DbContext(typeof(SynchedIdentityDbContext))]
     partial class SynchronizedDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

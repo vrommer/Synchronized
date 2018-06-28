@@ -4,14 +4,14 @@ using Synchronized.Domain;
 
 namespace Synchronized.Data
 {
-    public class SynchronizedDbContext : IdentityDbContext<ApplicationUser>
+    public class SynchedIdentityDbContext : IdentityDbContext<ApplicationUser>
     {
-        public SynchronizedDbContext(string connStr) : base()
+        public SynchedIdentityDbContext(string connStr) : base()
         {
             _connectionString = connStr;
         }
 
-        public SynchronizedDbContext(DbContextOptions options) : base(options)
+        public SynchedIdentityDbContext(DbContextOptions options) : base(options)
         {
         }
 

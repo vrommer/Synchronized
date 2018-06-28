@@ -11,7 +11,7 @@ using System;
 
 namespace Synchronized.Data.Migrations
 {
-    [DbContext(typeof(SynchronizedDbContext))]
+    [DbContext(typeof(SynchedIdentityDbContext))]
     [Migration("20180605173228_Change Tags Id Value to their name")]
     partial class ChangeTagsIdValuetotheirname
     {

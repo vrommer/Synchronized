@@ -45,7 +45,7 @@ namespace Synchronized.WebApp
                 .AddDefaultTokenProviders();
 
             //_.For<DbContext>().Use(new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true")).Transient();
-            services.AddScoped<DbContext>(s => new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true"));
+            services.AddScoped<DbContext>(s => new SynchedIdentityDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true"));
 
             //services.AddDbContext<SynchronizedDbContext>(b =>
             //{

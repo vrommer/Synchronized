@@ -14,9 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Synchronized.Repository.Repositories
 {
-    public class UsersRepository : DataRepository<ApplicationUser>, IUsersRepository, IUserStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>, IUserRoleStore<ApplicationUser>, 
-        IUserSecurityStampStore<ApplicationUser>, IUserEmailStore<ApplicationUser>, IQueryableUserStore<ApplicationUser>, 
-        IUserLoginStore<ApplicationUser>, IUserTwoFactorStore<ApplicationUser>, IUserLockoutStore<ApplicationUser>, IUserPhoneNumberStore<ApplicationUser>
+    public class UsersRepository : DataRepository<ApplicationUser>, IUsersRepository
     {
         private readonly UserStore<ApplicationUser> _userStore;
 
@@ -268,25 +266,25 @@ namespace Synchronized.Repository.Repositories
         }
 
         #region IDataRepository implementation
-        public IQueryable<ApplicationUser> GetBy(Expression<Func<ApplicationUser, bool>> predicate)
-        {
-            throw new NotImplementedException();
-        }
+        //public override IQueryable<ApplicationUser> GetBy(Expression<Func<ApplicationUser, bool>> predicate)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public IQueryable<ApplicationUser> GetPage(int pageIndex, int pageSize)
         {
             return _userStore.Users.AsNoTracking().Skip((pageIndex - 1) * pageSize).Take(pageSize);
         }
     
-        public ApplicationUser GetById(string userId)
+        public async override Task<ApplicationUser> GetById(string userId)
         {
             //return _userStore.Users.AsNoTracking().Include(u => u.Tags).SingleOrDefault(u => u.Id.Equals(userId));
-            return _userStore.Users.AsNoTracking().SingleOrDefault(u => u.Id.Equals(userId));
+            return await _userStore.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id.Equals(userId));
         }
         #endregion
 
         #region IUSersRepository implementation
-        public async Task<int> GetCount()
+        public async new Task<int> GetCount()
         {
             return await _userStore.Users.CountAsync();
         }
@@ -297,7 +295,7 @@ namespace Synchronized.Repository.Repositories
             return await GetPage(pageIndex, pageSize).ToListAsync();
         }
 
-        public async Task<string> AddAsync(ApplicationUser entity)
+        public override async Task<string> AddAsync(ApplicationUser entity)
         {
             await _userStore.CreateAsync(entity);
             return entity.Id;

@@ -26,7 +26,7 @@ namespace Synchronized.Data
         // IDs of tags
         static List<string> tagIds = new List<string>();
 
-        static SynchronizedDbContext context;
+        static SynchedIdentityDbContext context;
         static Random rand = new Random();
         static int maxPoints = 6000;
         static int totalViews = 15;
@@ -38,15 +38,20 @@ namespace Synchronized.Data
 
         public static async Task Initialize(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, DbContext Context)
         {
-            context = (SynchronizedDbContext)Context;
+            context = (SynchedIdentityDbContext)Context;
             context.Database.EnsureCreated();
+
+            //string[] userNames =
+            //{
+            //    "Viktoriya \u2764", "Vadim", "Yossi", "Nati", "Isaac", "Oren", "Allen \u2764", "Nir", "Netta", "Katty", "Soffi", "Ira", "Marina", "Igal", "Juli", "Aprana", "Prasana", "Tigran", "Anton", "Sergey", "Dima", "Michael",
+            //    "Alex", "Kostya", "Max", "Lee", "Keren", "Dina", "Maayan", "Idan", "Adam", "Ari", "Arik", "Yariv", "Naor", "Oron", "Yevgeni", "Bruce", "Kim", "Joseph", "Ido", "Jack", "John", "Romeo",
+            //    "Roman", "Rita", "Irena", "Vladislav", "Rostislav", "Josh", "Kevin", "Devin", "Miika", "Luca", "Fabio", "Fredd", "Leon", "Arthur", "Boris", "David", "Eithan", "Stephany", "Christine", "Alon", "Alona", "Olga",
+            //    "Sharon", "Hellen", "Hulio", "Enrique", "Darwin", "Stephan", "Joe", "Hillary", "Barak", "Benjamin", "Ashton", "Alexa", "Cameron", "Kventin", "Guy", "Ahmed", "Muhammad", "Gadir", "Kamila", "Polina", "Pola", "Marga", "Sandra", "Alexa"
+            //};
 
             string[] userNames =
             {
-                "Viktoriya \u2764", "Vadim", "Yossi", "Nati", "Isaac", "Oren", "Allen \u2764", "Nir", "Netta", "Katty", "Soffi", "Ira", "Marina", "Igal", "Juli", "Aprana", "Prasana", "Tigran", "Anton", "Sergey", "Dima", "Michael",
-                "Alex", "Kostya", "Max", "Lee", "Keren", "Dina", "Maayan", "Idan", "Adam", "Ari", "Arik", "Yariv", "Naor", "Oron", "Yevgeni", "Bruce", "Kim", "Joseph", "Ido", "Jack", "John", "Romeo",
-                "Roman", "Rita", "Irena", "Vladislav", "Rostislav", "Josh", "Kevin", "Devin", "Miika", "Luca", "Fabio", "Fredd", "Leon", "Arthur", "Boris", "David", "Eithan", "Stephany", "Christine", "Alon", "Alona", "Olga",
-                "Sharon", "Hellen", "Hulio", "Enrique", "Darwin", "Stephan", "Joe", "Hillary", "Barak", "Benjamin", "Ashton", "Alexa", "Cameron", "Kventin", "Guy", "Ahmed", "Muhammad", "Gadir", "Kamila", "Polina", "Pola", "Marga", "Sandra"
+                "Alex", "Yuval", "Yelena"
             };
 
             List<string> tagNames = new List<string>
@@ -125,7 +130,7 @@ namespace Synchronized.Data
             //bool roleExists = await roleManager.RoleExistsAsync(roleName);
 
             var joseph = new ApplicationUser {
-                Email = "mail1@example.com",
+                Email = "mail0@example.com",
                 EmailConfirmed = true,
                 UserName = "joseph",
                 ImageUri = "/pictures/user_default.png"
@@ -140,19 +145,21 @@ namespace Synchronized.Data
                 result = await userManager.AddToRoleAsync(joseph, Constants.MODERATOR);
             }
 
+            UserIds.Add(joseph.Id);
+
             /***********************************************************************
              * Users
              ***********************************************************************/
 
             var users = new List<ApplicationUser>();
-            for (int i = 0; i < userNames.Length; i++)
+            for (int i = 1; i < userNames.Length; i++)
             {
                 var user = new ApplicationUser
                 {
                     Email = "mail" + i + "@example.com",
                     UserName = userNames[i],
-                    ImageUri = "/pictures/user_default.png",
-                    Points = rand.Next(maxPoints)
+                    ImageUri = "/pictures/user_default.png"
+                    //Points = rand.Next(maxPoints)
                 };
                 var roleNames = GetUserRole(user.Points);
                 result = await userManager.CreateAsync(user, password);
@@ -219,7 +226,7 @@ namespace Synchronized.Data
                     "dignissim. Fusce orci ipsum, faucibus et blandit eu, consequat id ipsum. Maecenas bibendum, " +
                     "est nec dapibus euismod, turpis magna tristique leo, in lobortis ligula metus nec metus. " +
                     "Nam libero turpis, ultricies quis leo at, dictum fermentum diam.</p>",
-                    Points = rand.Next(maxPoints),
+                    //Points = rand.Next(maxPoints),
                     PublisherId = UserIds[rand.Next(UserIds.Count)]
                 });
             }
@@ -237,7 +244,7 @@ namespace Synchronized.Data
             for (int i = 0; i < numOfAnswers; i++)
             {
                 int pointer = rand.Next(numOfQuestions);
-                Question target = context.Posts.OfType<Question>().Where(q => q.Id == questionIds[pointer]).Include(q => q.Answers).ToArray()[0];
+                Question target = context.Posts.OfType<Question>().Where(q => q.Id == questionIds[pointer]).Include(q => q.Publisher).Include(q => q.Answers).ToArray()[0];
                 Answer a = new Answer
                 {
                     Body = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
@@ -256,11 +263,18 @@ namespace Synchronized.Data
                     "efficitur scelerisque.</p>\n<p>Curabitur quis aliquam eros. Nam sed risus sed tellus dignissim euismod non in " +
                     "enim. Mauris ac semper elit. Proin ornare aliquam ligula, et sagittis quam ultricies vitae. Duis fringilla ",
                     IsAccepted = !target.Answered() && rand.Next(2) > 0 ? true : false,
-                    Points = rand.Next(maxPoints),
+                    //Points = rand.Next(maxPoints),
                     PublisherId = UserIds[rand.Next(UserIds.Count)],
-                    QuestionId = target.Id,
+                    QuestionId = target.Id
                 };
                 context.Add(a);
+                if (a.IsAccepted)
+                {
+                    a.Publisher.Points += Constants.ANSWER_ACCEPT_ANSWERER_BONUS;
+                    var question = context.Set<Question>().Include(q => q.Publisher).Where(q => q.Id.Equals(a.QuestionId)).SingleOrDefault();
+                    question.Publisher.Points += Constants.ANSWER_ACCEPT_ACCEPTER_BONUS;
+                    context.Set<Question>().Update(question);
+                }
                 context.SaveChanges();
             }
 
@@ -274,7 +288,7 @@ namespace Synchronized.Data
             {
                 comments.Add(new Comment
                 {
-                    Body = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
+                    Body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
                     "Fusce massa libero, hendrerit non risus a, sollicitudin venenatis tellus. Cras in enim lectus. " +
                     "Nunc nisi metus, condimentum vel urna eget, rutrum feugiat est. Curabitur eget dui eu sapien " +
                     "dictum vulputate vitae eu diam. Suspendisse iaculis, lorem in semper pharetra, felis dui ultrices " +

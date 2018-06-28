@@ -32,7 +32,7 @@ namespace Synchronized.WebApp.Pages.Questions
 
         public async Task OnGetAsync(string id)
         {
-            UserId = await Utils.GetUserIdAsync(HttpContext, _userManager); ;
+            UserId = await Utils.GetUserIdAsync(HttpContext, _userManager);
             Question = await _questionsService.GetQuestionDetailsPageModel(id, UserId);
         }
 

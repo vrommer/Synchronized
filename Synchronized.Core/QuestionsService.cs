@@ -61,36 +61,42 @@ namespace Synchronized.Core
             return questionsPage;
         }
 
-        public async Task<ServiceModel.Question> VoteForQuestion(string postId, VoteType voteType, string userId, int userPoints)
+        public async Task<ServiceModel.Question> VoteForQuestion(string postId, VoteType voteType, ApplicationUser user)
         {
             var question = await ((IQuestionsRepository)_repo).GetQuestionById(postId);
             var serviceQuestion = _converter.Convert(question);
-            var canVote = CanVote(userId, userPoints, voteType, serviceQuestion);
+            var canVote = CanVote(user.Id, user.Points, voteType, serviceQuestion);
             if (canVote)
             {
-                if (voteType == VoteType.UpVote)
-                {
-                    question.Publisher.Points = question.Publisher.Points + 5;
-                } else
-                {
-                    question.Publisher.Points = question.Publisher.Points - 2;
-                }
-                question.Votes.Add(new Vote
-                {
-                    VoterId = userId,
-                    VoteType = (int)voteType
-                });
-                await _repo.UpdateAsync(question);
-                serviceQuestion.VoterIds.Add(userId);
-                switch(voteType)
+                switch (voteType)
                 {
                     case VoteType.UpVote:
                         serviceQuestion.UpVotes++;
+                        question.Publisher.Points += Constants.QUESTION_UPVOTE_ASKER_BONUS;
                         break;
                     default:
                         serviceQuestion.DownVotes++;
+                        question.Publisher.Points += Constants.QUESTION_DOWNVOTE_AKSER_PENALTY;
+                        if (user.Id.Equals(question.Publisher.Id))
+                        {
+                            user.Points += question.Publisher.Points + Constants.QUESTION_DOWNVOTE_VOTER_PENALTY;
+                        }
+                        else
+                        {
+                            user.Points += Constants.QUESTION_DOWNVOTE_VOTER_PENALTY;
+                        }
                         break;
                 }
+                serviceQuestion.VoterIds.Add(user.Id);
+                question.Votes.Add(new Vote
+                {
+                    VoterId = user.Id,
+                    VoteType = (int)voteType
+                });
+
+                await _repo.UpdateAsync(question);
+                await _repo.UpdateAsync(question.Publisher);
+                await _repo.UpdateAsync(user);
                 return serviceQuestion;
             }
             return null;
@@ -127,29 +133,42 @@ namespace Synchronized.Core
         /// <param name="voteType">One of { UpVote, DownVote }</param>
         /// <param name="userId">THe Id of the voter</param>
         /// <returns></returns>
-        public async Task<ServiceModel.Answer> VoteForAnswer(string postId, VoteType voteType, string userId, int userPoints)
+        public async Task<ServiceModel.Answer> VoteForAnswer(string postId, VoteType voteType, ApplicationUser user)
         {
             var answer = await ((IQuestionsRepository)_repo).GetAnswerById(postId);
             var serviceAnswer = _converter.Convert(answer);
-            var canVote = CanVote(userId, userPoints, voteType, serviceAnswer);
+            var canVote = CanVote(user.Id, user.Points, voteType, serviceAnswer);
             if (canVote)
             {
                 answer.Votes.Add(new Vote
                 {
-                    VoterId = userId,
+                    VoterId = user.Id,
                     VoteType = (int)voteType
                 });
                 await ((IQuestionsRepository)_repo).UpdateAnswerAsync(answer);
-                serviceAnswer.VoterIds.Add(userId);
+                serviceAnswer.VoterIds.Add(user.Id);
                 switch (voteType)
                 {
                     case VoteType.UpVote:
                         serviceAnswer.UpVotes++;
+                        answer.Publisher.Points += Constants.ANSWER_UPVOTE_ANSWERER_BONUS;
                         break;
                     default:
                         serviceAnswer.DownVotes++;
+                        answer.Publisher.Points += Constants.ANSWER_DOWNVOTE_ANSWERER_PNEALTY;
+                        if (user.Id.Equals(answer.Publisher.Id))
+                        {
+                            user.Points += answer.Publisher.Points + Constants.ANSWER_DOWNVOTE_VOTER_PENALTY;
+                        }
+                        else
+                        {
+                            user.Points += Constants.ANSWER_DOWNVOTE_VOTER_PENALTY;
+                        }
                         break;
                 }
+                await _repo.UpdateAsync(answer);
+                await _repo.UpdateAsync(answer.Publisher);
+                await _repo.UpdateAsync(user);
                 return serviceAnswer;
             }
             return null;
@@ -221,15 +240,18 @@ namespace Synchronized.Core
             await ((IQuestionsRepository)_repo).UpdateAsync(question);
         }
 
-        public async Task AcceptAnswer(AnswerViewModel answer, string userId)
+        public async Task AcceptAnswer(AnswerViewModel answer, ApplicationUser user)
         {
-            var canAccept = ((!String.IsNullOrEmpty(userId)) && (answer.QuestionPublisherId.Equals(userId)));
+            var canAccept = ((!String.IsNullOrEmpty(user.Id)) && (answer.QuestionPublisherId.Equals(user.Id)));
             if (canAccept)
             {
                 var domainAnswer = await ((IQuestionsRepository)_repo).GetAnswerById(answer.Id);
                 domainAnswer.IsAccepted = true;
+                domainAnswer.Publisher.Points += Constants.ANSWER_ACCEPT_ANSWERER_BONUS;
+                user.Points += Constants.ANSWER_ACCEPT_ACCEPTER_BONUS;
                 await _repo.UpdateAsync(domainAnswer);
-            }            
+                await _repo.UpdateAsync(user);
+            }               
         }
-    }
+    } 
 }

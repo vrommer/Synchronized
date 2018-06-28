@@ -141,7 +141,7 @@
                     <div>@Html.Raw(answer.Body)</div>
                     @if (SignInManager.IsSignedIn(User))
                     {
-                        @if ((!Model.Question.IsAnswered) && (Model.UserId.Equals(Model.Question.PublisherId)))
+                        @if ((!Model.Question.IsAnswered) && !String.IsNullOrWhiteSpace(Model.UserId) && (Model.UserId.Equals(Model.Question.PublisherId)))
                         {
                             <button type="button" class="btn btn-link synched-accept">Accept Answer</button>
                         }
