@@ -189,6 +189,7 @@ namespace Synchronized.Data
 
             for (int i = 0; i < numOfQuestions; i++)
             {
+                var publisherId = UserIds[rand.Next(UserIds.Count)];
                 questions.Add(new Question
                 {
                     Title = "The title of the Question",
@@ -227,7 +228,14 @@ namespace Synchronized.Data
                     "est nec dapibus euismod, turpis magna tristique leo, in lobortis ligula metus nec metus. " +
                     "Nam libero turpis, ultricies quis leo at, dictum fermentum diam.</p>",
                     //Points = rand.Next(maxPoints),
-                    PublisherId = UserIds[rand.Next(UserIds.Count)]
+                    PublisherId = publisherId,
+                    Subscriptions = new List<Subscription>()
+                    {                        
+                        new Subscription()
+                        {
+                            UserId = publisherId
+                        }
+                    }
                 });
             }
 
@@ -243,6 +251,7 @@ namespace Synchronized.Data
             var answers = new List<Answer>();
             for (int i = 0; i < numOfAnswers; i++)
             {
+                var publisherId = UserIds[rand.Next(UserIds.Count)];
                 int pointer = rand.Next(numOfQuestions);
                 Question target = context.Posts.OfType<Question>().Where(q => q.Id == questionIds[pointer]).Include(q => q.Publisher).Include(q => q.Answers).ToArray()[0];
                 Answer a = new Answer
@@ -264,9 +273,21 @@ namespace Synchronized.Data
                     "enim. Mauris ac semper elit. Proin ornare aliquam ligula, et sagittis quam ultricies vitae. Duis fringilla ",
                     IsAccepted = !target.Answered() && rand.Next(2) > 0 ? true : false,
                     //Points = rand.Next(maxPoints),
-                    PublisherId = UserIds[rand.Next(UserIds.Count)],
+                    PublisherId = publisherId,
                     QuestionId = target.Id
                 };
+                var sub = new Subscription() {
+                    UserId = publisherId,
+                    QuestionId = target.Id
+                };
+                if (!target.Subscriptions.Contains(sub))
+                {
+                    target.Subscriptions.Add(new Subscription()
+                    {
+                        UserId = publisherId
+                    });
+                }
+                context.Update(target);
                 context.Add(a);
                 if (a.IsAccepted)
                 {
@@ -286,6 +307,41 @@ namespace Synchronized.Data
             var comments = new List<Comment>();
             for (int i = 0; i < numOfComments; i++)
             {
+                var publisherId = UserIds[rand.Next(UserIds.Count)];
+                var randomNumber = rand.Next(2);
+                var postId = randomNumber > 0 ? questionIds[rand.Next(numOfQuestions)] : answerIds[rand.Next(numOfAnswers)];
+                VotedPost targetPost;
+                if (randomNumber > 0)
+                {
+                    var question = context.Set<Question>().Where(q => q.Id.Equals(postId)).Include(q => q.Subscriptions).SingleOrDefault();
+                    if (!question.Subscriptions.Contains(new Subscription()
+                    {
+                        UserId = publisherId,
+                        QuestionId = question.Id
+                    }))
+                    {
+                        question.Subscriptions.Add(new Subscription()
+                        {
+                            UserId = publisherId
+                        });
+                    }
+                }
+                else
+                {
+                    var answer = context.Set<Answer>().Where(a => a.Id.Equals(postId)).SingleOrDefault();
+                    var question = context.Set<Question>().Where(q => q.Id.Equals(answer.QuestionId)).Include(q => q.Subscriptions).SingleOrDefault();
+                    if (!question.Subscriptions.Contains(new Subscription()
+                    {
+                        UserId = publisherId,
+                        QuestionId = question.Id
+                    }))
+                    {
+                        question.Subscriptions.Add(new Subscription()
+                        {
+                            UserId = publisherId
+                        });
+                    }
+                }
                 comments.Add(new Comment
                 {
                     Body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
@@ -294,8 +350,8 @@ namespace Synchronized.Data
                     "dictum vulputate vitae eu diam. Suspendisse iaculis, lorem in semper pharetra, felis dui ultrices " +
                     "massa, volutpat rutrum sem nisi nec velit. Donec interdum convallis massa at interdum. Mauris luctus " +
                     "tellus arcu, vitae porttitor leo finibus sed.",
-                    PostId = rand.Next(2) > 0 ? questionIds[rand.Next(numOfQuestions)]: answerIds[rand.Next(numOfAnswers)], 
-                    PublisherId = UserIds[rand.Next(UserIds.Count)]
+                    PostId = postId, 
+                    PublisherId = publisherId
                 });
             }
             comments.ForEach(c => context.Posts.Add(c));

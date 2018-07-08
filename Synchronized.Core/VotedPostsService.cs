@@ -57,11 +57,29 @@ namespace Synchronized.Core
 
         public async Task<ServiceModel.Comment> CommentOnPost(string postId, string commentBody, string userId, string userName, int userPoints)
         {
+            ServiceModel.Question serviceQuestion;
+            //Domain.Question updatedDomainQuestion;
             var post = await((IVotedPostRepository)_repo).GetById(postId);
             var canComment = ((!String.IsNullOrEmpty(userId)) && (!String.IsNullOrEmpty(userId)) && Constants.COMMENT_POINTS <= userPoints);
             var comment = new Domain.Comment();
             if (canComment)
             {
+                if (post.GetType().Equals(typeof(Domain.Question)))
+                {
+                    await SubscribeUser((Domain.Question)post, userId);
+                    //serviceQuestion = _converter.Convert((Domain.Question)post);
+                }
+                else
+                {
+                    var domainQuestion = await ((IVotedPostRepository)_repo).GetById(((Domain.Answer)post).QuestionId);
+                    await SubscribeUser((Domain.Question)domainQuestion, userId);
+                    //serviceQuestion = _converter.Convert((Domain.Question)domainQuestion);
+                    //var user = _factory.GetUser();
+                    //user.Id = userId;
+                    //serviceQuestion.Subscribe(user);
+                    //var updatedDomainQuestion = _converter.Convert(serviceQuestion);
+                    //await _repo.UpdateAsync(updatedDomainQuestion);
+                }
                 comment.PublisherId = userId;
                 comment.Body = commentBody;
                 post.Comments.Add(comment);
@@ -89,8 +107,10 @@ namespace Synchronized.Core
                 {
                     UserId = userId
                 });
-            }
-            await _repo.UpdateAsync(post);
+                var serviceQuestion = _converter.Convert((Domain.Question)post);
+                await _repo.UpdateAsync(post);                
+                await serviceQuestion.Notify();
+            }            
 
             return canDelete;
         }
@@ -105,12 +125,23 @@ namespace Synchronized.Core
             })));
             if (canFlag)
             {
+                if (post.GetType().Equals(typeof(Domain.Question)))
+                {
+                    var serviceQuestion = _converter.Convert((Domain.Question)post);
+                    await serviceQuestion.Notify();
+                }
+                else
+                {
+                    var domainQuestion = await ((IVotedPostRepository)_repo).GetById(((Domain.Answer)post).QuestionId);
+                    var serviceQuestion = _converter.Convert((Domain.Question)domainQuestion);
+                    await serviceQuestion.Notify();
+                }
                 post.PostFlags.Add(new Domain.PostFlag
                 {
                     UserId = userId
                 });
+                await _repo.UpdateAsync(post);
             }
-            await _repo.UpdateAsync(post);
 
             return canFlag;
         }
@@ -124,5 +155,17 @@ namespace Synchronized.Core
         {
             throw new NotImplementedException();
         }
+
+        private async Task SubscribeUser(Domain.Question question, String userId)
+        {
+            Domain.Question updatedQuestion;
+            var serviceQuestion = _converter.Convert((question));
+            var user = _factory.GetUser();
+            user.Id = userId;
+            serviceQuestion.Subscribe(user);
+            updatedQuestion = _converter.Convert(serviceQuestion);
+            await _repo.UpdateAsync(updatedQuestion);
+        }
     }
+
 }

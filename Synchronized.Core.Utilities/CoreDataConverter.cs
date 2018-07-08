@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System;
 using Synchronized.Domain.Factories.Interfaces;
 using Microsoft.Extensions.Logging;
+using Synchronized.ServiceModel.Interfaces;
 
 namespace Synchronized.Core.Utilities
 {
@@ -149,11 +150,23 @@ namespace Synchronized.Core.Utilities
             bool first = true;
 
             var to = _serviceModelFactory.GetQuestion();
+            to.Subscribers = _serviceModelFactory.GetOfType<List<IQuestionSubscriber>>();
 
             to.Answers = Convert(from.Answers);                      
 
             to.IsAnswered = from.Answered();
             to.Title = String.Copy(from.Title);
+
+            if (from.Subscriptions != null)
+            {
+                foreach (Domain.Subscription s in from.Subscriptions)
+                {
+                    var subscriber = _serviceModelFactory.GetUser();
+                    subscriber.Id = String.Copy(s.UserId);
+                    subscriber.Email = String.Copy(s.Subscriber.Email);
+                    to.Subscribers.Add(subscriber);
+                }
+            }
 
             if (from.QuestionViews != null)
             {
@@ -254,12 +267,22 @@ namespace Synchronized.Core.Utilities
             question.Title = String.Copy(from.Title);
             question.Body = String.Copy(from.Body);
             question.PublisherId = String.Copy(from.PublisherId);
-            var tageNamesArray = from.Tags.Split(',');
-            for (int i = 0; i<tageNamesArray.Length; i++)
+            var tagNamesArray = from.Tags.Split(',');
+            for (int i = 0; i<tagNamesArray.Length; i++)
             {
                 var questionTag = _domainModelFactory.GetQuestionTag();
-                questionTag.TagId = String.Copy(tageNamesArray[i]);
+                questionTag.TagId = String.Copy(tagNamesArray[i]);
                 question.QuestionTags.Add(questionTag);
+            }
+            foreach (IQuestionSubscriber s in from.Subscribers)
+            {
+                var sub = _serviceModelFactory.GetOfType<Domain.Subscription>();
+                sub.UserId = String.Copy(s.Id);
+                if (!s.NewSubscriber)
+                {
+                    sub.QuestionId = from.Id;
+                }
+                question.Subscriptions.Add(sub);
             }
             return question;
         }
@@ -279,7 +302,15 @@ namespace Synchronized.Core.Utilities
 
         public ApplicationUser Convert(User from)
         {
-            throw new NotImplementedException();
+            var applicationUser = _serviceModelFactory.GetOfType<ApplicationUser>();
+            applicationUser.Address = from.Address ?? String.Copy(from.Address);
+            applicationUser.Email = from.Email ?? String.Copy(from.Email);
+            applicationUser.Id = String.Copy(from.Id);
+            applicationUser.ImageUri = from.ImageUri ?? String.Copy(from.ImageUri);
+            applicationUser.Points = from.Points;
+            applicationUser.UserName = from.Name ?? String.Copy(from.Name);
+
+            return applicationUser;
         }
 
         public Domain.PostFlag Convert(ServiceModel.PostFlag from)
@@ -378,6 +409,36 @@ namespace Synchronized.Core.Utilities
             throw new NotImplementedException();
         }
 
+        public ServiceModel.Subscription Convert(Domain.Subscription from)
+        {
+            var sub = _serviceModelFactory.GetOfType<ServiceModel.Subscription>();
+            sub.UserEmail = String.Copy(from.Subscriber.Email);
+            sub.UserId= String.Copy(from.Subscriber.Id);
+            sub.UserName = String.Copy(from.Subscriber.UserName);
+            return sub;
+        }
+
+        public Domain.Subscription Convert(ServiceModel.Subscription from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<ServiceModel.Subscription> Convert(ICollection<Domain.Subscription> from)
+        {
+            var subs = _serviceModelFactory.GetOfType<List<ServiceModel.Subscription>>();
+            foreach (Domain.Subscription sub in from)
+            {
+                subs.Add(Convert(sub));
+            }
+
+            return subs;
+        }
+
+        public List<Domain.Subscription> Convert(ICollection<ServiceModel.Subscription> from)
+        {
+            throw new NotImplementedException();
+        }
+
         private void AddPostPart(Domain.Post from, ServiceModel.Post to)
         {
             to.Id = String.Copy(from.Id);
@@ -403,6 +464,7 @@ namespace Synchronized.Core.Utilities
                     to.VoterIds.Add(v.VoterId);
                 });
             }
+
             // Add flagger Ids
             if (from.PostFlags != null)
             {

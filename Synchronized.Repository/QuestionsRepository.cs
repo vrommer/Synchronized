@@ -92,6 +92,8 @@ namespace Synchronized.Repository
                 .Include(q => q.DeleteVotes)
                 .Include(q => q.Votes)
                 .Include(q => q.QuestionViews)
+                .Include(q => q.Subscriptions)
+                    .ThenInclude(s => s.Subscriber)
                 .Include(q => q.QuestionTags)
                     .ThenInclude(qt => qt.Tag)
                 .SingleOrDefaultAsync(e => e.Id.Equals(id));
@@ -101,6 +103,11 @@ namespace Synchronized.Repository
                 .OrderBy(c => c.DatePosted)
                 .Include(c => c.Publisher)
                 .ToListAsync();
+
+            //question.Subscriptions = await _context.Set<Subscription>()
+            //    .Where(s => s.QuestionId.Equals(question.Id))
+            //    .Include(s => s.Subscriber)
+            //    .ToListAsync();
 
             // Add sorted comments to each answer
             foreach (Answer a in question.Answers)
@@ -125,6 +132,13 @@ namespace Synchronized.Repository
                 .Include(a => a.Comments)
                     .ThenInclude(c => c.Publisher)
                 .SingleOrDefaultAsync();
+
+
+            answer.Question.Subscriptions = await _context.Set<Subscription>()
+                .Where(s => s.QuestionId.Equals(answer.Question.Id))
+                .Include(s => s.Subscriber)
+                .ToListAsync();
+
             answer.Comments.ToList();
             return answer;
         }

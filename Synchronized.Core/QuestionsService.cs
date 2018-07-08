@@ -13,6 +13,7 @@ using System;
 using Synchronized.ViewModel;
 using Microsoft.Extensions.Logging;
 using Synchronized.SharedLib;
+using Synchronized.ServiceModel.Interfaces;
 
 namespace Synchronized.Core
 {
@@ -20,7 +21,8 @@ namespace Synchronized.Core
     {
         private HtmlParser _parser;
 
-        public QuestionsService(IQuestionsRepository repo, IServiceModelFactory factory, IDataConverter converter, HtmlParser parser, ILogger<QuestionsService> logger) : base(repo, factory, converter, logger)
+        public QuestionsService(IQuestionsRepository repo, IServiceModelFactory factory, IDataConverter converter, HtmlParser parser, 
+            ILogger<QuestionsService> logger) : base(repo, factory, converter, logger)
         {
             _parser = parser;
         }
@@ -97,6 +99,7 @@ namespace Synchronized.Core
                 await _repo.UpdateAsync(question);
                 await _repo.UpdateAsync(question.Publisher);
                 await _repo.UpdateAsync(user);
+                await serviceQuestion.Notify();
                 return serviceQuestion;
             }
             return null;
@@ -137,9 +140,12 @@ namespace Synchronized.Core
         {
             var answer = await ((IQuestionsRepository)_repo).GetAnswerById(postId);
             var serviceAnswer = _converter.Convert(answer);
+
             var canVote = CanVote(user.Id, user.Points, voteType, serviceAnswer);
             if (canVote)
             {
+                var domainQuestion = await ((IQuestionsRepository)_repo).GetQuestionById(answer.QuestionId);
+                var serviceQuestion = _converter.Convert(domainQuestion);
                 answer.Votes.Add(new Vote
                 {
                     VoterId = user.Id,
@@ -169,6 +175,7 @@ namespace Synchronized.Core
                 await _repo.UpdateAsync(answer);
                 await _repo.UpdateAsync(answer.Publisher);
                 await _repo.UpdateAsync(user);
+                await serviceQuestion.Notify();
                 return serviceAnswer;
             }
             return null;
@@ -202,6 +209,9 @@ namespace Synchronized.Core
             {
                 return null;
             }
+            var subscriber = _factory.GetUser();
+            subscriber.Id = question.PublisherId;
+            question.Subscribers.Add(subscriber);
             var domainQuestion = _converter.Convert(question);
             try
             {
@@ -246,11 +256,15 @@ namespace Synchronized.Core
             if (canAccept)
             {
                 var domainAnswer = await ((IQuestionsRepository)_repo).GetAnswerById(answer.Id);
+                var domainQuestion = await ((IQuestionsRepository)_repo).GetQuestionById(answer.QuestionId);
+                var questionPublisher = _converter.Convert(domainQuestion);
                 domainAnswer.IsAccepted = true;
                 domainAnswer.Publisher.Points += Constants.ANSWER_ACCEPT_ANSWERER_BONUS;
                 user.Points += Constants.ANSWER_ACCEPT_ACCEPTER_BONUS;
                 await _repo.UpdateAsync(domainAnswer);
                 await _repo.UpdateAsync(user);
+                await questionPublisher.Notify();
+
             }               
         }
     } 

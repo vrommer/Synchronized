@@ -26,7 +26,8 @@ namespace Synchronized.Domain.Factories
         {
             var question = new Question
             {
-                QuestionTags = new List<QuestionTag>()
+                QuestionTags = new List<QuestionTag>(),
+                Subscriptions = new List<Subscription>()
             };
             return question;
         }

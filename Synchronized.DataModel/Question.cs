@@ -15,6 +15,7 @@ namespace Synchronized.Domain
         public List<Answer> Answers { get; set; }
         public List<QuestionTag> QuestionTags { get; set; }
         public List<QuestionView> QuestionViews { get; set; }
+        public List<Subscription> Subscriptions { get; set; }
 
 
         public bool Answered() {

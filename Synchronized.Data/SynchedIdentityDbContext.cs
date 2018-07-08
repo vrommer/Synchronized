@@ -23,6 +23,7 @@ namespace Synchronized.Data
         public DbSet<QuestionTag> QusetionTags { get; set; }
         public DbSet<QuestionView> QuestionViews { get; set; }
         public DbSet<Vote> Votes { get; set; }
+        public DbSet<Subscription> Subscription { get; set; }
         public string _connectionString { get; private set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -116,6 +117,19 @@ namespace Synchronized.Data
                 .HasOne(qt => qt.Tag)
                 .WithMany(t => t.QuestionTags)
                 .HasForeignKey(qt => qt.TagId);
+
+            // Many to many relationship between users and questions
+            builder.Entity<Subscription>().HasKey(s => new { s.UserId, s.QuestionId });
+
+            builder.Entity<Subscription>()
+                .HasOne(s => s.Subscriber)
+                .WithMany(s => s.Subscriptions)
+                .HasForeignKey(s => s.UserId);
+
+            builder.Entity<Subscription>().
+                HasOne(s => s.Question).
+                WithMany(s => s.Subscriptions).
+                HasForeignKey(s => s.QuestionId);
 
             // Many to many relationship between users and votes
             builder.Entity<Vote>().HasKey(s => new { s.VoterId, s.PostId });

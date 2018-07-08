@@ -1,8 +1,9 @@
-﻿using Synchronized.Domain;
+﻿using System.Threading.Tasks;
+using Synchronized.ServiceModel.Interfaces;
 
 namespace Synchronized.ServiceModel
 {
-    public class User
+    public class User: IQuestionSubscriber
     {
         public string Id { get; set; }
         public string Name { get; set; }
@@ -10,5 +11,11 @@ namespace Synchronized.ServiceModel
         public string Email { get; set; }
         public string ImageUri { get; set; }
         public int Points { get; set; }
+        public bool NewSubscriber { get; set; }
+
+        public Task Update()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
