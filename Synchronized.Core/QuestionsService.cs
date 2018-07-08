@@ -211,6 +211,7 @@ namespace Synchronized.Core
             }
             var subscriber = _factory.GetUser();
             subscriber.Id = question.PublisherId;
+            question.Subscribers = _factory.GetOfType<List<IQuestionSubscriber>>();
             question.Subscribers.Add(subscriber);
             var domainQuestion = _converter.Convert(question);
             try

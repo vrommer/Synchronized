@@ -63,7 +63,7 @@ namespace Synchronized.Core.Factories
         {
             var user = new User() { NewSubscriber = true };
 
-            return new User();
+            return user;
         }
 
         public List<User> GetUsersList()
