@@ -89,7 +89,7 @@ namespace Synchronized.Repository
                 //.Include(q => q.Answers)
                 //    .ThenInclude(a => a.Votes)
                 .Include(q => q.Comments)
-                .Include(q => q.Publisher)
+                //.Include(q => q.Publisher)
                 .Include(q => q.PostFlags)
                 .Include(q => q.DeleteVotes)
                 .Include(q => q.Votes)
@@ -99,6 +99,11 @@ namespace Synchronized.Repository
                 .Include(q => q.QuestionTags)
                     .ThenInclude(qt => qt.Tag)
                 .SingleOrDefaultAsync(e => e.Id.Equals(id));
+
+            question.Publisher = await _context.Set<ApplicationUser>()
+                .AsNoTracking()
+                .Where(u => u.Id.Equals(question.PublisherId))
+                .SingleOrDefaultAsync();
 
             // Add sorted comments to question           
             question.Comments = await _context.Set<Comment>()

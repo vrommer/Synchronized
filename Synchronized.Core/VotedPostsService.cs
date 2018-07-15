@@ -170,7 +170,7 @@ namespace Synchronized.Core
             user.Id = userId;
             serviceQuestion.Subscribe(user);
             updatedQuestion = _converter.Convert(serviceQuestion);
-            //await _repo.UpdateAsync(updatedQuestion);
+            //_repo.UpdateAsync(updatedQuestion);
         }
     }
 

@@ -98,9 +98,11 @@ namespace Synchronized.Core
                     VoterId = user.Id,
                     VoteType = (int)voteType
                 });
-
+                
+                await UpdateUserRoles(user);
                 await _repo.UpdateAsync(question);
                 await _repo.UpdateAsync(question.Publisher);
+                await UpdateUserRoles(question.Publisher);
                 await _repo.UpdateAsync(user);
                 await serviceQuestion.Notify();
                 return serviceQuestion;
@@ -175,6 +177,8 @@ namespace Synchronized.Core
                         }
                         break;
                 }
+                await UpdateUserRoles(user);
+                await UpdateUserRoles(answer.Publisher);
                 await _repo.UpdateAsync(answer);
                 await _repo.UpdateAsync(answer.Publisher);
                 await _repo.UpdateAsync(user);
@@ -184,6 +188,67 @@ namespace Synchronized.Core
             return null;
         }
 
+        private async Task UpdateUserRoles(ApplicationUser user)
+        {
+            if (Constants.MODERATOR_MINIMUM_RANK <= user.Points)
+            {
+                var userIsInRole = await _userManager.IsInRoleAsync(user, Constants.MODERATOR);
+                if (!userIsInRole)
+                {
+                    await _userManager.AddToRoleAsync(user, Constants.MODERATOR);
+                }
+            }
+            else if (Constants.EDITOR_MINIMUM_RANK <= user.Points)
+            {
+                var userIsInRole = await _userManager.IsInRoleAsync(user, Constants.MODERATOR);
+                if (userIsInRole)
+                {
+                    await _userManager.RemoveFromRoleAsync(user, Constants.MODERATOR);
+                }
+                userIsInRole = await _userManager.IsInRoleAsync(user, Constants.EDITOR);
+                if (!userIsInRole)
+                {
+                    await _userManager.AddToRoleAsync(user, Constants.EDITOR);
+                }
+            }
+            else if (Constants.VOTER_MINIMUM_RANK <= user.Points)
+            {
+                var userIsInRole = await _userManager.IsInRoleAsync(user, Constants.MODERATOR);
+                if (userIsInRole)
+                {
+                    await _userManager.RemoveFromRoleAsync(user, Constants.MODERATOR);
+                }
+                userIsInRole = await _userManager.IsInRoleAsync(user, Constants.EDITOR);
+                if (userIsInRole)
+                {
+                    await _userManager.RemoveFromRoleAsync(user, Constants.EDITOR);
+                }
+                userIsInRole = await _userManager.IsInRoleAsync(user, Constants.VOTER);
+                if (!userIsInRole)
+                {
+                    await _userManager.AddToRoleAsync(user, Constants.VOTER);
+                }
+            }
+            else
+            {
+                var userIsInRole = await _userManager.IsInRoleAsync(user, Constants.MODERATOR);
+                if (userIsInRole)
+                {
+                    await _userManager.RemoveFromRoleAsync(user, Constants.MODERATOR);
+                }
+                userIsInRole = await _userManager.IsInRoleAsync(user, Constants.EDITOR);
+                if (userIsInRole)
+                {
+                    await _userManager.RemoveFromRoleAsync(user, Constants.EDITOR);
+                }
+                userIsInRole = await _userManager.IsInRoleAsync(user, Constants.VOTER);
+                if (userIsInRole)
+                {
+                    await _userManager.RemoveFromRoleAsync(user, Constants.VOTER);
+                }
+            }
+        }
+
         public async Task<ServiceModel.Question> ViewQuestion(string questionId, string userId)
         {
             var question = await ((IQuestionsRepository)_repo).GetQuestionById(questionId);
@@ -191,7 +256,7 @@ namespace Synchronized.Core
             var canView = CanView(userId, serviceQuestion);
             if (canView)
             {
-                question.QuestionViews.Add(new Domain.QuestionView
+                question.QuestionViews.Add(new QuestionView
                 {
                     UserId = userId
                 });

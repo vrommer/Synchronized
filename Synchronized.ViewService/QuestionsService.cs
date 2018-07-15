@@ -5,7 +5,6 @@ using Synchronized.ViewModel;
 using Synchronized.ViewModel.QuestionsViewModels;
 using Synchronized.ViewModelFactories.Interfaces;
 using Synchronized.UI.Utilities.Interfaces;
-using Synchronized.UI.Utilities;
 
 namespace Synchronized.ViewServices
 {
@@ -67,7 +66,6 @@ namespace Synchronized.ViewServices
             var questions = await _questionsService.GetPage(pageIndex, pageSize, searchTerm, sortOrder);
             var questionsPage = _factory.GetPaginatedList<QuestionForQuestionsPage>(questions.TotalSize, pageIndex, pageSize);
             questions.ForEach(q => {
-                //var question = _factory.GetQuestionForQuestionsPage();
                 questionsPage.Add(((IQuestionsConverter)_converter).Convert(q));
             });
             return questionsPage;
