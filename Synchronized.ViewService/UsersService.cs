@@ -31,10 +31,10 @@ namespace Synchronized.ViewServices
             return viewUser;
         }
 
-        public PaginatedList<UserViewModel> GetIndexPage(int pageIndex)
+        public async Task<PaginatedList<UserViewModel>> GetIndexPage(int pageIndex)
         {
             _logger.LogInformation("Entering GetIndexPage.");
-            var users = _usersService.GetUsersPage(pageIndex, pageSize, null, null);
+            var users = await _usersService.GetUsersPage(pageIndex, pageSize, null, null);
             var usersPage = _factory.GetPaginatedList<UserViewModel>(users.TotalSize, pageIndex, pageSize);
 
             users.ForEach(t =>
@@ -47,6 +47,17 @@ namespace Synchronized.ViewServices
                 usersPage.Add(viewUser);
             });
             _logger.LogInformation("Leaving GetDetailsPage.");
+            return usersPage;
+        }
+
+        public async Task<PaginatedList<UserViewModel>> GetIndexPage(int pageIndex, string sortOrder, string searchTerm)
+        {
+            var users = await _usersService.GetUsersPage(pageIndex, pageSize, sortOrder, searchTerm);
+            var usersPage = _factory.GetPaginatedList<UserViewModel>(users.Count, pageIndex, pageSize);
+            users.ForEach(u =>
+            {                
+                usersPage.Add(_converter.Convert(u));
+            });
             return usersPage;
         }
     }

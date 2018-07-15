@@ -9,7 +9,7 @@ namespace Synchronized.Domain
     {
 
         public string Title { get; set; }
-        public int Points { get; set; }
+        //public int Points { get; set; }
         public int Deleted { get; set; }
 
         public List<Answer> Answers { get; set; }

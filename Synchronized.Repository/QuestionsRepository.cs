@@ -19,6 +19,7 @@ namespace Synchronized.Repository
         public async Task<List<Question>> GetPageAsync(int pageIndex, int pageSize)
         {
             var questions = await _set.AsNoTracking()
+                .Where(q => q.DeleteVotes.Count < 3)
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
                 .Include(q => q.Answers)
@@ -33,6 +34,7 @@ namespace Synchronized.Repository
         public override List<Question> GetPage(int pageIndex, int pageSize, string sortOrder, string searchString)
         {
             var questions = GetBy(q => q.Title.Contains(searchString) || q.Body.Contains(searchString));
+            questions = questions.Where(q => q.DeleteVotes.Count < 3);
 
             switch (sortOrder)
             {
@@ -84,8 +86,8 @@ namespace Synchronized.Repository
                 .AsNoTracking()
                 .Include(q => q.Answers)
                     .ThenInclude(a => a.Publisher)
-                .Include(q => q.Answers)
-                    .ThenInclude(a => a.Votes)
+                //.Include(q => q.Answers)
+                //    .ThenInclude(a => a.Votes)
                 .Include(q => q.Comments)
                 .Include(q => q.Publisher)
                 .Include(q => q.PostFlags)
@@ -99,17 +101,21 @@ namespace Synchronized.Repository
                 .SingleOrDefaultAsync(e => e.Id.Equals(id));
 
             // Add sorted comments to question           
-            question.Comments = await _context.Set<Comment>().Where(c => c.PostId == question.Id)
+            question.Comments = await _context.Set<Comment>()
+                .AsNoTracking()
+                .Where(c => c.PostId == question.Id)
                 .OrderBy(c => c.DatePosted)
                 .Include(c => c.Publisher)
                 .ToListAsync();
 
-            //question.Subscriptions = await _context.Set<Subscription>()
-            //    .Where(s => s.QuestionId.Equals(question.Id))
-            //    .Include(s => s.Subscriber)
-            //    .ToListAsync();
+            question.Answers = await _context.Set<Answer>()
+                .AsNoTracking()
+                .Where(a => a.QuestionId.Equals(question.Id) && a.DeleteVotes.Count < 3)
+                .Include(a => a.Question)
+                .Include(a => a.Publisher)
+                .Include(a => a.Votes)
+                .ToListAsync();
 
-            // Add sorted comments to each answer
             foreach (Answer a in question.Answers)
             {
                 a.Comments = _context.Set<Comment>()
@@ -123,7 +129,8 @@ namespace Synchronized.Repository
 
         public async Task<Answer> GetAnswerById(string postId)
         {
-            var answer = await _context.Set<Answer>().Where(a => a.Id == postId)
+            var answer = await _context.Set<Answer>()
+                .Where(a => a.Id == postId && a.DeleteVotes.Count < 3)
                 .Include(a => a.Question)
                 .Include(a => a.Votes)
                 .Include(a => a.Comments)

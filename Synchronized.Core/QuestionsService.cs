@@ -14,16 +14,19 @@ using Synchronized.ViewModel;
 using Microsoft.Extensions.Logging;
 using Synchronized.SharedLib;
 using Synchronized.ServiceModel.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace Synchronized.Core
 {
     public class QuestionsService : PostsService<Question, ServiceModel.Question>, IQuestionsService
     {
+        private UserManager<ApplicationUser> _userManager;
         private HtmlParser _parser;
 
         public QuestionsService(IQuestionsRepository repo, IServiceModelFactory factory, IDataConverter converter, HtmlParser parser, 
-            ILogger<QuestionsService> logger) : base(repo, factory, converter, logger)
+            ILogger<QuestionsService> logger, UserManager<ApplicationUser> userManager) : base(repo, factory, converter, logger)
         {
+            _userManager = userManager;
             _parser = parser;
         }
 
@@ -59,7 +62,7 @@ namespace Synchronized.Core
             {
                 Utils.MinimizeContent(_parser, questions);
             }
-            var questionsPage = _factory.GetQuestionsList(questions, _repo.GetCount(), pageSize, pageIndex);
+            var questionsPage = _factory.GetQuestionsList(questions, _repo.GetCount(), pageIndex, pageSize);
             return questionsPage;
         }
 
@@ -245,9 +248,17 @@ namespace Synchronized.Core
 
         public async Task AnswerQuestion(ServiceModel.Answer answer, string questionId)
         {
-            var question = await ((IQuestionsRepository)_repo).GetQuestionById(questionId);
-            var domainAnswer = _converter.Convert(answer);
-            question.Answers.Add(domainAnswer);
+            answer.QuestionId = String.Copy(questionId);
+            Question question = await ((IQuestionsRepository)_repo).GetQuestionById(questionId);
+            var serviceQuestion = _converter.Convert(question);
+            serviceQuestion.Answers.Add(answer);
+
+            var user = _factory.GetUser();
+            ((IQuestionSubscriber)user).Id = answer.PublisherId;
+            await serviceQuestion.Notify();
+
+            serviceQuestion.Subscribe(user);
+            question = _converter.Convert(serviceQuestion);
             await ((IQuestionsRepository)_repo).UpdateAsync(question);
         }
 
@@ -267,6 +278,6 @@ namespace Synchronized.Core
                 await questionPublisher.Notify();
 
             }               
-        }
+        }       
     } 
 }

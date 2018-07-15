@@ -1,7 +1,26 @@
 ﻿@page
+
 @model IndexModel
 @{
     ViewData["Title"] = "Users";
+}
+
+@section Sort {
+    <nav class="nav nav-pills flex-column flex-sm-row synched-sort">
+        <a class="flex-sm-fill text-sm-center nav-link" asp-page="/Users/Index" asp-route-sortOrder="@Model.NameSort">Nickname</a>
+        <a class="flex-sm-fill text-sm-center nav-link" asp-page="/Users/Index" asp-route-sortOrder="@Model.DateSort">Date posted</a>
+        <a class="flex-sm-fill text-sm-center nav-link" asp-page="/Users/Index" asp-route-sortOrder="@Model.PointsSort">Points</a>
+    </nav>
+}
+
+@section Filter {
+    <div class="synched-users-search">
+        @{string searchTerm = null;}
+        <form asp-page="/Users/Index" method="get" class="form-inline my-2 my-lg-0">
+            <input asp-for="@searchTerm" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+            <button class="btn btn-default my-2 my-sm-0" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+        </form>
+    </div>
 }
 
 @{
@@ -30,6 +49,7 @@
                                             </div>
                                         </li>
                                         <li class="list-group-item app-usercard-item">
+                                            <div>@modelArray[counter].Roles</div>
                                             <div>@modelArray[counter].Points</div>
                                             <div>label1 label2 label3</div>
                                         </li>
@@ -50,20 +70,23 @@
     var prevDisabled = !Model.Users.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.Users.HasNextPage ? "disabled" : "";
 }
+
 <a asp-page="/Users/Index" asp-route-pageNumber="@(Model.Users.PageIndex - 1)"
-   class="btn btn-default @prevDisabled">
+   asp-route-sortOrder="@Model.SortOrder" class="btn btn-default @prevDisabled">
     Previous
 </a>
+
 @*TODO: Add the "maxPages" with a setter and getter to the Questions page object*@
 @for (var i = 1; i <= Model.CurrentPage; i++)
 {
     <a asp-page="/Users/Index" asp-route-pageNumber="@i"
-       class="btn btn-default">
+        asp-route-sortOrder="@Model.SortOrder" class="btn btn-default">
         @i
     </a>
 }
+
 <a asp-page="/Users/Index" asp-route-pageNumber="@(Model.Users.PageIndex + 1)"
-   class="btn btn-default">
+   asp-route-sortOrder="@Model.SortOrder" class="btn btn-default @nextDisabled">
     Next
 </a>
 

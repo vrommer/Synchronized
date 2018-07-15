@@ -6,7 +6,8 @@ namespace Synchronized.ViewServices.Interfaces
 {
     public interface IUsersService
     {
-        PaginatedList<UserViewModel> GetIndexPage(int currentPage);
+        Task<PaginatedList<UserViewModel>> GetIndexPage(int pageIndex);
+        Task<PaginatedList<UserViewModel>> GetIndexPage(int pageIndex, string sortOrder, string searchTerm);
         Task<UserViewModel> GetDetailsPage(string id);
     }
 }

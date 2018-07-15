@@ -264,14 +264,80 @@ namespace Synchronized.Core.Utilities
         public Domain.Question Convert(ServiceModel.Question from)
         {
             var question = _domainModelFactory.GetQuestion();
+            if (!String.IsNullOrWhiteSpace(from.Id))
+            {
+                question.Id = String.Copy(from.Id);
+            }            
             question.Title = String.Copy(from.Title);
             question.Body = String.Copy(from.Body);
             question.PublisherId = String.Copy(from.PublisherId);
+            question.Answers = _serviceModelFactory.GetOfType<List<Domain.Answer>>();
+            if (from.Answers != null)
+            {
+                foreach (ServiceModel.Answer a in from.Answers)
+                {
+                    question.Answers.Add(Convert(a));
+                }
+            }
+            question.DatePosted = from.DatePosted;
+            question.DeleteVotes = _serviceModelFactory.GetOfType<List<DeleteVote>>();
+            if (from.DeleterIds != null)
+            {
+                foreach (string id in from.DeleterIds)
+                {
+                    question.DeleteVotes.Add(new DeleteVote()
+                    {
+                        UserId = id,
+                        PostId = question.Id
+                    });
+                }
+            }
+            //question.Points = from.SumVotes;
+            question.PostFlags = _serviceModelFactory.GetOfType<List<Domain.PostFlag>>();
+            if (from.FlaggerIds != null)
+            {
+                foreach (string id in from.FlaggerIds)
+                {
+                    question.PostFlags.Add(new Domain.PostFlag()
+                    {
+                        UserId = id,
+                        PostId = question.Id
+                    });
+                }
+            }
+            question.QuestionViews = _serviceModelFactory.GetOfType<List<QuestionView>>();
+            if (from.ViewerIds != null)
+            {
+                foreach (string id in from.ViewerIds)
+                {
+                    question.QuestionViews.Add(new QuestionView()
+                    {
+                        UserId = id,
+                        QuestionId = question.Id
+                    });
+                }
+            }
+            question.Votes = _serviceModelFactory.GetOfType<List<Vote>>();
+            if (from.VoterIds != null)
+            {
+                foreach (string id in from.VoterIds)
+                {
+                    question.Votes.Add(new Vote()
+                    {
+                        PostId = question.Id,
+                        VoterId = id
+                    });
+                }
+            }
             var tagNamesArray = from.Tags.Split(',');
             for (int i = 0; i<tagNamesArray.Length; i++)
             {
                 var questionTag = _domainModelFactory.GetQuestionTag();
                 questionTag.TagId = String.Copy(tagNamesArray[i]);
+                if (!String.IsNullOrWhiteSpace(question.Id))
+                {
+                    questionTag.QuestionId = String.Copy(question.Id);
+                }
                 question.QuestionTags.Add(questionTag);
             }
             foreach (IQuestionSubscriber s in from.Subscribers)
@@ -290,7 +356,14 @@ namespace Synchronized.Core.Utilities
         public Domain.Answer Convert(ServiceModel.Answer from)
         {
             var answer = _domainModelFactory.GetAnswer();
+            if (!String.IsNullOrWhiteSpace(from.Id))
+            {
+                answer.Id = String.Copy(from.Id);
+            }
             answer.PublisherId = String.Copy(from.PublisherId);
+            if (!String.IsNullOrWhiteSpace(from.QuestionId)) {
+                answer.QuestionId = String.Copy(from.QuestionId);
+            }
             answer.Body = String.Copy(from.Body);
             return answer;
         }
@@ -446,7 +519,7 @@ namespace Synchronized.Core.Utilities
             to.DatePosted = from.DatePosted;
             if (from.Publisher != null)
             {
-                to.PublisherName = from.Publisher.UserName;
+                to.PublisherName = String.Copy(from.Publisher.UserName);
             }
             to.PublisherId = String.Copy(from.PublisherId);
         }

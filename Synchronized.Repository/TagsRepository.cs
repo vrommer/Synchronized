@@ -17,6 +17,11 @@ namespace Synchronized.Repository
             _factory = factory;
         }
 
+        public async Task<List<Tag>> GetAllTags()
+        {
+            return await _set.ToListAsync();
+        }
+
         public override List<Tag> GetPage(int pageIndex, int pageSize, string searchTerm, string sortOrder)
         {
             var tags = _set.AsNoTracking()

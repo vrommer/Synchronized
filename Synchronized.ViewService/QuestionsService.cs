@@ -5,6 +5,7 @@ using Synchronized.ViewModel;
 using Synchronized.ViewModel.QuestionsViewModels;
 using Synchronized.ViewModelFactories.Interfaces;
 using Synchronized.UI.Utilities.Interfaces;
+using Synchronized.UI.Utilities;
 
 namespace Synchronized.ViewServices
 {
@@ -13,7 +14,7 @@ namespace Synchronized.ViewServices
     /// </summary>
     public class QuestionsService : Interfaces.IQuestionsService
     {
-        private int pageSize = 20;
+        private int pageSize = 10;
         private Core.Interfaces.IQuestionsService _questionsService;
         private IPostsConverter _converter;
         private IViewModelFactory _factory;
@@ -64,9 +65,9 @@ namespace Synchronized.ViewServices
         public async Task<PaginatedList<QuestionForQuestionsPage>> GetQuestionsIndexPageModel(int pageIndex, string searchTerm, string sortOrder)
         {
             var questions = await _questionsService.GetPage(pageIndex, pageSize, searchTerm, sortOrder);
-            var questionsPage = _factory.GetPaginatedList<QuestionForQuestionsPage>(questions.Count, pageIndex, pageSize);
+            var questionsPage = _factory.GetPaginatedList<QuestionForQuestionsPage>(questions.TotalSize, pageIndex, pageSize);
             questions.ForEach(q => {
-                var question = _factory.GetQuestionForQuestionsPage();
+                //var question = _factory.GetQuestionForQuestionsPage();
                 questionsPage.Add(((IQuestionsConverter)_converter).Convert(q));
             });
             return questionsPage;

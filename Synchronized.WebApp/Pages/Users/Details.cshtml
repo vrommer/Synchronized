@@ -1,14 +1,29 @@
 ﻿@page "{id}"
+
+@using Microsoft.AspNetCore.Identity
+@using Synchronized.Domain
+@using Synchronized.UI.Utilities
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
 @model Synchronized.WebApp.Pages.Users.DetailsModel
 @{
     ViewData["Title"] = "Users";
+}
+
+@{
+    var user = await Utils.GetUserAsync(HttpContext, UserManager);
 }
 
 <h2>Details</h2>
 
 <div class="card app-user-details">
     <div class="card-header">
-        <div id="app-edit-user"><a href="#">edit</a></div>
+        @if (user.Id.Equals(Model.ViewUser.Id))
+        {
+            <div id="app-edit-user"><a href="#">edit</a></div>
+        }        
     </div>
     <div class="card-body">
         <div>
@@ -16,9 +31,9 @@
             <div id="app-user-info">
                 <h5>@Model.ViewUser.Name</h5>
                 <div>@Model.ViewUser.Address</div>
-                <div>Member since: </div>
-                <div>Label1, Label2</div>
-                <div>Role</div>
+                <div>Member since:</div>
+                @*<div>Label1, Label2</div>*@
+                <div>Role: </div>
             </div>
             <div id="app-user-rating">@Model.ViewUser.Points</div>
         </div>        

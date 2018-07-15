@@ -5,10 +5,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Threading;
 using System.Collections.Generic;
-using Synchronized.Data;
 using System.Linq;
 using System;
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -17,10 +15,12 @@ namespace Synchronized.Repository.Repositories
     public class UsersRepository : DataRepository<ApplicationUser>, IUsersRepository
     {
         private readonly UserStore<ApplicationUser> _userStore;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UsersRepository(DbContext context, ILogger<UsersRepository> logger): base(context, logger)
+        public UsersRepository(DbContext context, RoleManager<IdentityRole> roleManager, ILogger<UsersRepository> logger): base(context, logger)
         {
             _userStore = new UserStore<ApplicationUser>(context);
+            _roleManager = roleManager;
         }
 
         public IQueryable<ApplicationUser> Users => ((IQueryableUserStore<ApplicationUser>)_userStore).Users;
@@ -35,9 +35,9 @@ namespace Synchronized.Repository.Repositories
             return ((IUserLoginStore<ApplicationUser>)_userStore).AddLoginAsync(user, login, cancellationToken);
         }
 
-        public Task AddToRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
+        public async Task AddToRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
         {
-            return ((IUserRoleStore<ApplicationUser>)_userStore).AddToRoleAsync(user, roleName, cancellationToken);
+            await ((IUserRoleStore<ApplicationUser>)_userStore).AddToRoleAsync(user, roleName, cancellationToken);
         }
 
         public Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken)
@@ -180,14 +180,14 @@ namespace Synchronized.Repository.Repositories
             return _userStore.IncrementAccessFailedCountAsync(user, cancellationToken);
         }
 
-        public Task<bool> IsInRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
+        public async Task<bool> IsInRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
         {
-            return ((IUserRoleStore<ApplicationUser>)_userStore).IsInRoleAsync(user, roleName, cancellationToken);
+            return await ((IUserRoleStore<ApplicationUser>)_userStore).IsInRoleAsync(user, roleName, cancellationToken);
         }
 
-        public Task RemoveFromRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
+        public async Task RemoveFromRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
         {
-            return ((IUserRoleStore<ApplicationUser>)_userStore).RemoveFromRoleAsync(user, roleName, cancellationToken);
+            await ((IUserRoleStore<ApplicationUser>)_userStore).RemoveFromRoleAsync(user, roleName, cancellationToken);
         }
 
         public Task RemoveLoginAsync(ApplicationUser user, string loginProvider, string providerKey, CancellationToken cancellationToken)
@@ -318,43 +318,49 @@ namespace Synchronized.Repository.Repositories
             return user;
         }
 
-        public override List<ApplicationUser> GetPage(int pageIndex, int pageSize, string searchTerm, string filter)
+        public override List<ApplicationUser> GetPage(int pageIndex, int pageSize, string sortOrder, string filter)
         {
             _logger.LogInformation("Entering GetPage.");
-            var users = _set.AsNoTracking()
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize);
+            var users = GetBy(q => q.UserName.Contains(filter));
 
-            //switch (sortOrder)
-            //{
-            //    case "Date":
-            //        questions = questions.OrderBy(q => q.DatePosted.ToString());
-            //        break;
-            //    case "date_desc":
-            //        questions = questions.OrderByDescending(q => q.DatePosted.ToString());
-            //        break;
-            //    case "Answers":
-            //        questions = questions.OrderBy(q => q.Answers.Count);
-            //        break;
-            //    case "answers_desc":
-            //        questions = questions.OrderByDescending(q => q.Answers.Count);
-            //        break;
-            //    case "Views":
-            //        questions = questions.OrderBy(q => q.QuestionViews.Count);
-            //        break;
-            //    case "views_desc":
-            //        questions = questions.OrderByDescending(q => q.QuestionViews.Count);
-            //        break;
-            //    case "Points":
-            //        questions = questions.OrderBy(q => q.Votes.Count);
-            //        break;
-            //    case "points_desc":
-            //        questions = questions.OrderByDescending(q => q.Votes.Count);
-            //        break;
-            //    default:
-            //        questions = questions.OrderByDescending(q => q.Answers.Count);
-            //        break;
-            //}
+            switch (sortOrder)
+            {
+                case "Date":
+                    users = users.OrderBy(u => u.JoiningDate.ToString());
+                    break;
+                case "date_desc":
+                    users = users.OrderByDescending(u => u.JoiningDate.ToString());
+                    break;
+                case "Nickname":
+                    users = users.OrderBy(u => u.UserName);
+                    break;
+                case "nicknamse_desc":
+                    users = users.OrderByDescending(u => u.UserName);
+                    break;
+                case "Points":
+                    users = users.OrderBy(u => u.Points);
+                    break;
+                case "points_desc":
+                    users = users.OrderByDescending(u => u.Points);
+                    break;
+                default:
+                    users = users.OrderByDescending(u => u.UserName);
+                    break;
+            }
+
+            //        questions = questions.AsNoTracking()
+            //.Skip((pageIndex - 1) * pageSize).Take(pageSize)
+            //.Include(q => q.Votes)
+            //.Include(q => q.QuestionViews)
+            //.Include(q => q.QuestionTags)
+            //    .ThenInclude(qt => qt.Tag)
+            //.Include(q => q.Publisher)
+            //.Include(q => q.Answers);
+
+            //        var questionsList = questions.ToList();
+            //        return questionsList;
+            users = users.Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize);
 
             var usersList = users.ToList();
             usersList.ForEach(u => {

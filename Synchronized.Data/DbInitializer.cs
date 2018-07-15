@@ -29,10 +29,11 @@ namespace Synchronized.Data
         static SynchedIdentityDbContext context;
         static Random rand = new Random();
         static int maxPoints = 6000;
-        static int totalViews = 15;
-        static int numOfQuestions = 5;
-        static int numOfAnswers = 5;
-        static int numOfComments = 5;
+        static int totalViews = 2000;
+        static int totalVotes = 5000;
+        static int numOfQuestions = 1000;
+        static int numOfAnswers = 2000;
+        static int numOfComments = 2000;
         static int minimumTagsInQuestion = 1;
         static int maximumTagsInQuestion = 4;
 
@@ -43,7 +44,7 @@ namespace Synchronized.Data
 
             //string[] userNames =
             //{
-            //    "Viktoriya \u2764", "Vadim", "Yossi", "Nati", "Isaac", "Oren", "Allen \u2764", "Nir", "Netta", "Katty", "Soffi", "Ira", "Marina", "Igal", "Juli", "Aprana", "Prasana", "Tigran", "Anton", "Sergey", "Dima", "Michael",
+            //    "Viktoriya", "Vadim", "Yossi", "Nati", "Isaac", "Oren", "Allen", "Nir", "Netta", "Katty", "Soffi", "Ira", "Marina", "Igal", "Juli", "Aprana", "Prasana", "Tigran", "Anton", "Sergey", "Dima", "Michael",
             //    "Alex", "Kostya", "Max", "Lee", "Keren", "Dina", "Maayan", "Idan", "Adam", "Ari", "Arik", "Yariv", "Naor", "Oron", "Yevgeni", "Bruce", "Kim", "Joseph", "Ido", "Jack", "John", "Romeo",
             //    "Roman", "Rita", "Irena", "Vladislav", "Rostislav", "Josh", "Kevin", "Devin", "Miika", "Luca", "Fabio", "Fredd", "Leon", "Arthur", "Boris", "David", "Eithan", "Stephany", "Christine", "Alon", "Alona", "Olga",
             //    "Sharon", "Hellen", "Hulio", "Enrique", "Darwin", "Stephan", "Joe", "Hillary", "Barak", "Benjamin", "Ashton", "Alexa", "Cameron", "Kventin", "Guy", "Ahmed", "Muhammad", "Gadir", "Kamila", "Polina", "Pola", "Marga", "Sandra", "Alexa"
@@ -51,7 +52,7 @@ namespace Synchronized.Data
 
             string[] userNames =
             {
-                "Alex", "Yuval", "Yelena"
+                "Viktoriya", "Vadim", "Yossi", "Nati", "Isaac", "Oren", "Allen", "Nir", "Netta", "Katty", "Soffi", "Ira", "Marina", "Igal"
             };
 
             List<string> tagNames = new List<string>
@@ -130,7 +131,7 @@ namespace Synchronized.Data
             //bool roleExists = await roleManager.RoleExistsAsync(roleName);
 
             var joseph = new ApplicationUser {
-                Email = "mail0@example.com",
+                Email = "joseph@example.com",
                 EmailConfirmed = true,
                 UserName = "joseph",
                 ImageUri = "/pictures/user_default.png"
@@ -156,7 +157,7 @@ namespace Synchronized.Data
             {
                 var user = new ApplicationUser
                 {
-                    Email = "mail" + i + "@example.com",
+                    Email = userNames[i] + "@example.com",
                     UserName = userNames[i],
                     ImageUri = "/pictures/user_default.png"
                     //Points = rand.Next(maxPoints)
@@ -310,10 +311,9 @@ namespace Synchronized.Data
                 var publisherId = UserIds[rand.Next(UserIds.Count)];
                 var randomNumber = rand.Next(2);
                 var postId = randomNumber > 0 ? questionIds[rand.Next(numOfQuestions)] : answerIds[rand.Next(numOfAnswers)];
-                VotedPost targetPost;
                 if (randomNumber > 0)
                 {
-                    var question = context.Set<Question>().Where(q => q.Id.Equals(postId)).Include(q => q.Subscriptions).SingleOrDefault();
+                    var question = context.Set<Question>().AsNoTracking().Where(q => q.Id.Equals(postId)).Include(q => q.Subscriptions).SingleOrDefault();
                     if (!question.Subscriptions.Contains(new Subscription()
                     {
                         UserId = publisherId,
@@ -329,7 +329,7 @@ namespace Synchronized.Data
                 else
                 {
                     var answer = context.Set<Answer>().Where(a => a.Id.Equals(postId)).SingleOrDefault();
-                    var question = context.Set<Question>().Where(q => q.Id.Equals(answer.QuestionId)).Include(q => q.Subscriptions).SingleOrDefault();
+                    var question = context.Set<Question>().AsNoTracking().Where(q => q.Id.Equals(answer.QuestionId)).Include(q => q.Subscriptions).SingleOrDefault();
                     if (!question.Subscriptions.Contains(new Subscription()
                     {
                         UserId = publisherId,
@@ -380,7 +380,10 @@ namespace Synchronized.Data
             ***********************************************************************/
             HashSet<int> integers;
             int questionsListPointer;
-            context.Posts.OfType<Question>().ToList().ForEach(q => {
+
+            var questionsList = context.Posts.OfType<Question>().ToList();
+            for (var i = 0; i < questionsList.Count; i++)
+            {
                 int numOfTagsForQuestion = rand.Next(minimumTagsInQuestion, maximumTagsInQuestion);
                 integers = new HashSet<int>();
                 for (int j = 1; j <= numOfTagsForQuestion; j++)
@@ -393,13 +396,34 @@ namespace Synchronized.Data
                     integers.Add(questionsListPointer);
                     var questionTag = new QuestionTag
                     {
-                        QuestionId = q.Id,
+                        QuestionId = questionsList[i].Id,
                         TagId = tagIds[questionsListPointer]
                     };
                     context.QusetionTags.Add(questionTag);
                     context.SaveChanges();
                 }
-            });
+            }
+
+            //context.Posts.OfType<Question>().ToList().ForEach(q => {
+            //    int numOfTagsForQuestion = rand.Next(minimumTagsInQuestion, maximumTagsInQuestion);
+            //    integers = new HashSet<int>();
+            //    for (int j = 1; j <= numOfTagsForQuestion; j++)
+            //    {
+            //        questionsListPointer = rand.Next(tagIds.Count);
+            //        while (integers.Contains(questionsListPointer))
+            //        {
+            //            questionsListPointer = rand.Next(tagIds.Count);
+            //        }
+            //        integers.Add(questionsListPointer);
+            //        var questionTag = new QuestionTag
+            //        {
+            //            QuestionId = q.Id,
+            //            TagId = tagIds[questionsListPointer]
+            //        };
+            //        context.QusetionTags.Add(questionTag);
+            //        context.SaveChanges();
+            //    }
+            //});
 
             /***********************************************************************
             * QuestionViews
@@ -421,6 +445,10 @@ namespace Synchronized.Data
                         UserId = UserIds[rand.Next(UserIds.Count)]
                     };
                 }
+                if (i % 10 == 0)
+                {
+                    Console.WriteLine();
+                }
                 questionViews.Add(questionView);
             }
             foreach (QuestionView qv in questionViews)
@@ -433,6 +461,95 @@ namespace Synchronized.Data
             /***********************************************************************
             * QuestionFlags
             ***********************************************************************/
+
+            /***********************************************************************
+            * QuestionVotes
+            ***********************************************************************/
+            var questionVotes = new HashSet<Vote>();
+
+            for (int i = 0; i < totalVotes; i++)
+            {
+                var randomNumber = rand.Next(2);
+                var voteTypeIndicator = rand.Next(10);
+
+                var vote = new Vote
+                {
+                    PostId = randomNumber > 0 ? questionIds[rand.Next(numOfQuestions)] : answerIds[rand.Next(numOfAnswers)],
+                    VoterId = UserIds[rand.Next(UserIds.Count)],
+                    VoteType = voteTypeIndicator > 0 ? 1 : -1
+                };
+                while (questionVotes.Contains(vote))
+                {
+                    vote = new Vote
+                    {
+                        PostId = randomNumber > 0 ? questionIds[rand.Next(numOfQuestions)] : answerIds[rand.Next(numOfAnswers)],
+                        VoterId = UserIds[rand.Next(UserIds.Count)],
+                        VoteType = voteTypeIndicator > 0 ? 1 : -1
+                    };
+                }
+                questionVotes.Add(vote);
+                var postId = String.Copy(vote.PostId);
+                vote.PostId = null;
+                var voter = context.Set<ApplicationUser>().Where(u => u.Id.Equals(vote.VoterId)).SingleOrDefault();
+                if (randomNumber > 0)
+                {
+                    var question = context.Set<Question>().Where(q => q.Id.Equals(postId))
+                        .Include(q => q.Publisher)
+                        .Include(q => q.Votes)
+                        .SingleOrDefault();
+                    question.Votes.Add(vote);
+                    if (voteTypeIndicator > 0)
+                    {
+                        question.Publisher.Points += Constants.QUESTION_UPVOTE_ASKER_BONUS;
+                    }
+                    else
+                    {
+                        question.Publisher.Points += Constants.QUESTION_DOWNVOTE_AKSER_PENALTY;
+                        if (voter.Id.Equals(question.PublisherId))
+                        {
+                            question.Publisher.Points += Constants.QUESTION_DOWNVOTE_VOTER_PENALTY;
+                        }
+                        else
+                        {
+                            voter.Points += Constants.QUESTION_DOWNVOTE_VOTER_PENALTY;
+                        }
+                    }
+                    context.Update(question);
+                }
+                else
+                {
+                    var answer = context.Set<Answer>()
+                        .Where(a => a.Id.Equals(postId))
+                        .Include(a => a.Publisher)
+                        .Include(a => a.Votes)
+                        .SingleOrDefault();
+                    answer.Votes.Add(vote);
+                    if (voteTypeIndicator > 0)
+                    {
+                        answer.Publisher.Points += Constants.ANSWER_UPVOTE_ANSWERER_BONUS;
+                    }
+                    else
+                    {
+                        answer.Publisher.Points += Constants.ANSWER_DOWNVOTE_ANSWERER_PNEALTY;
+                        if (voter.Id.Equals(answer.PublisherId))
+                        {
+                            answer.Publisher.Points += Constants.ANSWER_DOWNVOTE_VOTER_PENALTY;
+                        }
+                        else
+                        {
+                            voter.Points += Constants.ANSWER_DOWNVOTE_VOTER_PENALTY;
+                        }
+                    }
+                    context.Update(answer);
+                }
+                context.SaveChanges();
+            }            
+            foreach (Vote v in questionVotes)
+            {
+                context.Votes.Add(v);
+            }
+
+            context.SaveChanges();
 
             /***********************************************************************
             * DeleteVotes

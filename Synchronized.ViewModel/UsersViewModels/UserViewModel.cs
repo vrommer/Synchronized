@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Synchronized.ViewModel.UsersViewModels
 {
@@ -12,5 +10,6 @@ namespace Synchronized.ViewModel.UsersViewModels
         public string Address { get; set; }
         public int Points { get; set; }
         public string Email { get; set; }
+        public string Roles { get; set; }
     }
 }

@@ -16,22 +16,32 @@ namespace Synchronized.Core
 {
     public class UsersService : DataService<ApplicationUser, User>, IUsersService
     {
-        public UsersService(IUsersRepository repo, IServiceModelFactory factory, IDataConverter converter, ILogger<UsersService> logger) : base(repo, factory, converter, logger)
+        private UserManager<ApplicationUser> _userManager;
+
+        public UsersService(IUsersRepository repo, UserManager<ApplicationUser> userManager, IServiceModelFactory factory, IDataConverter converter, ILogger<UsersService> logger) : base(repo, factory, converter, logger)
         {
+            _userManager = userManager;
         }
 
         public async override Task<User> GetById(string id)
         {
             var user = await _repo.GetById(id);
-            var coreUser = _converter.Convert(user);
+            var coreUser = _converter.Convert(user);            
             return coreUser;
         }
 
-        public PaginatedList<User> GetUsersPage(int pageIndex, int pageSize, string sortOrder, string searchTerm)
+        public async Task<PaginatedList<User>> GetUsersPage(int pageIndex, int pageSize, string sortOrder, string searchTerm)
         {
             _logger.LogInformation("Entering GetUsersPage.");
             var users = ((IUsersRepository)_repo).GetPage(pageIndex, pageSize, sortOrder, searchTerm);
-            var coreUsers = _converter.Convert(users);
+            //var coreUsers = _converter.Convert(users);
+            var coreUsers = _factory.GetOfType<System.Collections.Generic.List<User>>();
+            foreach (var user in users)
+            {
+                var coreUser = _converter.Convert(user);
+                coreUser.Roles = (System.Collections.Generic.List<string>) await ((IUsersRepository)_repo).GetRolesAsync(user, new CancellationToken());
+                coreUsers.Add(coreUser);                
+            }
             var usersPage = _factory.GetUsersPage(coreUsers, _repo.GetCount(), pageSize, pageIndex);
             usersPage.ForEach(u => {
                 _logger.LogDebug("User --->\n\t\tAddress: {0}\n" +
@@ -50,62 +60,62 @@ namespace Synchronized.Core
         }
 
         public async Task UpdateUserRoles(ApplicationUser user)
-        {
+        {           
             if (Constants.MODERATOR_MINIMUM_RANK <= user.Points)
             {
-                var userIsInRole = await ((IUserRoleStore<ApplicationUser>)_repo).IsInRoleAsync(user, Constants.MODERATOR, new CancellationToken());
+                var userIsInRole = await _userManager.IsInRoleAsync(user, Constants.MODERATOR);
                 if (!userIsInRole)
                 {
-                    await((IUserRoleStore<ApplicationUser>)_repo).AddToRoleAsync(user, Constants.MODERATOR, new CancellationToken());
+                    await _userManager.AddToRoleAsync(user, Constants.MODERATOR);
                 }
             }
             else if (Constants.EDITOR_MINIMUM_RANK <= user.Points)
             {
-                var userIsInRole = await ((IUserRoleStore<ApplicationUser>)_repo).IsInRoleAsync(user, Constants.MODERATOR, new CancellationToken());
+                var userIsInRole = await _userManager.IsInRoleAsync(user, Constants.MODERATOR);
                 if (userIsInRole)
                 {
-                    await((IUserRoleStore<ApplicationUser>)_repo).RemoveFromRoleAsync(user, Constants.MODERATOR, new CancellationToken());
+                    await _userManager.RemoveFromRoleAsync(user, Constants.MODERATOR);
                 }
-                userIsInRole = await((IUserRoleStore<ApplicationUser>)_repo).IsInRoleAsync(user, Constants.EDITOR, new CancellationToken());
+                userIsInRole = await _userManager.IsInRoleAsync(user, Constants.EDITOR);
                 if (!userIsInRole)
                 {
-                    await((IUserRoleStore<ApplicationUser>)_repo).AddToRoleAsync(user, Constants.EDITOR, new CancellationToken());
+                    await _userManager.AddToRoleAsync(user, Constants.EDITOR);
                 }
             }
             else if (Constants.VOTER_MINIMUM_RANK <= user.Points)
             {
-                var userIsInRole = await ((IUserRoleStore<ApplicationUser>)_repo).IsInRoleAsync(user, Constants.MODERATOR, new CancellationToken());
+                var userIsInRole = await _userManager.IsInRoleAsync(user, Constants.MODERATOR);
                 if (userIsInRole)
                 {
-                    await((IUserRoleStore<ApplicationUser>)_repo).RemoveFromRoleAsync(user, Constants.MODERATOR, new CancellationToken());
+                    await _userManager.RemoveFromRoleAsync(user, Constants.MODERATOR);
                 }
-                userIsInRole = await((IUserRoleStore<ApplicationUser>)_repo).IsInRoleAsync(user, Constants.EDITOR, new CancellationToken());
+                userIsInRole = await _userManager.IsInRoleAsync(user, Constants.EDITOR);
                 if (userIsInRole)
                 {
-                    await((IUserRoleStore<ApplicationUser>)_repo).RemoveFromRoleAsync(user, Constants.EDITOR, new CancellationToken());
+                    await _userManager.RemoveFromRoleAsync(user, Constants.EDITOR);
                 }
-                userIsInRole = await((IUserRoleStore<ApplicationUser>)_repo).IsInRoleAsync(user, Constants.VOTER, new CancellationToken());
+                userIsInRole = await _userManager.IsInRoleAsync(user, Constants.VOTER);
                 if (!userIsInRole)
                 {
-                    await((IUserRoleStore<ApplicationUser>)_repo).AddToRoleAsync(user, Constants.VOTER, new CancellationToken());
+                    await _userManager.AddToRoleAsync(user, Constants.VOTER);
                 }
             }
             else
             {
-                var userIsInRole = await((IUserRoleStore<ApplicationUser>)_repo).IsInRoleAsync(user, Constants.MODERATOR, new CancellationToken());
+                var userIsInRole = await _userManager.IsInRoleAsync(user, Constants.MODERATOR);
                 if (userIsInRole)
                 {
-                    await((IUserRoleStore<ApplicationUser>)_repo).RemoveFromRoleAsync(user, Constants.MODERATOR, new CancellationToken());
+                    await _userManager.RemoveFromRoleAsync(user, Constants.MODERATOR);
                 }
-                userIsInRole = await((IUserRoleStore<ApplicationUser>)_repo).IsInRoleAsync(user, Constants.EDITOR, new CancellationToken());
+                userIsInRole = await _userManager.IsInRoleAsync(user, Constants.EDITOR);
                 if (userIsInRole)
                 {
-                    await((IUserRoleStore<ApplicationUser>)_repo).RemoveFromRoleAsync(user, Constants.EDITOR, new CancellationToken());
+                    await _userManager.RemoveFromRoleAsync(user, Constants.EDITOR);
                 }
-                userIsInRole = await((IUserRoleStore<ApplicationUser>)_repo).IsInRoleAsync(user, Constants.VOTER, new CancellationToken());
+                userIsInRole = await _userManager.IsInRoleAsync(user, Constants.VOTER);
                 if (userIsInRole)
                 {
-                    await((IUserRoleStore<ApplicationUser>)_repo).RemoveFromRoleAsync(user, Constants.VOTER, new CancellationToken());
+                    await _userManager.RemoveFromRoleAsync(user, Constants.VOTER);
                 }
             }
         }

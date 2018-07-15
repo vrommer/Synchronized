@@ -6,6 +6,7 @@ using Synchronized.ServiceModel;
 using Synchronized.SharedLib.Utilities;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace Synchronized.Core
 {
@@ -13,6 +14,13 @@ namespace Synchronized.Core
     {
         public TagsService(ITagsRepository repo, IServiceModelFactory factory, IDataConverter converter, ILogger<TagsService> logger) : base(repo, factory, converter, logger)
         {
+        }
+
+        public async Task<List<Tag>> GetAllTags()
+        {
+            var domainTags = await ((ITagsRepository)_repo).GetAllTags();
+            var servceModelTags = _converter.Convert(domainTags);
+            return servceModelTags;
         }
 
         public PaginatedList<Tag> GetTagsPage(int pageIndex, int pageSize, string sortOrder, string searchTerm)

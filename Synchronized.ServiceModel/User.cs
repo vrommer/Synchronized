@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Synchronized.ServiceModel.Interfaces;
+using System.Collections.Generic;
 
 namespace Synchronized.ServiceModel
 {
@@ -12,6 +13,7 @@ namespace Synchronized.ServiceModel
         public string ImageUri { get; set; }
         public int Points { get; set; }
         public bool NewSubscriber { get; set; }
+        public List<string> Roles { get; set; }
 
         public Task Update()
         {

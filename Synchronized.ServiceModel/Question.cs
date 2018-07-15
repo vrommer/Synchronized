@@ -32,9 +32,20 @@ namespace Synchronized.ServiceModel
             throw new System.NotImplementedException();
         }
 
-        public void Subscribe(IQuestionSubscriber s)
+        public void Subscribe(IQuestionSubscriber sub)
         {
-            throw new System.NotImplementedException();
+            HashSet<string> subscriberIds = new HashSet<string>()
+            {
+            };
+            foreach (IQuestionSubscriber s in Subscribers)
+            {
+                subscriberIds.Add(s.Id);
+            }
+            if (!subscriberIds.Contains(sub.Id))
+            {
+                sub.NewSubscriber = true;
+                Subscribers.Add(sub);
+            }
         }
     }
 }

@@ -114,6 +114,8 @@ namespace Synchronized.WebApp
 
             app.UseAuthentication();
 
+            //app.UseHttpsRedirection();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

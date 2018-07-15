@@ -33,6 +33,18 @@ namespace Synchronized.UI.Utilities
             user.Name = String.Copy(from.Name);
             user.Email = String.Copy(from.Email);
             user.Points = from.Points;
+            if (from.Roles != null)
+            {
+                user.Roles = "";
+                foreach (string roleName in from.Roles)
+                {
+                    user.Roles += roleName;
+                    if (from.Roles.IndexOf(roleName) != from.Roles.Count - 1)
+                    {
+                        user.Roles += ",";
+                    }
+                }
+            }
             _logger.LogInformation("Leaving Conver.");
             return user;
         }

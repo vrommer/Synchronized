@@ -17,8 +17,8 @@
         public const int VOTE_DOWN_POINTS = 125;
         public const int REVIEW_POINST = 500;
         public const int CREATE_TAGS_POINTS = 1250;
-        public const int EDIT_POINST = 3000;
-        public const int DELETE_POINST = 5000;
+        public const int EDIT_POINST = 2000;
+        public const int DELETE_POINST = 3000;
 
         public const int QUESTION_UPVOTE_ASKER_BONUS = 5;
         public const int ANSWER_UPVOTE_ANSWERER_BONUS = 10;

@@ -18,8 +18,12 @@
 
 .synched-message-container {
     margin-top: 40px;
-    padding-bottom: 10px;
+    padding: 10px;
     background: linear-gradient(#eaeaea, white);
+}
+
+.app-user-details > .card-header, .app-user-details > .card-footer {
+    height: 55px;
 }
 
 .synched-message {

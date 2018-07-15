@@ -5,6 +5,7 @@ using SharedLib.Infrastructure.Constants;
 using Synchronized.Core.Interfaces;
 using Synchronized.UI.Utilities.Interfaces;
 using Synchronized.ViewModel;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Synchronized.Controllers
@@ -12,11 +13,13 @@ namespace Synchronized.Controllers
     public class QuestionsController: SynchronizedController
     {
         private IQuestionsService _questionsService;
+        private ITagsService _tagsService;
         private IUsersService _usersService;
 
         public QuestionsController(
             IUsersService usersService,
             IQuestionsService questionsService,
+            ITagsService tagsService,
             IPostsConverter converter,
             ILogger<QuestionsController> logger,
             UserManager<Domain.ApplicationUser> userManager
@@ -24,6 +27,7 @@ namespace Synchronized.Controllers
         {
             _usersService = usersService;
             _questionsService = questionsService;
+            _tagsService = tagsService;
         }
 
         // POST: /api/Questions/VoteUpQuestion
@@ -37,6 +41,7 @@ namespace Synchronized.Controllers
                 return BadRequest();
             }
             await _usersService.UpdateUserRoles(question.PublisherId);
+
             var questionView = ((IQuestionsConverter)_dataConverter).Convert(question);
             return new ObjectResult(questionView);
         }
@@ -100,6 +105,23 @@ namespace Synchronized.Controllers
             await _usersService.UpdateUserRoles(answer.PublisherId);
             await _usersService.UpdateUserRoles(user);
             return new ObjectResult(answer);
+        }
+
+        // GET: /api/Questions/TagsAutocomplete
+        [HttpGet]
+        public async Task<IActionResult> TagsAutocomplete()
+        {
+            var tags = await _tagsService.GetAllTags();
+            HashSet<string> tagNames = new HashSet<string>();
+            tags.ForEach(t => tagNames.Add(t.Name));
+            return new ObjectResult(tagNames);
+        }
+
+        // GET: /api/Questions/Test
+        [HttpGet]       
+        public IActionResult Test()
+        {
+            return new ObjectResult("Success!");
         }
     }
 }

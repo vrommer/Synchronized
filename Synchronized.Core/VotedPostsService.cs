@@ -26,7 +26,6 @@ namespace Synchronized.Core
             if (domainPost.GetType().Equals(typeof(Domain.Question)))
             {
                 ((Domain.Question)domainPost).Title = String.Copy(((ServiceModel.Question)post).Title);
-                //((Domain.Question)domainPost).QuestionTags = _converter.Convert(((ServiceModel.Question)post).Tags);
             }
             await _repo.UpdateAsync(domainPost);
             return true;
@@ -34,8 +33,7 @@ namespace Synchronized.Core
 
         public async override Task<ServiceModel.VotedPost> GetById(string id)
         {
-            var domainPost = await _repo.GetById(id);
-            // If this domainPost is of type Domain.Question
+            var domainPost = await _repo.GetById(id);           
             if (domainPost.GetType().Equals(typeof(Domain.Question))) {
                 var corePost = _converter.Convert((Domain.Question)domainPost);
                 return corePost; // var Can only be assigned once and cannot be declared or re-assigned
@@ -57,7 +55,7 @@ namespace Synchronized.Core
 
         public async Task<ServiceModel.Comment> CommentOnPost(string postId, string commentBody, string userId, string userName, int userPoints)
         {
-            ServiceModel.Question serviceQuestion;
+            //ServiceModel.Question serviceQuestion;
             //Domain.Question updatedDomainQuestion;
             var post = await((IVotedPostRepository)_repo).GetById(postId);
             var canComment = ((!String.IsNullOrEmpty(userId)) && (!String.IsNullOrEmpty(userId)) && Constants.COMMENT_POINTS <= userPoints);
@@ -66,19 +64,13 @@ namespace Synchronized.Core
             {
                 if (post.GetType().Equals(typeof(Domain.Question)))
                 {
-                    await SubscribeUser((Domain.Question)post, userId);
-                    //serviceQuestion = _converter.Convert((Domain.Question)post);
+                    SubscribeUser((Domain.Question)post, userId);
                 }
                 else
                 {
                     var domainQuestion = await ((IVotedPostRepository)_repo).GetById(((Domain.Answer)post).QuestionId);
-                    await SubscribeUser((Domain.Question)domainQuestion, userId);
-                    //serviceQuestion = _converter.Convert((Domain.Question)domainQuestion);
-                    //var user = _factory.GetUser();
-                    //user.Id = userId;
-                    //serviceQuestion.Subscribe(user);
-                    //var updatedDomainQuestion = _converter.Convert(serviceQuestion);
-                    //await _repo.UpdateAsync(updatedDomainQuestion);
+                    SubscribeUser((Domain.Question)domainQuestion, userId);
+                    await _repo.UpdateAsync(domainQuestion);
                 }
                 comment.PublisherId = userId;
                 comment.Body = commentBody;
@@ -94,6 +86,7 @@ namespace Synchronized.Core
 
         public override async Task<bool> DeletePost(string postId, string userId, int userPoints)
         {
+            ServiceModel.Question serviceQuestion;
             var post = await((IVotedPostRepository)_repo).GetById(postId);
             var canDelete = (Constants.DELETE_POINST <= userPoints && !String.IsNullOrEmpty(userId) && 
                 !(post.DeleteVotes.Contains(new DeleteVote
@@ -103,16 +96,29 @@ namespace Synchronized.Core
             })));
             if (canDelete)
             {
-                post.DeleteVotes.Add(new DeleteVote
+                if (post.GetType().Equals(typeof(Domain.Question)))
                 {
-                    UserId = userId
-                });
-                var serviceQuestion = _converter.Convert((Domain.Question)post);
-                await _repo.UpdateAsync(post);                
+                    serviceQuestion = _converter.Convert((Domain.Question)post);
+                }                
+                else
+                {
+                    var domainQuestion = await ((IVotedPostRepository)_repo).GetById(((Domain.Answer)post).QuestionId);
+                    serviceQuestion = _converter.Convert((Domain.Question)domainQuestion);
+                }
+                await DeletePost(post, userId);
                 await serviceQuestion.Notify();
             }            
 
             return canDelete;
+        }
+
+        private async Task DeletePost(Domain.VotedPost post, string userId)
+        {
+            post.DeleteVotes.Add(new DeleteVote
+            {
+                UserId = userId
+            });
+            await _repo.UpdateAsync(post);
         }
 
         public async Task<bool> FlagPost(string postId, string userId, int userPoints)
@@ -156,7 +162,7 @@ namespace Synchronized.Core
             throw new NotImplementedException();
         }
 
-        private async Task SubscribeUser(Domain.Question question, String userId)
+        private void SubscribeUser(Domain.Question question, String userId)
         {
             Domain.Question updatedQuestion;
             var serviceQuestion = _converter.Convert((question));
@@ -164,7 +170,7 @@ namespace Synchronized.Core
             user.Id = userId;
             serviceQuestion.Subscribe(user);
             updatedQuestion = _converter.Convert(serviceQuestion);
-            await _repo.UpdateAsync(updatedQuestion);
+            //await _repo.UpdateAsync(updatedQuestion);
         }
     }
 
