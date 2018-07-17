@@ -35,9 +35,9 @@ namespace Synchronized.Core
             return await GetQuestionsPage(pageIndex, pageSize);
         }
 
-        public async override Task<PaginatedList<ServiceModel.Question>> GetPage(int pageIndex, int pageSize, string sortOrder, string searchString)
+        public async override Task<PaginatedList<ServiceModel.Question>> GetPage(int pageIndex, int pageSize, string searchString,string sortOrder)
         {
-            return await GetQuestionsPage(pageIndex, pageSize, sortOrder, searchString);
+            return await GetQuestionsPage(pageIndex, pageSize, searchString, sortOrder);
         }
 
         public async override Task<ServiceModel.Question> GetById(string id)
@@ -47,7 +47,7 @@ namespace Synchronized.Core
             return question;
         }
 
-        private async Task<PaginatedList<ServiceModel.Question>> GetQuestionsPage(int pageIndex, int pageSize, string sortOrder = null, string searchString = null)
+        private async Task<PaginatedList<ServiceModel.Question>> GetQuestionsPage(int pageIndex, int pageSize, string searchString = null, string sortOrder = null)
         {
             List<Question> domainQuestions; ;
             if (sortOrder == null)
@@ -55,7 +55,7 @@ namespace Synchronized.Core
                 domainQuestions = await ((IQuestionsRepository)_repo).GetPageAsync(pageIndex, pageSize);
             } else
             {
-                domainQuestions = ((IQuestionsRepository)_repo).GetPage(pageIndex, pageSize, sortOrder, searchString);
+                domainQuestions = ((IQuestionsRepository)_repo).GetPage(pageIndex, pageSize, searchString, sortOrder);
             }
             var questions = _converter.Convert(domainQuestions);
             if (sortOrder != null)
@@ -98,12 +98,16 @@ namespace Synchronized.Core
                     VoterId = user.Id,
                     VoteType = (int)voteType
                 });
-                
-                await UpdateUserRoles(user);
                 await _repo.UpdateAsync(question);
                 await _repo.UpdateAsync(question.Publisher);
+                if (!user.Id.Equals(question.Publisher.Id)) { 
+                    await _repo.UpdateAsync(user);
+                }
                 await UpdateUserRoles(question.Publisher);
-                await _repo.UpdateAsync(user);
+                if (!user.Id.Equals(question.Publisher.Id))
+                {
+                    await UpdateUserRoles(user);
+                }
                 await serviceQuestion.Notify();
                 return serviceQuestion;
             }
@@ -177,11 +181,17 @@ namespace Synchronized.Core
                         }
                         break;
                 }
-                await UpdateUserRoles(user);
-                await UpdateUserRoles(answer.Publisher);
                 await _repo.UpdateAsync(answer);
                 await _repo.UpdateAsync(answer.Publisher);
-                await _repo.UpdateAsync(user);
+                if (!user.Id.Equals(answer.Publisher.Id))
+                {
+                    await _repo.UpdateAsync(user);
+                }
+                await UpdateUserRoles(answer.Publisher);
+                if (!user.Id.Equals(answer.Publisher.Id))
+                {
+                    await UpdateUserRoles(user);
+                }
                 await serviceQuestion.Notify();
                 return serviceAnswer;
             }
@@ -197,6 +207,16 @@ namespace Synchronized.Core
                 {
                     await _userManager.AddToRoleAsync(user, Constants.MODERATOR);
                 }
+                userIsInRole = await _userManager.IsInRoleAsync(user, Constants.EDITOR);
+                if (!userIsInRole)
+                {
+                    await _userManager.AddToRoleAsync(user, Constants.EDITOR);
+                }
+                userIsInRole = await _userManager.IsInRoleAsync(user, Constants.VOTER);
+                if (!userIsInRole)
+                {
+                    await _userManager.AddToRoleAsync(user, Constants.VOTER);
+                }
             }
             else if (Constants.EDITOR_MINIMUM_RANK <= user.Points)
             {
@@ -209,6 +229,11 @@ namespace Synchronized.Core
                 if (!userIsInRole)
                 {
                     await _userManager.AddToRoleAsync(user, Constants.EDITOR);
+                }
+                userIsInRole = await _userManager.IsInRoleAsync(user, Constants.VOTER);
+                if (!userIsInRole)
+                {
+                    await _userManager.AddToRoleAsync(user, Constants.VOTER);
                 }
             }
             else if (Constants.VOTER_MINIMUM_RANK <= user.Points)
@@ -337,12 +362,37 @@ namespace Synchronized.Core
                 var questionPublisher = _converter.Convert(domainQuestion);
                 domainAnswer.IsAccepted = true;
                 domainAnswer.Publisher.Points += Constants.ANSWER_ACCEPT_ANSWERER_BONUS;
-                user.Points += Constants.ANSWER_ACCEPT_ACCEPTER_BONUS;
+                if (!user.Id.Equals(answer.PublisherId))
+                {
+                    user.Points += Constants.ANSWER_ACCEPT_ACCEPTER_BONUS;
+                } 
+                else
+                {
+                    domainAnswer.Publisher.Points += Constants.ANSWER_ACCEPT_ANSWERER_BONUS;
+                }
                 await _repo.UpdateAsync(domainAnswer);
-                await _repo.UpdateAsync(user);
+                await _repo.UpdateAsync(domainAnswer.Publisher);
+                if (!user.Id.Equals(answer.PublisherId))
+                {
+                    await _repo.UpdateAsync(user);
+                }                
+                await UpdateUserRoles(domainAnswer.Publisher);
+                if (!user.Id.Equals(answer.PublisherId))
+                {
+                    await UpdateUserRoles(user);
+                }
                 await questionPublisher.Notify();
 
             }               
-        }       
+        }
+
+        public async Task<PaginatedList<ServiceModel.Question>> ReviewQuestions(int pageIndex, int pageSize)
+        {
+            var domainQuestions = await ((IQuestionsRepository)_repo).GetReviewPage(pageIndex, pageSize);
+            var questions = _converter.Convert(domainQuestions);
+            Utils.MinimizeContent(_parser, questions);
+            var questionsPage = _factory.GetQuestionsList(questions, ((IQuestionsRepository)_repo).GetReviewCount(), pageIndex, pageSize);
+            return questionsPage;
+        }
     } 
 }

@@ -49,7 +49,7 @@ namespace Synchronized.WebApp.Pages.Questions
 
             CurrentPage = pageNumber ?? (CurrentPage == 0 ? 1 : CurrentPage);
 
-            Questions = await _localService.GetQuestionsIndexPageModel(CurrentPage, SortOrder, SearchString);
+            Questions = await _localService.GetQuestionsIndexPageModel(CurrentPage, SearchString, SortOrder);
             _logger.LogInformation("Exiting OnGetAsync");
         }
     }

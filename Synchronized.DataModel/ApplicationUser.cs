@@ -18,6 +18,7 @@ namespace Synchronized.Domain
         public ICollection<PostFlag> Flags { get; set; }
         public ICollection<QuestionView> QuestionViews { get; set; }
         public ICollection<DeleteVote> DeleteVotes { get; set; }
+        public List<Question> Posts { get; set; }
 
         public List<Subscription> Subscriptions { get; set; }
     }

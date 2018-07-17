@@ -3,6 +3,7 @@ using Synchronized.SharedLib.Utilities;
 using SharedLib.Infrastructure.Constants;
 using Synchronized.ViewModel;
 using Synchronized.Domain;
+using Synchronized.ServiceModel;
 
 namespace Synchronized.Core.Interfaces
 {
@@ -16,5 +17,6 @@ namespace Synchronized.Core.Interfaces
         Task<bool> TagsAreValid(string tags);
         Task AnswerQuestion(ServiceModel.Answer answer, string questionId);
         Task AcceptAnswer(AnswerViewModel answer,ApplicationUser user);
+        Task<PaginatedList<ServiceModel.Question>> ReviewQuestions(int pageIndex, int pageSize);
     }
 }

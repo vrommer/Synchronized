@@ -18,7 +18,7 @@ namespace Synchronized.Data
         //public SynchronizedDbContext() : base() { }
 
         public DbSet<Post> Posts { get; set; }
-        //public DbSet<CommentedPost> CommentedPosts { get; set; }
+        public DbSet<VotedPost> CommentedPosts { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<QuestionTag> QusetionTags { get; set; }
         public DbSet<QuestionView> QuestionViews { get; set; }
@@ -80,7 +80,9 @@ namespace Synchronized.Data
                 .HasForeignKey(s => s.UserId);
 
             // Many to many relationship between users and flags
-            builder.Entity<PostFlag>().HasKey(s => new { s.PostId, s.UserId });
+            builder.Entity<PostFlag>()
+                .Property(t => t.Id)
+                .ValueGeneratedNever();
 
             builder.Entity<PostFlag>()
                 .HasOne(s => s.Post)

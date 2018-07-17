@@ -347,18 +347,7 @@ namespace Synchronized.Repository.Repositories
                     users = users.OrderByDescending(u => u.UserName);
                     break;
             }
-
-            //        questions = questions.AsNoTracking()
-            //.Skip((pageIndex - 1) * pageSize).Take(pageSize)
-            //.Include(q => q.Votes)
-            //.Include(q => q.QuestionViews)
-            //.Include(q => q.QuestionTags)
-            //    .ThenInclude(qt => qt.Tag)
-            //.Include(q => q.Publisher)
-            //.Include(q => q.Answers);
-
-            //        var questionsList = questions.ToList();
-            //        return questionsList;
+            
             users = users.Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize);
 
@@ -370,6 +359,32 @@ namespace Synchronized.Repository.Repositories
                     "\t\tPoints: {3}", u.Address, u.Email, u.UserName, u.Points);
             });
             _logger.LogInformation("Leaving GetPage.");
+
+            foreach (ApplicationUser user in usersList)
+            {
+                user.Posts = new List<Question>();
+                var userPosts = _context.Set<VotedPost>()
+                    .Where(p => p.PublisherId.Equals(user.Id))
+                    .ToList();
+
+                foreach (VotedPost p in userPosts)
+                {
+                    if (p.GetType().Equals(typeof(Question)))
+                    {
+                        user.Posts.Add((Question)p);
+                    }
+                    else
+                    {
+                        var question = _context.Set<Question>()
+                            .Where(q => q.Id.Equals(((Answer)p)
+                            .QuestionId))
+                            .SingleOrDefault();
+
+                        user.Posts.Add(question);
+                    }
+                }
+            }
+
             return usersList;
         }
 

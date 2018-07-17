@@ -4,6 +4,7 @@ using Synchronized.Domain;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System;
 
 namespace Synchronized.Repository
 {
@@ -15,6 +16,8 @@ namespace Synchronized.Repository
         {
             _tagsSet = context.Set<Tag>();
         }
+
+        
 
         public async Task<List<Question>> GetPageAsync(int pageIndex, int pageSize)
         {
@@ -31,7 +34,7 @@ namespace Synchronized.Repository
             return questions;
         }
 
-        public override List<Question> GetPage(int pageIndex, int pageSize, string sortOrder, string searchString)
+        public override List<Question> GetPage(int pageIndex, int pageSize, string searchString, string sortOrder)
         {
             var questions = GetBy(q => q.Title.Contains(searchString) || q.Body.Contains(searchString));
             questions = questions.Where(q => q.DeleteVotes.Count < 3);
@@ -163,12 +166,55 @@ namespace Synchronized.Repository
 
         public async Task<Comment> GetCommentById(string commentId)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public async Task<Tag> GetQuestionTagById(string tagId)
         {
             return await _tagsSet.FindAsync(tagId);
+        }
+
+        public async Task<List<Question>> GetReviewPage(int pageIndex, int pageSize)
+        {
+            IQueryable<Question> questionQueryable;
+            Question question;
+            List<Question> returnList = new List<Question>();
+            var votedPosts = await _context.Set<VotedPost>()
+                .Where(p => p.PostFlags.Count > 0)
+                .OrderByDescending(q => q.ReviewDate)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            foreach(VotedPost p in votedPosts)
+            {
+                if (p.GetType().Equals(typeof(Question)))
+                {
+                    questionQueryable = _set
+                        .Where(q => q.Id.Equals(p.Id));
+                }
+                else
+                {
+                    questionQueryable = _set
+                        .Where(q => q.Id.Equals(((Answer)p).QuestionId));
+                }
+                question = await questionQueryable
+                        .Include(q => q.Votes)
+                        .Include(q => q.QuestionViews)
+                        .Include(q => q.QuestionTags)
+                            .ThenInclude(qt => qt.Tag)
+                        .Include(q => q.Publisher)
+                        .Include(q => q.Answers)
+                        .SingleOrDefaultAsync();
+                returnList.Add(question);
+            }
+
+            return returnList;
+        }
+
+        public int GetReviewCount()
+        {
+            return GetBy(q => q.PostFlags.Count > 0).Count();
         }
     }
 }

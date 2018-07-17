@@ -5,6 +5,7 @@ using Synchronized.ViewModel;
 using Synchronized.ViewModel.QuestionsViewModels;
 using Synchronized.ViewModelFactories.Interfaces;
 using Synchronized.UI.Utilities.Interfaces;
+using Synchronized.ServiceModel;
 
 namespace Synchronized.ViewServices
 {
@@ -50,6 +51,16 @@ namespace Synchronized.ViewServices
             questions.ForEach(q => {
                 var viewModelQuestion = ((IHomeViewConverter)_converter).Convert(q);
                 questionsPage.Add(viewModelQuestion);
+            });
+            return questionsPage;
+        }
+
+        public async Task<PaginatedList<QuestionForQuestionsPage>> GetPageForReview(int pageIndex)
+        {
+            PaginatedList<Question> questions = await _questionsService.ReviewQuestions(pageIndex, pageSize);
+            var questionsPage = _factory.GetPaginatedList<QuestionForQuestionsPage>(questions.TotalSize, pageIndex, pageSize);
+            questions.ForEach(q => {
+                questionsPage.Add(((IQuestionsConverter)_converter).Convert(q));
             });
             return questionsPage;
         }

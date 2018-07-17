@@ -102,7 +102,6 @@ namespace Synchronized.Data
 
             List<string> roles = new List<string>
             {
-                Constants.SIGNED_USER,
                 Constants.VOTER,
                 Constants.EDITOR,
                 Constants.MODERATOR
@@ -162,19 +161,19 @@ namespace Synchronized.Data
                     ImageUri = "/pictures/user_default.png"
                     //Points = rand.Next(maxPoints)
                 };
-                var roleNames = GetUserRole(user.Points);
+                //var roleNames = GetUserRole(user.Points);
                 result = await userManager.CreateAsync(user, password);
-                for (int j = 0; j < roleNames.Count; j++)
-                {                    
-                    if (result.Succeeded)
-                    {
-                        userIsInRole = await userManager.IsInRoleAsync(joseph, roleNames[j]);
-                    }
-                    if (result.Succeeded && !userIsInRole)
-                    {
-                        result = await userManager.AddToRoleAsync(user, roleNames[j]);
-                    }
-                }
+                //for (int j = 0; j < roleNames.Count; j++)
+                //{                    
+                //    if (result.Succeeded)
+                //    {
+                //        userIsInRole = await userManager.IsInRoleAsync(joseph, roleNames[j]);
+                //    }
+                //    if (result.Succeeded && !userIsInRole)
+                //    {
+                //        result = await userManager.AddToRoleAsync(user, roleNames[j]);
+                //    }
+                //}
                 if (result.Succeeded)
                 {
                     users.Add(user);
@@ -558,27 +557,20 @@ namespace Synchronized.Data
 
         private static List<String> GetUserRole(int points)
         {
-            List<string> roleNames = new List<string>
-            {
-                Constants.SIGNED_USER
-            };
-            string[] roles = new string []{ Constants.SIGNED_USER };            
+            List<string> roles = new List<string>();
             if (15 <= points)
             {
-                roleNames.Add(Constants.VOTER);
                 roles.Append(Constants.VOTER);
             }
             if (500 <= points)
             {
                 roles.Append(Constants.EDITOR);
-                roleNames.Add(Constants.EDITOR);
             }
             if (3000 <= points)
             {
                 roles.Append(Constants.MODERATOR);
-                roleNames.Add(Constants.MODERATOR);
             }
-            return roleNames;
+            return roles;
         }
     }
 }

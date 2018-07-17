@@ -65,12 +65,6 @@ namespace Synchronized.Repository
             throw new NotImplementedException();
         }
 
-        //public async Task UpdateAsync(T Entity)
-        //{
-        //    _set.Update(Entity);
-        //    await _context.SaveChangesAsync();
-        //}
-
         public virtual async Task UpdateAsync<TEntity>(TEntity Entity) where TEntity: class
         {
             _context.Update(Entity);

@@ -123,30 +123,42 @@ namespace Synchronized.Core
 
         public async Task<bool> FlagPost(string postId, string userId, int userPoints)
         {
+            ServiceModel.Question serviceQuestion;
+            Domain.Question domainQuestion;
             var post = await ((IVotedPostRepository)_repo).GetById(postId);
-            var canFlag = (Constants.MARK_FOR_REVIEW_POINTS <= userPoints && !String.IsNullOrEmpty(userId) && !(post.PostFlags.Contains(new Domain.PostFlag
-            {
-                PostId = postId,
-                UserId = userId
-            })));
+            var canFlag = (Constants.MARK_FOR_REVIEW_POINTS <= userPoints && !String.IsNullOrEmpty(userId));
             if (canFlag)
             {
+                var user = _factory.GetUser();
+                user.Id = userId;
                 if (post.GetType().Equals(typeof(Domain.Question)))
                 {
-                    var serviceQuestion = _converter.Convert((Domain.Question)post);
-                    await serviceQuestion.Notify();
+                    serviceQuestion = _converter.Convert((Domain.Question)post);
                 }
                 else
                 {
-                    var domainQuestion = await ((IVotedPostRepository)_repo).GetById(((Domain.Answer)post).QuestionId);
-                    var serviceQuestion = _converter.Convert((Domain.Question)domainQuestion);
-                    await serviceQuestion.Notify();
+                    domainQuestion = (Domain.Question)await ((IVotedPostRepository)_repo).GetById(((Domain.Answer)post).QuestionId);
+                    serviceQuestion = _converter.Convert(domainQuestion);
+
                 }
+                await serviceQuestion.Notify();
+                serviceQuestion.Subscribe(user);
                 post.PostFlags.Add(new Domain.PostFlag
                 {
+                    PostId = postId,
                     UserId = userId
                 });
+                if (!post.Review)
+                {
+                    post.Review = true;
+                    post.ReviewDate = DateTime.Now;
+                }
                 await _repo.UpdateAsync(post);
+                if (!serviceQuestion.Id.Equals(post.Id))
+                {
+                    domainQuestion = _converter.Convert(serviceQuestion);
+                    await _repo.UpdateAsync(domainQuestion);
+                }
             }
 
             return canFlag;
