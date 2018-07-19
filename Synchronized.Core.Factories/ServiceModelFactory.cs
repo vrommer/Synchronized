@@ -62,7 +62,7 @@ namespace Synchronized.Core.Factories
         public User GetUser()
         {
             var user = new User();
-
+            user.Questions = new List<Question>();
             return user;
         }
 

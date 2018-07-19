@@ -238,6 +238,13 @@ namespace Synchronized.Core.Utilities
             serviceUser.Address = from.Address != null ? String.Copy(from.Address): "";
             serviceUser.ImageUri = from.ImageUri != null ? String.Copy(from.ImageUri): "";
             serviceUser.Points = from.Points;
+            if (from.Subscriptions != null)
+            {
+                foreach (Domain.Subscription s in from.Subscriptions)
+                {
+                    serviceUser.Questions.Add(Convert(s.Question));
+                }
+            }
             return serviceUser;
         }
 
@@ -258,7 +265,25 @@ namespace Synchronized.Core.Utilities
 
         public Domain.VotedPost Convert(ServiceModel.VotedPost from)
         {
-            throw new NotImplementedException();
+            Domain.VotedPost domainPost;
+            if (from.GetType().Equals(typeof(ServiceModel.Question)))
+            {
+                domainPost = _domainModelFactory.GetQuestion();
+                if (!String.IsNullOrWhiteSpace(((ServiceModel.Question)from).Title))
+                {
+                    ((Domain.Question)domainPost).Title = String.Copy(((ServiceModel.Question)from).Title);
+                }
+            }
+            else
+            {
+                domainPost = _domainModelFactory.GetAnswer();
+            }
+            if (!String.IsNullOrWhiteSpace(from.Body))
+            {
+                domainPost.Body = String.Copy(from.Body);
+            }
+            domainPost.Review = from.Review;
+            return domainPost;
         }
 
         public Domain.Question Convert(ServiceModel.Question from)
@@ -546,6 +571,8 @@ namespace Synchronized.Core.Utilities
                     to.FlaggerIds.Add(flagger.UserId);
                 }
             }
+
+            to.Review = from.Review;
         }
     }
 }

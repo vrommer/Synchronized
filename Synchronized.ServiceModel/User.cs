@@ -14,6 +14,7 @@ namespace Synchronized.ServiceModel
         public int Points { get; set; }
         public bool NewSubscriber { get; set; }
         public List<string> Roles { get; set; }
+        public List<Question> Questions { get; set; }
 
         public Task Update()
         {

@@ -82,7 +82,7 @@ namespace Synchronized.Data
             // Many to many relationship between users and flags
             builder.Entity<PostFlag>()
                 .Property(t => t.Id)
-                .ValueGeneratedNever();
+                .ValueGeneratedOnAdd();
 
             builder.Entity<PostFlag>()
                 .HasOne(s => s.Post)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Synchronized.ViewModel.QuestionsViewModels;
+using System.Collections.Generic;
 
 namespace Synchronized.ViewModel.UsersViewModels
 {
@@ -11,5 +12,6 @@ namespace Synchronized.ViewModel.UsersViewModels
         public int Points { get; set; }
         public string Email { get; set; }
         public string Roles { get; set; }
+        public List<QuestionForHomePage> ActivePosts { get; set; }
     }
 }

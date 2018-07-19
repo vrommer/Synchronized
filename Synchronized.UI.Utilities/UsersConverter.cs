@@ -14,12 +14,14 @@ namespace Synchronized.UI.Utilities
 
         private IViewModelFactory _viewModelFactory;
         private IServiceModelFactory _serviceModelFactory;
+        private IPostsConverter _postsConverter;
         ILogger<UsersConverter> _logger;
 
-        public UsersConverter(IViewModelFactory viewModelFactory, IServiceModelFactory serviceModelFactory, ILogger<UsersConverter> logger)
+        public UsersConverter(IViewModelFactory viewModelFactory, IServiceModelFactory serviceModelFactory, IPostsConverter postsConverter, ILogger<UsersConverter> logger)
         {
             _viewModelFactory = viewModelFactory;
             _serviceModelFactory = serviceModelFactory;
+            _postsConverter = postsConverter;
             _logger = logger;
         }
 
@@ -45,7 +47,14 @@ namespace Synchronized.UI.Utilities
                     }
                 }
             }
-            _logger.LogInformation("Leaving Conver.");
+            if (from.Questions != null)
+            {
+                foreach (Question q in from.Questions)
+                {
+                    user.ActivePosts.Add(((IHomeViewConverter)_postsConverter).Convert(q));
+                }
+            }
+            _logger.LogInformation("Leaving Convert.");
             return user;
         }
 

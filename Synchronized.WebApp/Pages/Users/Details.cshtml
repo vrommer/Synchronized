@@ -20,7 +20,7 @@
 
 <div class="card app-user-details">
     <div class="card-header">
-        @if (user.Id.Equals(Model.ViewUser.Id))
+        @if (user != null && user.Id.Equals(Model.ViewUser.Id))
         {
             <div id="app-edit-user"><a href="#">edit</a></div>
         }        
@@ -33,7 +33,7 @@
                 <div>@Model.ViewUser.Address</div>
                 <div>Member since:</div>
                 @*<div>Label1, Label2</div>*@
-                <div>Role: </div>
+                <div>Role: @Model.ViewUser.Roles</div>
             </div>
             <div id="app-user-rating">@Model.ViewUser.Points</div>
         </div>        
@@ -42,3 +42,17 @@
         <div id="app-about-user"><h5>About</h5></div>
     </div>
 </div>
+<div class="container active-posts-container">    
+    <button id="active-posts-button" type="button" class="btn btn-secondary btn-lg btn-block">Active Posts (@Model.ViewUser.ActivePosts.Count)</button>
+    <div class="user-active-posts">
+        @foreach (var item in Model.ViewUser.ActivePosts)
+        {
+            <h4><a asp-page="/Questions/Details" asp-route-id="/@item.Id">@item.Title</a></h4>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @*@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}*@
+    <script src="~/js/user-details.js"></script>
+}

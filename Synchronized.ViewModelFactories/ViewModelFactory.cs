@@ -82,7 +82,9 @@ namespace Synchronized.ViewModelFactories
 
         public UserViewModel GetUser()
         {
-            return new UserViewModel();
+            var user = new UserViewModel();
+            user.ActivePosts = new List<QuestionForHomePage>();
+            return user;
         }
 
         public EditViewModel GetEditViewModel()

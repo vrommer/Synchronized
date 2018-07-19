@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Synchronized.Domain;
-using Synchronized.UI.Utilities;
 using Synchronized.ViewModel;
 using Synchronized.ViewServices.Interfaces;
 using System;
@@ -40,7 +37,7 @@ namespace Synchronized.WebApp.Pages.Questions
             }
             Post.Id = String.Copy(id);
             Post.QuestionId = String.Copy(questionId);
-            var postId = await _service.UpdatePost(Post);
+            var postId = await _service.EditPost(Post);
 
             return RedirectToPage("/Questions/Details", new { id = postId });
         }

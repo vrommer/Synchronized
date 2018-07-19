@@ -157,6 +157,32 @@
     float: right;
 }
 
+.user-active-posts {
+    width: 36rem;
+    padding: 5px 10px;
+    display: none;
+    height: 0;
+    overflow: auto;
+    margin: 0 auto;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.active-posts-container {
+    position: relative;
+}
+
+.active-posts-container a, 
+.active-posts-container a:hover, 
+.active-posts-container a:active {
+    text-decoration: none;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.active-posts-container > button {
+    width: 36rem;
+    margin: 5px auto;
+}
+
 /* Questions 
 ---------------*/
 .details-date,

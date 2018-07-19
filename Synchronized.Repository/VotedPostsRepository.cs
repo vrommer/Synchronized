@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Synchronized.Domain;
 using Synchronized.Repository.Interfaces;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,5 +25,12 @@ namespace Synchronized.Repository
                 .SingleOrDefaultAsync();
             return post;
         }
+
+        //public override Task UpdateAsync<TEntity>(TEntity Entity) where TEntity: VotedPost
+        //{
+        //    Entity.ReviewDate = DateTime.Now;
+        //    _set.Update(Entity);
+        //    return null;
+        //}
     }
 }

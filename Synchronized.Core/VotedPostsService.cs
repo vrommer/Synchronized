@@ -7,7 +7,6 @@ using Synchronized.Core.Interfaces;
 using System.Threading.Tasks;
 using SharedLib.Infrastructure.Constants;
 using System.Linq.Expressions;
-using Synchronized.ServiceModel;
 using Microsoft.Extensions.Logging;
 using Synchronized.SharedLib;
 
@@ -21,12 +20,13 @@ namespace Synchronized.Core
 
         public async override Task<bool> Update(ServiceModel.VotedPost post)
         {
-            var domainPost = await _repo.GetById(post.Id);
-            domainPost.Body = String.Copy(post.Body);
-            if (domainPost.GetType().Equals(typeof(Domain.Question)))
-            {
-                ((Domain.Question)domainPost).Title = String.Copy(((ServiceModel.Question)post).Title);
-            }
+            var domainPost = _converter.Convert(post);
+            //var domainPost = await _repo.GetById(post.Id);
+            //domainPost.Body = String.Copy(post.Body);
+            //if (domainPost.GetType().Equals(typeof(Question)))
+            //{
+            //    ((Question)domainPost).Title = String.Copy(((ServiceModel.Question)post).Title);
+            //}
             await _repo.UpdateAsync(domainPost);
             return true;
         }

@@ -26,7 +26,8 @@ namespace Synchronized.Core
         public async override Task<User> GetById(string id)
         {
             var user = await _repo.GetById(id);
-            var coreUser = _converter.Convert(user);            
+            var coreUser = _converter.Convert(user);  
+            coreUser.Roles = (System.Collections.Generic.List<string>)await ((IUsersRepository)_repo).GetRolesAsync(user, new CancellationToken());
             return coreUser;
         }
 
@@ -34,7 +35,6 @@ namespace Synchronized.Core
         {
             _logger.LogInformation("Entering GetUsersPage.");
             var users = ((IUsersRepository)_repo).GetPage(pageIndex, pageSize, sortOrder, searchTerm);
-            //var coreUsers = _converter.Convert(users);
             var coreUsers = _factory.GetOfType<System.Collections.Generic.List<User>>();
             foreach (var user in users)
             {

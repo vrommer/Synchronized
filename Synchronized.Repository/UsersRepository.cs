@@ -279,7 +279,10 @@ namespace Synchronized.Repository.Repositories
         public async override Task<ApplicationUser> GetById(string userId)
         {
             //return _userStore.Users.AsNoTracking().Include(u => u.Tags).SingleOrDefault(u => u.Id.Equals(userId));
-            return await _userStore.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id.Equals(userId));
+            return await _userStore
+                .Users
+                .AsNoTracking()
+                .SingleOrDefaultAsync(u => u.Id.Equals(userId));
         }
         #endregion
 
@@ -314,7 +317,10 @@ namespace Synchronized.Repository.Repositories
         async Task<ApplicationUser> IDataRepository<ApplicationUser>.GetById(string entityId)
         {
             var user = await _set.AsNoTracking()
-                .Where(u => u.Id.Equals(entityId)).FirstOrDefaultAsync();
+                .Where(u => u.Id.Equals(entityId))
+                .Include(u => u.Subscriptions)
+                    .ThenInclude(s => s.Question)
+                .FirstOrDefaultAsync();
             return user;
         }
 
@@ -347,7 +353,7 @@ namespace Synchronized.Repository.Repositories
                     users = users.OrderByDescending(u => u.UserName);
                     break;
             }
-            
+
             users = users.Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize);
 
@@ -359,31 +365,6 @@ namespace Synchronized.Repository.Repositories
                     "\t\tPoints: {3}", u.Address, u.Email, u.UserName, u.Points);
             });
             _logger.LogInformation("Leaving GetPage.");
-
-            foreach (ApplicationUser user in usersList)
-            {
-                user.Posts = new List<Question>();
-                var userPosts = _context.Set<VotedPost>()
-                    .Where(p => p.PublisherId.Equals(user.Id))
-                    .ToList();
-
-                foreach (VotedPost p in userPosts)
-                {
-                    if (p.GetType().Equals(typeof(Question)))
-                    {
-                        user.Posts.Add((Question)p);
-                    }
-                    else
-                    {
-                        var question = _context.Set<Question>()
-                            .Where(q => q.Id.Equals(((Answer)p)
-                            .QuestionId))
-                            .SingleOrDefault();
-
-                        user.Posts.Add(question);
-                    }
-                }
-            }
 
             return usersList;
         }
