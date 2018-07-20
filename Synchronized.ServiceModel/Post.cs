@@ -12,6 +12,6 @@ namespace Synchronized.ServiceModel
         
         public string PublisherName { get; set; }
         public string PublisherId { get; set; }
-        public ICollection<string> FlaggerIds { get; set; }
+        public Dictionary<string, string> FlaggerIds { get; set; }
     }
 }

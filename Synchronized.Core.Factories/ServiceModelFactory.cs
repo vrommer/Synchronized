@@ -13,7 +13,7 @@ namespace Synchronized.Core.Factories
             var question = new Question
             {
                 // Post
-                FlaggerIds = new List<string>(),
+                FlaggerIds = new Dictionary<string, string>(),
                 // VotedPost
                 Comments = new List<Comment>(),
                 VoterIds = new List<string>(),
@@ -30,7 +30,7 @@ namespace Synchronized.Core.Factories
             var answer = new Answer
             {
                 // Post
-                FlaggerIds = new List<string>(),
+                FlaggerIds = new Dictionary<string, string>(),
                 // VotedPost
                 Comments = new List<Comment>(),
                 VoterIds = new List<string>()
@@ -43,7 +43,7 @@ namespace Synchronized.Core.Factories
         {
             var comment = new Comment {
                 // Post
-                FlaggerIds = new List<string>(),
+                FlaggerIds = new Dictionary<string, string>()
             };
 
             return comment;
@@ -61,8 +61,10 @@ namespace Synchronized.Core.Factories
 
         public User GetUser()
         {
-            var user = new User();
-            user.Questions = new List<Question>();
+            var user = new User
+            {
+                Questions = new List<Question>()
+            };
             return user;
         }
 
@@ -92,7 +94,7 @@ namespace Synchronized.Core.Factories
             {
                 VoterIds = new List<string>(),
                 DeleterIds = new List<string>(),
-                FlaggerIds = new List<string>()                 
+                FlaggerIds = new Dictionary<string, string>()                 
             };
         }
 

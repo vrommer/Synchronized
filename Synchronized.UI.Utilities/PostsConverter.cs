@@ -236,8 +236,14 @@ namespace Synchronized.UI.Utilities
             question.Id = String.Copy(from.Id);
             question.IsAnswered = from.IsAnswered;
             question.Points = from.SumVotes;
-            question.PublisherId = String.Copy(from.PublisherId);
-            question.PublisherName = String.Copy(from.PublisherName);
+            if (!String.IsNullOrEmpty(from.PublisherId))
+            {
+                question.PublisherId = String.Copy(from.PublisherId);
+            }
+            if (!String.IsNullOrWhiteSpace(from.PublisherName))
+            {
+                question.PublisherName = String.Copy(from.PublisherName);
+            }
             question.Tags = String.Copy(from.Tags);
             question.Title = String.Copy(from.Title);
             question.ViewsCount = from.Views;

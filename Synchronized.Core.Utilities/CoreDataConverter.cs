@@ -127,7 +127,7 @@ namespace Synchronized.Core.Utilities
             if (from.PostFlags != null)
             {
                 from.PostFlags.ToList().ForEach(f => {
-                    post.FlaggerIds.Add(f.UserId);
+                    post.FlaggerIds.Add(f.Id, f.UserId);
                 });
             }
             if (from.Votes != null)
@@ -288,51 +288,33 @@ namespace Synchronized.Core.Utilities
 
         public Domain.Question Convert(ServiceModel.Question from)
         {
+            // Get new Domain.Question instance
             var question = _domainModelFactory.GetQuestion();
-            if (!String.IsNullOrWhiteSpace(from.Id))
-            {
-                question.Id = String.Copy(from.Id);
-            }            
-            question.Title = String.Copy(from.Title);
-            question.Body = String.Copy(from.Body);
-            question.PublisherId = String.Copy(from.PublisherId);
-            question.Answers = _serviceModelFactory.GetOfType<List<Domain.Answer>>();
+            // *******************
+            // Copy Post part
+            // *******************
+            AddPostPart(from, question);
+            // *******************
+            // Copy VotedPost part
+            // *******************        
+            AddVotedPost(from, question);
+            // *******************
+            // Copy Question part
+            // *******************
+            //Copy Title
+            question.Title = String.Copy(from.Title);            
             if (from.Answers != null)
             {
+                question.Answers = _serviceModelFactory.GetOfType<List<Domain.Answer>>();
                 foreach (ServiceModel.Answer a in from.Answers)
                 {
                     question.Answers.Add(Convert(a));
                 }
             }
-            question.DatePosted = from.DatePosted;
-            question.DeleteVotes = _serviceModelFactory.GetOfType<List<DeleteVote>>();
-            if (from.DeleterIds != null)
-            {
-                foreach (string id in from.DeleterIds)
-                {
-                    question.DeleteVotes.Add(new DeleteVote()
-                    {
-                        UserId = id,
-                        PostId = question.Id
-                    });
-                }
-            }
-            //question.Points = from.SumVotes;
-            question.PostFlags = _serviceModelFactory.GetOfType<List<Domain.PostFlag>>();
-            if (from.FlaggerIds != null)
-            {
-                foreach (string id in from.FlaggerIds)
-                {
-                    question.PostFlags.Add(new Domain.PostFlag()
-                    {
-                        UserId = id,
-                        PostId = question.Id
-                    });
-                }
-            }
-            question.QuestionViews = _serviceModelFactory.GetOfType<List<QuestionView>>();
+            // Copy Views
             if (from.ViewerIds != null)
             {
+                question.QuestionViews = _serviceModelFactory.GetOfType<List<QuestionView>>();
                 foreach (string id in from.ViewerIds)
                 {
                     question.QuestionViews.Add(new QuestionView()
@@ -342,18 +324,7 @@ namespace Synchronized.Core.Utilities
                     });
                 }
             }
-            question.Votes = _serviceModelFactory.GetOfType<List<Vote>>();
-            if (from.VoterIds != null)
-            {
-                foreach (string id in from.VoterIds)
-                {
-                    question.Votes.Add(new Vote()
-                    {
-                        PostId = question.Id,
-                        VoterId = id
-                    });
-                }
-            }
+            // Copy Tags
             var tagNamesArray = from.Tags.Split(',');
             for (int i = 0; i<tagNamesArray.Length; i++)
             {
@@ -365,6 +336,7 @@ namespace Synchronized.Core.Utilities
                 }
                 question.QuestionTags.Add(questionTag);
             }
+            // Copy Subscribers
             foreach (IQuestionSubscriber s in from.Subscribers)
             {
                 var sub = _serviceModelFactory.GetOfType<Domain.Subscription>();
@@ -380,16 +352,26 @@ namespace Synchronized.Core.Utilities
 
         public Domain.Answer Convert(ServiceModel.Answer from)
         {
+            // Get a new instance of Answer
             var answer = _domainModelFactory.GetAnswer();
-            if (!String.IsNullOrWhiteSpace(from.Id))
+            // *******************
+            // Copy Post part
+            // *******************
+            AddPostPart(from, answer);
+            // *******************
+            // Copy VotedPost part
+            // *******************
+            AddVotedPost(from, answer);
+            // *******************
+            // Copy Answer part
+            // *******************
+            // Copy QuestionId
+            if (!String.IsNullOrWhiteSpace(from.QuestionId))
             {
-                answer.Id = String.Copy(from.Id);
-            }
-            answer.PublisherId = String.Copy(from.PublisherId);
-            if (!String.IsNullOrWhiteSpace(from.QuestionId)) {
                 answer.QuestionId = String.Copy(from.QuestionId);
             }
-            answer.Body = String.Copy(from.Body);
+            // Copy accapted
+            answer.IsAccepted = from.IsAccepted;
             return answer;
         }
 
@@ -546,7 +528,31 @@ namespace Synchronized.Core.Utilities
             {
                 to.PublisherName = String.Copy(from.Publisher.UserName);
             }
-            to.PublisherId = String.Copy(from.PublisherId);
+            if (!String.IsNullOrWhiteSpace(from.PublisherId))
+            {
+                to.PublisherId = String.Copy(from.PublisherId);
+            }            
+        }
+
+        private void AddPostPart(ServiceModel.Post from, Domain.Post to)
+        {
+            // Copy Id
+            if (!String.IsNullOrWhiteSpace(from.Id))
+            {
+                to.Id = String.Copy(from.Id);
+            }
+            // Copy DatePostd
+            to.DatePosted = from.DatePosted;
+            // Copy Body
+            if (!String.IsNullOrWhiteSpace(from.Body))
+            {
+                to.Body = String.Copy(from.Body);
+            }
+            // Copy PublisherId
+            if (!String.IsNullOrWhiteSpace(from.PublisherId))
+            {
+                to.PublisherId = String.Copy(from.PublisherId);
+            }
         }
 
         private void AddVotedPost(Domain.VotedPost from, ServiceModel.VotedPost to)
@@ -566,13 +572,63 @@ namespace Synchronized.Core.Utilities
             // Add flagger Ids
             if (from.PostFlags != null)
             {
-                foreach (var flagger in from.PostFlags)
+                foreach (var flag in from.PostFlags)
                 {
-                    to.FlaggerIds.Add(flagger.UserId);
+                    to.FlaggerIds.Add(flag.Id, flag.UserId);
                 }
             }
-
+            // Copy Review
             to.Review = from.Review;
+            // Copy ReviewDate
+            to.ReviewDate = from.ReviewDate;
+        }
+
+        private void AddVotedPost(ServiceModel.VotedPost from, Domain.VotedPost to)
+        {
+            // Copy DeleteVotes
+            if (from.DeleterIds != null)
+            {
+                to.DeleteVotes = _serviceModelFactory.GetOfType<List<DeleteVote>>();
+                foreach (string id in from.DeleterIds)
+                {
+                    to.DeleteVotes.Add(new DeleteVote()
+                    {
+                        UserId = id,
+                        PostId = to.Id
+                    });
+                }
+            }
+            // Copy Flags
+            if (from.FlaggerIds != null)
+            {
+                to.PostFlags = _serviceModelFactory.GetOfType<List<Domain.PostFlag>>();
+                foreach (var id in from.FlaggerIds)
+                {
+                    to.PostFlags.Add(new Domain.PostFlag()
+                    {
+                        Id = !String.IsNullOrWhiteSpace(id.Key) ? id.Key : null,
+                        UserId = id.Value,
+                        PostId = to.Id
+                    });
+                }
+            }
+            // Copy Votes
+            if (from.VoterIds != null)
+            {
+                to.Votes = _serviceModelFactory.GetOfType<List<Vote>>();
+                foreach (string id in from.VoterIds)
+                {
+                    to.Votes.Add(new Vote()
+                    {
+                        PostId = to.Id,
+                        VoterId = id
+                    });
+                }
+            }
+            // Copy Review
+            to.Review = from.Review;
+            // Copy ReviewDate
+            to.ReviewDate = from.ReviewDate;
         }
     }
 }

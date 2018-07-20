@@ -10,7 +10,7 @@ namespace Synchronized.Repository.Interfaces
     public interface IQuestionsRepository: IPostsRepository<Question>
     {
         Task<List<Question>> GetPageAsync(int pageIndex, int pageSize);
-        Task<List<Question>> GetReviewPage(int pageIndex, int pageSize);
+        Task<HashSet<Question>> GetReviewPage(int pageIndex, int pageSize);
         Task<Question> GetQuestionById(string id);
         Task<Answer> GetAnswerById(string postId);
         Task<Comment> GetCommentById(string commentId);

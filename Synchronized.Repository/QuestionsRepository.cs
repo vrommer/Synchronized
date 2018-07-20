@@ -174,13 +174,13 @@ namespace Synchronized.Repository
             return await _tagsSet.FindAsync(tagId);
         }
 
-        public async Task<List<Question>> GetReviewPage(int pageIndex, int pageSize)
+        public async Task<HashSet<Question>> GetReviewPage(int pageIndex, int pageSize)
         {
             IQueryable<Question> questionQueryable;
             Question question;
-            List<Question> returnList = new List<Question>();
+            HashSet<Question> returnList = new HashSet<Question>();
             var votedPosts = await _context.Set<VotedPost>()
-                .Where(p => p.PostFlags.Count > 0)
+                .Where(p => p.Review)
                 .OrderByDescending(q => q.ReviewDate)
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
@@ -206,7 +206,10 @@ namespace Synchronized.Repository
                         .Include(q => q.Publisher)
                         .Include(q => q.Answers)
                         .SingleOrDefaultAsync();
-                returnList.Add(question);
+                if (!returnList.Contains(question))
+                {
+                    returnList.Add(question);
+                }
             }
 
             return returnList;

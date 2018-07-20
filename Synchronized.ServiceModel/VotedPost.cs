@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Synchronized.ServiceModel
 {
@@ -8,6 +9,7 @@ namespace Synchronized.ServiceModel
         public int DownVotes { get; set; }
         public int SumVotes { get => UpVotes - DownVotes; }
         public bool Review { get; set; }
+        public DateTime ReviewDate { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
         public ICollection<string> VoterIds { get; set; }        

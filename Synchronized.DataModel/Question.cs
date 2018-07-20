@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Synchronized.Domain
 {
@@ -30,6 +31,23 @@ namespace Synchronized.Domain
                     answered = true;                    
             });
             return answered;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("ID: ")
+                .Append(Id)
+                .Append("\nTitle: ")
+                .Append(Title)
+                .Append("\nBody: ")
+                .Append(Body.Substring(Math.Min(Body.Length, 56)));
+            return sb.ToString();
+        }
+
+        public override int GetHashCode()
+        {
+            return ToString().GetHashCode();
         }
     }
 }

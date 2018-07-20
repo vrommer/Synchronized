@@ -28,12 +28,19 @@ namespace Synchronized.Data
 
         static SynchedIdentityDbContext context;
         static Random rand = new Random();
-        static int maxPoints = 6000;
-        static int totalViews = 2000;
-        static int totalVotes = 5000;
-        static int numOfQuestions = 1000;
-        static int numOfAnswers = 2000;
-        static int numOfComments = 2000;
+        //static int maxPoints = 6000;
+        //static int totalViews = 2000;
+        //static int totalVotes = 5000;
+        //static int numOfQuestions = 1000;
+        //static int numOfAnswers = 2000;
+        //static int numOfComments = 2000;
+
+        static int totalViews = 0;
+        static int totalVotes = 0;
+        static int numOfQuestions = 3;
+        static int numOfAnswers = 3;
+        static int numOfComments = 5;
+
         static int minimumTagsInQuestion = 1;
         static int maximumTagsInQuestion = 4;
 
@@ -50,9 +57,14 @@ namespace Synchronized.Data
             //    "Sharon", "Hellen", "Hulio", "Enrique", "Darwin", "Stephan", "Joe", "Hillary", "Barak", "Benjamin", "Ashton", "Alexa", "Cameron", "Kventin", "Guy", "Ahmed", "Muhammad", "Gadir", "Kamila", "Polina", "Pola", "Marga", "Sandra", "Alexa"
             //};
 
+            //string[] userNames =
+            //{
+            //    "Viktoriya", "Vadim", "Yossi", "Nati", "Isaac", "Oren", "Allen", "Nir", "Netta", "Katty", "Soffi", "Ira", "Marina", "Igal"
+            //};
+
             string[] userNames =
-            {
-                "Viktoriya", "Vadim", "Yossi", "Nati", "Isaac", "Oren", "Allen", "Nir", "Netta", "Katty", "Soffi", "Ira", "Marina", "Igal"
+{
+                "Viktoriya", "Vadim", "Yossi", "Nati"
             };
 
             List<string> tagNames = new List<string>
@@ -133,6 +145,7 @@ namespace Synchronized.Data
                 Email = "joseph@example.com",
                 EmailConfirmed = true,
                 UserName = "joseph",
+                Points = 4000,
                 ImageUri = "/pictures/user_default.png"
             };
 
