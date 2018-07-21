@@ -9,7 +9,6 @@ using SharedLib.Infrastructure.Constants;
 using System.Linq.Expressions;
 using Microsoft.Extensions.Logging;
 using Synchronized.SharedLib;
-using System.Collections.Generic;
 
 namespace Synchronized.Core
 {
@@ -63,35 +62,107 @@ namespace Synchronized.Core
         {
             var post = await((IVotedPostRepository)_repo).GetById(postId);
             Question domainQuestion = null;
-            Answer domainANswer = null;
+            ServiceModel.Question serviceQuestion = null;
+            Comment domainComment = null;
+            Answer domainAnswer = null;
+            ServiceModel.Answer serviceAnswer = null;
+            // Create user for subscription. Needs to have an id and be of type IQuestionSubscriber
+            var user = _factory.GetUser();
+            user.Id = userId;
+
+
+            ServiceModel.Comment serviceComment = _factory.GetComment();
             var canComment = ((!String.IsNullOrEmpty(userId)) && (!String.IsNullOrEmpty(userId)) && Constants.COMMENT_POINTS <= userPoints);
             var comment = new Comment();
             if (canComment)
             {
-                comment.PublisherId = userId;
-                comment.Body = commentBody;
+                serviceComment.Body = commentBody;
+                serviceComment.PublisherId = userId;
+                serviceComment.PublisherName = userName;
                 if (post.GetType().Equals(typeof(Question)))
                 {
-                    // Get Question with Subscriptions for adding the comment
+                    // Get Question for comment with Subscriptions
                     domainQuestion = await _questionsRepo.GetQuestionById(postId);
-                    // Add comment to domainQuestion
-                    domainQuestion.Comments.Add(comment);
+                    // Convert Domain.Question to ServiceModel.Question
+                    serviceQuestion = _converter.Convert(domainQuestion);
+                    // Add comment to the question
+                    serviceQuestion.Comments.Add(serviceComment);
                 }
                 else
                 {
-                    // Get Question with Subscriptions
+                    // Get question for Subscriptions
                     domainQuestion = await _questionsRepo.GetQuestionById(((Answer)post).QuestionId);
-                    // Get Answer for adding the comment
-
+                    // Convert the question to ServiceModel.Question
+                    serviceQuestion = _converter.Convert(domainQuestion);
+                    // Find the answer in question's comments
+                    serviceAnswer = FindAnswer(serviceQuestion, postId);
+                    // Add the comment to the answer
+                    serviceAnswer.Comments.Add(serviceComment);
                 }
-                SubscribeUser(domainQuestion, userId);
-                //await _repo.UpdateAsync(domainQuestion);
-                post.Comments.Add(comment);
-                await _repo.UpdateAsync(post);
-                var serviceModelComment = _converter.Convert(comment);
-                serviceModelComment.PublisherName = String.Copy(userName);
-                serviceModelComment.DatePosted = comment.DatePosted;
-                return serviceModelComment;
+                // Notify all subscribers about the new comment
+                await serviceQuestion.Notify();
+                // Subscribe user to quesiton
+                serviceQuestion.Subscribe(user);
+                // Convert back to domainQuestion
+                domainQuestion = _converter.Convert(serviceQuestion);
+                // Get a referance to the new Comment
+                if (post.GetType().Equals(typeof(Question)))
+                {
+                    domainComment = FindComment(domainQuestion, null);
+                }
+                else
+                {
+                    domainAnswer = FindAnswer(domainQuestion, postId);
+                    domainComment = FindComment(domainAnswer, null);
+                }
+                // Save Changes to Repository
+                await _repo.UpdateAsync(domainQuestion);
+                // Convert new comment to ServiceModel.Comment
+                serviceComment = _converter.Convert(domainComment);
+                return serviceComment;
+            }
+            return null;
+        }
+
+        private ServiceModel.Answer FindAnswer(ServiceModel.Question qustion, string answerId)
+        {
+            foreach(var a in qustion.Answers)
+            {
+                if (a.Id.Equals(answerId)) {
+                    return a;
+                }
+            }
+            return null;
+        }
+
+        private Answer FindAnswer(Question question, string answerId)
+        {
+            foreach (var a in question.Answers)
+            {
+                if (String.IsNullOrWhiteSpace(answerId) && String.IsNullOrWhiteSpace(a.Id))
+                {
+                    return a;
+                }
+                else if (a.Id.Equals(answerId))
+                {
+                    return a;
+                }
+            }
+            return null;
+        }
+
+        private Comment FindComment (VotedPost post, string commentId)
+        {
+            foreach(var a in post.Comments)
+            {
+                if (String.IsNullOrWhiteSpace(commentId) && String.IsNullOrWhiteSpace(a.Id))
+                {
+                    return a;
+                }
+                else if (a.Id.Equals(commentId))
+                {
+                    return a;
+                }
             }
             return null;
         }

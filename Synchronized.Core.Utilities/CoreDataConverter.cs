@@ -377,7 +377,16 @@ namespace Synchronized.Core.Utilities
 
         public Domain.Comment Convert(ServiceModel.Comment from)
         {
-            throw new NotImplementedException();
+            var to = _domainModelFactory.GetComment();
+            // *******************
+            // Copy Post part
+            // *******************
+            AddPostPart(from, to);
+            if (!String.IsNullOrWhiteSpace(from.VotedPostId))
+            {
+                to.PostId = String.Copy(from.VotedPostId);
+            }
+            return to;
         }
 
         public ApplicationUser Convert(User from)
@@ -425,7 +434,12 @@ namespace Synchronized.Core.Utilities
 
         public List<Domain.Comment> Convert(ICollection<ServiceModel.Comment> from)
         {
-            throw new NotImplementedException();
+            var domainComments = _serviceModelFactory.GetOfType<List<Domain.Comment>>();
+            foreach (ServiceModel.Comment c in from)
+            {
+                domainComments.Add(Convert(c));
+            }
+            return domainComments;
         }
 
         public List<ApplicationUser> Convert(ICollection<User> from)
@@ -624,6 +638,11 @@ namespace Synchronized.Core.Utilities
                         VoterId = id
                     });
                 }
+            }
+            // Copy Comments 
+            if (from.Comments != null)
+            {
+                to.Comments = Convert(from.Comments);
             }
             // Copy Review
             to.Review = from.Review;
