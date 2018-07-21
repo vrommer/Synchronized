@@ -1,0 +1,33 @@
+﻿@page
+@model Synchronized.WebApp.Pages.Tags.CreateModel
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+@{
+    ViewData["Title"] = "New Tag";
+}
+
+<div class="row">
+    <div class="offset-md-2 col-md-8">
+        <section>
+            <div asp-validation-summary="All"></div>
+            <form method="POST" id="synched-ask">
+                <h4>Create new tag</h4>
+                <hr />
+                <div class="input-group mb-3">
+                    <input asp-for="Tag.Name" type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" placeholder="Name">
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <textarea asp-for="Tag.Description" class="form-control" aria-label="Description" placeholder="Description" maxlength="128"></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-secondary">Create</button>
+            </form>
+        </section>
+    </div>
+</div>

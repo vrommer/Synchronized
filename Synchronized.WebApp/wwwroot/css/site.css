@@ -93,6 +93,10 @@
     margin-top: 40px;   
 }
 
+.synched-user-card ul {
+    height: 200px;
+}
+
 .synched-user-card > ul.list-group {
     background: -moz-linear-gradient(-45deg, #f1eded 0%, #ede9e9 100%); /* FF3.6-15 */
     background: -webkit-linear-gradient(-45deg, #f1eded 0%,#ede9e9 100%); /* Chrome10-25,Safari5.1-6 */

@@ -467,7 +467,18 @@ namespace Synchronized.Core.Utilities
 
         public Domain.Tag Convert(ServiceModel.Tag from)
         {
-            throw new NotImplementedException();
+            var tag = _serviceModelFactory.GetOfType<Domain.Tag>();
+            // Add Tag Id
+            if (!String.IsNullOrWhiteSpace(from.Name))
+            {
+                tag.Id = String.Copy(from.Name);
+            }
+            // Add Description
+            if (!String.IsNullOrWhiteSpace(from.Description))
+            {
+                tag.Description = String.Copy(from.Description);
+            }
+            return tag;
         }
 
         public List<ServiceModel.Tag> Convert(ICollection<Domain.Tag> from)

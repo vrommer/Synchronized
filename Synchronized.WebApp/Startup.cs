@@ -64,6 +64,7 @@ namespace Synchronized.WebApp
                 {
                     options.Conventions.AuthorizePage("/Questions/Review", "RequireEditorRole");
                     options.Conventions.AuthorizePage("/Questions/Edit", "RequireEditorRole");
+                    options.Conventions.AuthorizePage("/Tags/Create", "RequireEditorRole");
                 })
                 .AddRazorPagesOptions(options =>
                 {

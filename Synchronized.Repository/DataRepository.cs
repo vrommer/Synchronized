@@ -33,7 +33,15 @@ namespace Synchronized.Repository
         public virtual async Task<string> AddAsync(T entity)
         {
             _set.Add(entity);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            } 
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                return "";
+            }
             return entity.Id;
         }
 

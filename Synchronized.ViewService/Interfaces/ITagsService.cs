@@ -5,6 +5,6 @@ namespace Synchronized.ViewServices.Interfaces
 {
     public interface ITagsService
     {
-        PaginatedList<TagViewModel> GetIndexPage(int currentPage);
+        PaginatedList<TagViewModel> GetIndexPage(int currentPage, string searchTerm);
     }
 }

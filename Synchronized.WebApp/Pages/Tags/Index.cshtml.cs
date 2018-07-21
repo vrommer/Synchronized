@@ -2,11 +2,9 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Synchronized.SharedLib.Utilities;
-using Synchronized.UI.Utilities;
 using Synchronized.ViewModel.TagsViewModels;
 using Synchronized.ViewServices.Interfaces;
 using Synchronized.WebApp.Conventions;
-using System.Threading.Tasks;
 
 namespace Synchronized.WebApp.Pages.Tags
 {
@@ -32,10 +30,11 @@ namespace Synchronized.WebApp.Pages.Tags
             _logger = logger;
         }
 
-        public async Task OnGetAsync([MustBeInQueryParameterConvention]int? pageNumber, [MustBeInQueryParameterConvention]string sortOrder = null)
+        public void OnGet([MustBeInQueryParameterConvention]int? pageNumber, [MustBeInQueryParameterConvention]string searchTerm = null)
         {
             CurrentPage = pageNumber ?? 1;
-            Tags = _tagsService.GetIndexPage(CurrentPage);
+            SearchString = searchTerm ?? "";
+            Tags = _tagsService.GetIndexPage(CurrentPage, SearchString);
         }
     }
 }

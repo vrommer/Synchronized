@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Synchronized.Domain.Factories.Interfaces;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Synchronized.Repository
 {
@@ -12,7 +13,7 @@ namespace Synchronized.Repository
     {
         private IDomainModelFactory _factory;
 
-        public TagsRepository(DbContext context, IDomainModelFactory factory) : base(context)
+        public TagsRepository(DbContext context, ILogger<TagsRepository> logger, IDomainModelFactory factory) : base(context, logger)
         {
             _factory = factory;
         }
@@ -22,60 +23,15 @@ namespace Synchronized.Repository
             return await _set.ToListAsync();
         }
 
-        public override List<Tag> GetPage(int pageIndex, int pageSize, string searchTerm, string sortOrder)
+        public override List<Tag> GetPage(int pageIndex, int pageSize, string sortOrder, string searchTerm)
         {
-            var tags = _set.AsNoTracking()
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize);
+            var tags = GetBy(q => q.Id.Contains(searchTerm));
 
-            //switch (sortOrder)
-            //{
-            //    case "Date":
-            //        questions = questions.OrderBy(q => q.DatePosted.ToString());
-            //        break;
-            //    case "date_desc":
-            //        questions = questions.OrderByDescending(q => q.DatePosted.ToString());
-            //        break;
-            //    case "Answers":
-            //        questions = questions.OrderBy(q => q.Answers.Count);
-            //        break;
-            //    case "answers_desc":
-            //        questions = questions.OrderByDescending(q => q.Answers.Count);
-            //        break;
-            //    case "Views":
-            //        questions = questions.OrderBy(q => q.QuestionViews.Count);
-            //        break;
-            //    case "views_desc":
-            //        questions = questions.OrderByDescending(q => q.QuestionViews.Count);
-            //        break;
-            //    case "Points":
-            //        questions = questions.OrderBy(q => q.Votes.Count);
-            //        break;
-            //    case "points_desc":
-            //        questions = questions.OrderByDescending(q => q.Votes.Count);
-            //        break;
-            //    default:
-            //        questions = questions.OrderByDescending(q => q.Answers.Count);
-            //        break;
-            //}
+            tags = tags.Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize);
 
             var tagsList = tags.ToList();
             return tagsList;
         }
-
-        // -------------------------- Snippet - beginning of filtering questions by tags -------------------------- //
-        //var QuestionTagsWithQuestions = _context.Set<QuestionTag>().AsNoTracking()
-        //    .OrderBy(t => t.QuestionId)
-        //    .Skip((pageIndex - 1) * pageSize)
-        //    .Take(pageSize)
-        //    .Include(qt => qt.Question)
-        //    .ToList();
-
-        //var questions = _factory.GetQuestionsList();
-        //foreach (var qt in QuestionTagsWithQuestions)
-        //{
-
-        //}
-        // -------------------------- Snippet - beginning of filtering questions by tags -------------------------- //
     }
 }

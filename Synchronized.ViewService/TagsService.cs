@@ -24,9 +24,10 @@ namespace Synchronized.ViewServices
             _factory = factory;                
         }
 
-        public PaginatedList<TagViewModel> GetIndexPage(int pageIndex)
+        public PaginatedList<TagViewModel> GetIndexPage(int pageIndex, string searchTerm)
         {
-            var tags = _tagsService.GetTagsPage(pageIndex, pageSize, null, null);
+            string sortOrder = null;
+            var tags = _tagsService.GetTagsPage(pageIndex, pageSize, sortOrder, searchTerm);
             var tagsPage = _factory.GetPaginatedList<TagViewModel>(tags.TotalSize, pageIndex, pageSize);
 
             tags.ForEach(t => {

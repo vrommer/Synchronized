@@ -9,5 +9,6 @@ namespace Synchronized.Core.Interfaces
     {
         PaginatedList<Tag> GetTagsPage(int pageIndex, int pageSize, string sortOrder, string searchTerm);
         Task<List<Tag>> GetAllTags();
+        Task<string> CreateTag(Tag tag, int userPoints);
     }
 }
