@@ -73,6 +73,12 @@ namespace Synchronized.Core
             var canVote = CanVote(user.Id, user.Points, voteType, serviceQuestion);
             if (canVote)
             {
+                question.Votes.Add(new Vote
+                {
+                    VoterId = user.Id,
+                    VoteType = (int)voteType
+                });
+                await _repo.UpdateAsync(question);
                 switch (voteType)
                 {
                     case VoteType.UpVote:
@@ -93,12 +99,6 @@ namespace Synchronized.Core
                         break;
                 }
                 serviceQuestion.VoterIds.Add(user.Id);
-                question.Votes.Add(new Vote
-                {
-                    VoterId = user.Id,
-                    VoteType = (int)voteType
-                });
-                await _repo.UpdateAsync(question);
                 await _repo.UpdateAsync(question.Publisher);
                 if (!user.Id.Equals(question.Publisher.Id)) { 
                     await _repo.UpdateAsync(user);
@@ -173,7 +173,7 @@ namespace Synchronized.Core
                         answer.Publisher.Points += Constants.ANSWER_DOWNVOTE_ANSWERER_PNEALTY;
                         if (user.Id.Equals(answer.Publisher.Id))
                         {
-                            user.Points += answer.Publisher.Points + Constants.ANSWER_DOWNVOTE_VOTER_PENALTY;
+                            answer.Publisher.Points += Constants.ANSWER_DOWNVOTE_VOTER_PENALTY;
                         }
                         else
                         {

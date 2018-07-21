@@ -91,7 +91,7 @@ namespace Synchronized.Repository
                     .ThenInclude(a => a.Publisher)
                 //.Include(q => q.Answers)
                 //    .ThenInclude(a => a.Votes)
-                .Include(q => q.Comments)
+                //.Include(q => q.Comments)
                 //.Include(q => q.Publisher)
                 .Include(q => q.PostFlags)
                 .Include(q => q.DeleteVotes)
@@ -127,6 +127,7 @@ namespace Synchronized.Repository
             foreach (Answer a in question.Answers)
             {
                 a.Comments = _context.Set<Comment>()
+                    .AsNoTracking()
                     .Where(c => c.PostId == a.Id)
                     .Include(c => c.Publisher)
                     .OrderBy(c => c.DatePosted).ToList();
