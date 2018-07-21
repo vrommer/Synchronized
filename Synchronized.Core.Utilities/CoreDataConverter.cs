@@ -152,6 +152,11 @@ namespace Synchronized.Core.Utilities
             var to = _serviceModelFactory.GetQuestion();
             to.Subscribers = _serviceModelFactory.GetOfType<List<IQuestionSubscriber>>();
 
+            // ServiceModel.Post 
+            AddPostPart(from, to);
+            // ServiceModel.VotedPost 
+            AddVotedPost(from, to);
+
             to.Answers = Convert(from.Answers);                      
 
             to.IsAnswered = from.Answered();
@@ -193,12 +198,7 @@ namespace Synchronized.Core.Utilities
                     }
                 }
             }
-            to.Tags = builder.ToString();
-            
-            // ServiceModel.Post 
-            AddPostPart(from, to);
-            // ServiceModel.VotedPost 
-            AddVotedPost(from, to);
+            to.Tags = builder.ToString();            
 
             return to;
         }
@@ -586,8 +586,19 @@ namespace Synchronized.Core.Utilities
             // Add voter Ids
             if (from.Votes != null)
             {
-                to.UpVotes = from.Votes.Where(v => v.VoteType == (int)VoteType.UpVote).Count();
-                to.DownVotes = from.Votes.Where(v => v.VoteType == (int)VoteType.DownVote).Count();
+                var UpVotes = from.Votes.Where(v => v.VoteType == (int)VoteType.UpVote);
+                var DownVotes = from.Votes.Where(v => v.VoteType == (int)VoteType.DownVote);
+                to.UpVotes = UpVotes.Count();
+                to.DownVotes = DownVotes.Count();
+                foreach (var v in UpVotes)
+                {
+                    to.UpVotersIds.Add(v.VoterId);
+                }
+                foreach (var v in DownVotes)
+                {
+                    to.DownVotersIds.Add(v.VoterId);
+                }
+
                 from.Votes.ToList().ForEach(v =>
                 {
                     to.VoterIds.Add(v.VoterId);
@@ -641,12 +652,22 @@ namespace Synchronized.Core.Utilities
             if (from.VoterIds != null)
             {
                 to.Votes = _serviceModelFactory.GetOfType<List<Vote>>();
-                foreach (string id in from.VoterIds)
+                foreach (string id in from.UpVotersIds)
                 {
                     to.Votes.Add(new Vote()
                     {
                         PostId = to.Id,
-                        VoterId = id
+                        VoterId = id,
+                        VoteType = (int)VoteType.UpVote
+                    });
+                }
+                foreach (string id in from.DownVotersIds)
+                {
+                    to.Votes.Add(new Vote()
+                    {
+                        PostId = to.Id,
+                        VoterId = id,
+                        VoteType = (int)VoteType.DownVote
                     });
                 }
             }

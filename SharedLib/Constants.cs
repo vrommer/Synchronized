@@ -27,6 +27,6 @@
         public const int QUESTION_DOWNVOTE_AKSER_PENALTY = -2;
         public const int QUESTION_DOWNVOTE_VOTER_PENALTY = -1;
         public const int ANSWER_DOWNVOTE_ANSWERER_PNEALTY = -2;
-        public const int ANSWER_DOWNVOTE_VOTER_PENALTY = -2;
+        public const int ANSWER_DOWNVOTE_VOTER_PENALTY = -1;
     }
 }

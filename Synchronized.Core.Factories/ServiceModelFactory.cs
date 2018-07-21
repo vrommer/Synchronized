@@ -16,10 +16,12 @@ namespace Synchronized.Core.Factories
                 FlaggerIds = new Dictionary<string, string>(),
                 // VotedPost
                 Comments = new List<Comment>(),
-                VoterIds = new List<string>(),
+                VoterIds = new HashSet<string>(),
                 // Question
                 Answers = new List<Answer>(),
-                ViewerIds = new List<string>()
+                ViewerIds = new List<string>(),
+                UpVotersIds= new HashSet<string>(),
+                DownVotersIds = new HashSet<string>()
             };
 
             return question;
@@ -33,7 +35,9 @@ namespace Synchronized.Core.Factories
                 FlaggerIds = new Dictionary<string, string>(),
                 // VotedPost
                 Comments = new List<Comment>(),
-                VoterIds = new List<string>()
+                VoterIds = new HashSet<string>(),
+                UpVotersIds = new HashSet<string>(),
+                DownVotersIds = new HashSet<string>()
             };
 
             return answer;
@@ -92,7 +96,7 @@ namespace Synchronized.Core.Factories
         {
             return new VotedPost
             {
-                VoterIds = new List<string>(),
+                VoterIds = new HashSet<string>(),
                 DeleterIds = new List<string>(),
                 FlaggerIds = new Dictionary<string, string>()                 
             };
