@@ -53,12 +53,12 @@ namespace Synchronized.Core.Factories
             return comment;
         }
 
-        public PaginatedList<Question> GetQuestionsList(int totalSize, int pageIndex, int pageSize)
+        public PaginatedList<Question> GetQuestionsPage(int totalSize, int pageIndex, int pageSize)
         {
             return new PaginatedList<Question>(totalSize, pageIndex, pageSize);
         }
 
-        public PaginatedList<Question> GetQuestionsList(List<Question> questions, int count, int pageIndex, int pageSize)
+        public PaginatedList<Question> GetQuestionsPage(List<Question> questions, int count, int pageIndex, int pageSize)
         {
             return new PaginatedList<Question>(questions, count, pageIndex, pageSize);
         }

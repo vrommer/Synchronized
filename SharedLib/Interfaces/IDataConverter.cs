@@ -1,5 +1,4 @@
-﻿using Synchronized.Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Synchronized.SharedLib.Interfaces
 {

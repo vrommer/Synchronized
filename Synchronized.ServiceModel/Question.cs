@@ -14,9 +14,7 @@ namespace Synchronized.ServiceModel
         public ICollection<string> ViewerIds{ get; set; }
         public bool IsAnswered { get; set; }
         public List<IQuestionSubscriber> Subscribers { get; set; }
-
         public static readonly IEmailSender _emailSender = new EmailSender();
-
         public ICollection<Answer> Answers { get; set; }
 
         public async Task Notify()

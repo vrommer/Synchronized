@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Synchronized.Domain
+﻿namespace Synchronized.Domain
 {
     public class QuestionTag
     {

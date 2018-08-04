@@ -11,11 +11,9 @@ namespace Synchronized.Repository
 {
     public class TagsRepository : DataRepository<Tag>, ITagsRepository
     {
-        private IDomainModelFactory _factory;
 
-        public TagsRepository(DbContext context, ILogger<TagsRepository> logger, IDomainModelFactory factory) : base(context, logger)
+        public TagsRepository(DbContext context, ILogger<TagsRepository> logger) : base(context, logger)
         {
-            _factory = factory;
         }
 
         public async Task<List<Tag>> GetAllTags()

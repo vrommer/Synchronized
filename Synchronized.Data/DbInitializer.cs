@@ -28,18 +28,19 @@ namespace Synchronized.Data
 
         static SynchedIdentityDbContext context;
         static Random rand = new Random();
-        //static int maxPoints = 6000;
-        //static int totalViews = 2000;
-        //static int totalVotes = 5000;
-        //static int numOfQuestions = 1000;
-        //static int numOfAnswers = 2000;
-        //static int numOfComments = 2000;
+        static int totalViews = 2000;
+        static int totalVotes = 5000;
+        static int numOfQuestions = 1000;
+        static int pageSize = 100;
+        static int numOfPages = numOfQuestions/pageSize;
+        static int numOfAnswers = 2000;
+        static int numOfComments = 2000;
 
-        static int totalViews = 0;
-        static int totalVotes = 0;
-        static int numOfQuestions = 3;
-        static int numOfAnswers = 3;
-        static int numOfComments = 5;
+        //static int totalViews = 0;
+        //static int totalVotes = 0;
+        //static int numOfQuestions = 3;
+        //static int numOfAnswers = 3;
+        //static int numOfComments = 5;
 
         static int minimumTagsInQuestion = 1;
         static int maximumTagsInQuestion = 4;
@@ -49,23 +50,23 @@ namespace Synchronized.Data
             context = (SynchedIdentityDbContext)Context;
             context.Database.EnsureCreated();
 
-            //string[] userNames =
-            //{
-            //    "Viktoriya", "Vadim", "Yossi", "Nati", "Isaac", "Oren", "Allen", "Nir", "Netta", "Katty", "Soffi", "Ira", "Marina", "Igal", "Juli", "Aprana", "Prasana", "Tigran", "Anton", "Sergey", "Dima", "Michael",
-            //    "Alex", "Kostya", "Max", "Lee", "Keren", "Dina", "Maayan", "Idan", "Adam", "Ari", "Arik", "Yariv", "Naor", "Oron", "Yevgeni", "Bruce", "Kim", "Joseph", "Ido", "Jack", "John", "Romeo",
-            //    "Roman", "Rita", "Irena", "Vladislav", "Rostislav", "Josh", "Kevin", "Devin", "Miika", "Luca", "Fabio", "Fredd", "Leon", "Arthur", "Boris", "David", "Eithan", "Stephany", "Christine", "Alon", "Alona", "Olga",
-            //    "Sharon", "Hellen", "Hulio", "Enrique", "Darwin", "Stephan", "Joe", "Hillary", "Barak", "Benjamin", "Ashton", "Alexa", "Cameron", "Kventin", "Guy", "Ahmed", "Muhammad", "Gadir", "Kamila", "Polina", "Pola", "Marga", "Sandra", "Alexa"
-            //};
+            string[] userNames =
+            {
+                "joseph", "Viktoriya", "Vadim", "Yossi", "Nati", "Isaac", "Oren", "Allen", "Nir", "Netta", "Katty", "Soffi", "Ira", "Marina", "Igal", "Juli", "Aprana", "Prasana", "Tigran", "Anton", "Sergey", "Dima", "Michael",
+                "Alex", "Kostya", "Max", "Lee", "Keren", "Dina", "Maayan", "Idan", "Adam", "Ari", "Arik", "Yariv", "Naor", "Oron", "Yevgeni", "Bruce", "Kim", "Joseph", "Ido", "Jack", "John", "Romeo",
+                "Roman", "Rita", "Irena", "Vladislav", "Rostislav", "Josh", "Kevin", "Devin", "Miika", "Luca", "Fabio", "Fredd", "Leon", "Arthur", "Boris", "David", "Eithan", "Stephany", "Christine", "Alon", "Alona", "Olga",
+                "Sharon", "Hellen", "Hulio", "Enrique", "Darwin", "Stephan", "Joe", "Hillary", "Barak", "Benjamin", "Ashton", "Alexa", "Cameron", "Kventin", "Guy", "Ahmed", "Muhammad", "Gadir", "Kamila", "Polina", "Pola", "Marga", "Sandra", "Alexa"
+            };
 
             //string[] userNames =
             //{
             //    "Viktoriya", "Vadim", "Yossi", "Nati", "Isaac", "Oren", "Allen", "Nir", "Netta", "Katty", "Soffi", "Ira", "Marina", "Igal"
             //};
 
-            string[] userNames =
-{
-                "Viktoriya", "Vadim", "Yossi", "Nati"
-            };
+            //            string[] userNames =
+            //{
+            //                "Viktoriya", "Vadim", "Yossi", "Nati"
+            //            };
 
             List<string> tagNames = new List<string>
             {
@@ -141,24 +142,24 @@ namespace Synchronized.Data
 
             //bool roleExists = await roleManager.RoleExistsAsync(roleName);
 
-            var joseph = new ApplicationUser {
-                Email = "joseph@example.com",
-                EmailConfirmed = true,
-                UserName = "joseph",
-                Points = 4000,
-                ImageUri = "/pictures/user_default.png"
-            };
+            //var joseph = new ApplicationUser {
+            //    Email = "joseph@example.com",
+            //    EmailConfirmed = true,
+            //    UserName = "joseph",
+            //    Points = 4000,
+            //    ImageUri = "/pictures/user_default.png"
+            //};
 
-            var result = await userManager.CreateAsync(joseph, password);
+            //var result = await userManager.CreateAsync(joseph, password);
 
-            bool userIsInRole = await userManager.IsInRoleAsync(joseph, Constants.MODERATOR);
+            //bool userIsInRole = await userManager.IsInRoleAsync(joseph, Constants.MODERATOR);
 
-            if (result.Succeeded && !userIsInRole)
-            {
-                result = await userManager.AddToRoleAsync(joseph, Constants.MODERATOR);
-            }
+            //if (result.Succeeded && !userIsInRole)
+            //{
+            //    result = await userManager.AddToRoleAsync(joseph, Constants.MODERATOR);
+            //}
 
-            UserIds.Add(joseph.Id);
+            //UserIds.Add(joseph.Id);
 
             /***********************************************************************
              * Users
@@ -174,8 +175,12 @@ namespace Synchronized.Data
                     ImageUri = "/pictures/user_default.png"
                     //Points = rand.Next(maxPoints)
                 };
+                if (i <= 4)
+                {
+                    user.Points = 4000;
+                }
                 //var roleNames = GetUserRole(user.Points);
-                result = await userManager.CreateAsync(user, password);
+                var result = await userManager.CreateAsync(user, password);
                 //for (int j = 0; j < roleNames.Count; j++)
                 //{                    
                 //    if (result.Succeeded)
@@ -252,8 +257,8 @@ namespace Synchronized.Data
                 });
             }
 
-            questions.ForEach(q => context.Posts.Add(q));
-            context.SaveChanges();
+            questions.ForEach(q => context.Set<Question>().Add(q));
+            await context.SaveChangesAsync();
 
             context.Posts.OfType<Question>().ToList().ForEach(q => questionIds.Add(q.Id));
 
@@ -392,29 +397,58 @@ namespace Synchronized.Data
             ***********************************************************************/
             HashSet<int> integers;
             int questionsListPointer;
-
-            var questionsList = context.Posts.OfType<Question>().ToList();
-            for (var i = 0; i < questionsList.Count; i++)
+            for (int i = 0; i < numOfPages; i++)
             {
-                int numOfTagsForQuestion = rand.Next(minimumTagsInQuestion, maximumTagsInQuestion);
-                integers = new HashSet<int>();
-                for (int j = 1; j <= numOfTagsForQuestion; j++)
+                var questionsList = await context.Posts.OfType<Question>()
+                    .Skip(i*pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+                foreach (Question q in questionsList)
                 {
-                    questionsListPointer = rand.Next(tagIds.Count);
-                    while (integers.Contains(questionsListPointer))
+                    int numOfTagsForQuestion = rand.Next(minimumTagsInQuestion, maximumTagsInQuestion);
+                    integers = new HashSet<int>();
+                    for (int j = 1; j <= numOfTagsForQuestion; j++)
                     {
-                        questionsListPointer = rand.Next(tagIds.Count);
+                        var tagsListPointer = rand.Next(tagIds.Count);
+                        while (integers.Contains(tagsListPointer))
+                        {
+                            tagsListPointer = rand.Next(tagIds.Count);
+                        }
+                        integers.Add(tagsListPointer);
+                        var questionTag = new QuestionTag
+                        {
+                            QuestionId = q.Id,
+                            TagId = tagIds[tagsListPointer]
+                        };
+                        context.QusetionTags.Add(questionTag);
+                        context.SaveChanges();
                     }
-                    integers.Add(questionsListPointer);
-                    var questionTag = new QuestionTag
-                    {
-                        QuestionId = questionsList[i].Id,
-                        TagId = tagIds[questionsListPointer]
-                    };
-                    context.QusetionTags.Add(questionTag);
-                    context.SaveChanges();
                 }
             }
+
+            //var questionsList = await context.Posts.OfType<Question>().ToListAsync();
+            //var numQuestions = questionIds.Count;
+            //for (int i = 0; i < numQuestions; i++) 
+            //{
+            //    int numOfTagsForQuestion = rand.Next(minimumTagsInQuestion, maximumTagsInQuestion);
+            //    integers = new HashSet<int>();
+            //    for (int j = 1; j <= numOfTagsForQuestion; j++)
+            //    {
+            //        questionsListPointer = rand.Next(tagIds.Count);
+            //        while (integers.Contains(questionsListPointer))
+            //        {
+            //            questionsListPointer = rand.Next(tagIds.Count);
+            //        }
+            //        integers.Add(questionsListPointer);
+            //        var questionTag = new QuestionTag
+            //        {
+            //            QuestionId = questionsList[i].Id,
+            //            TagId = tagIds[questionsListPointer]
+            //        };
+            //        context.QusetionTags.Add(questionTag);
+            //        context.SaveChanges();
+            //    }
+            //}
 
             //context.Posts.OfType<Question>().ToList().ForEach(q => {
             //    int numOfTagsForQuestion = rand.Next(minimumTagsInQuestion, maximumTagsInQuestion);

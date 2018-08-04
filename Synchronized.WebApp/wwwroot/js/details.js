@@ -3,6 +3,15 @@
 var allComments = [];
 
 $(() => {
+    $('input[id^=tags]').tagsInput({
+        'height': '50px',
+        'width': '400px',
+        'interactive': false,
+    });
+
+    $('.tag a').remove();
+    $('.tag').wrap('<a href="#"></a>');
+
     var votedPosts = {};
     votedPosts[questionViewModel.question.id] = questionViewModel.question;
 

@@ -6,7 +6,7 @@ namespace Synchronized.Domain.Factories
 {
     public class DomainModelFactory : IDomainModelFactory
     {
-        public T GetInstance<T>()
+        public T GetOfType<T>()
         {
             object obj = Activator.CreateInstance(typeof(T));
             return ((T)obj);

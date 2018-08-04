@@ -11,5 +11,6 @@ namespace Synchronized.Domain
         public ICollection<Vote> Votes { get; set; }
         public ICollection<PostFlag> PostFlags { get; set; }
         public ICollection<DeleteVote> DeleteVotes { get; set; }
+
     }
 }

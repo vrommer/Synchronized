@@ -9,8 +9,8 @@ namespace Synchronized.Core.Factories.Interfaces
         Question GetQuestion();
         Answer GetAnswer();
         Comment GetComment();
-        PaginatedList<Question> GetQuestionsList(int totalSize, int pageIndex, int pageSize);
-        PaginatedList<Question> GetQuestionsList(List<Question> questions, int totalSize, int pageIndex, int pageSize);
+        PaginatedList<Question> GetQuestionsPage(int totalSize, int pageIndex, int pageSize);
+        PaginatedList<Question> GetQuestionsPage(List<Question> questions, int totalSize, int pageIndex, int pageSize);
         List<Question> GetQuestionsList();
         List<Tag> GetTagsList();
         User GetUser();
@@ -22,5 +22,6 @@ namespace Synchronized.Core.Factories.Interfaces
         PaginatedList<Tag> GetTagsPage(List<Tag> tags, int count, int pageSize, int pageIndex);
         T GetOfType<T>();
         PaginatedList<User> GetUsersPage(List<User> users, int count, int pageSize, int pageIndex);
+    
     }
 }

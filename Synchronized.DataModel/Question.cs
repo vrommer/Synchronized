@@ -12,7 +12,6 @@ namespace Synchronized.Domain
         public string Title { get; set; }
         //public int Points { get; set; }
         public int Deleted { get; set; }
-
         public List<Answer> Answers { get; set; }
         public List<QuestionTag> QuestionTags { get; set; }
         public List<QuestionView> QuestionViews { get; set; }

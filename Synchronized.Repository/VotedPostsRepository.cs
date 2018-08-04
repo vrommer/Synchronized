@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Synchronized.Domain;
 using Synchronized.Repository.Interfaces;
-using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Synchronized.Repository

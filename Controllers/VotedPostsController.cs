@@ -56,18 +56,18 @@ namespace Synchronized.Controllers
         }
 
         // Post: /api/VotedPosts/AddComment
-        public async Task<IActionResult> CommentOnPost([FromBody] CommentViewModel viewModelComment)
+        public async Task<IActionResult> CommentOnPost([FromBody] CommentViewModel comment)
         {
             var user = await GetUserAsync();
             var userPoints = user != null ? user.Points : 0;
             var userId = user != null ? user.Id : "";
             var userName = user != null ? user.UserName : "";
-            var comment = await _votedPostsService.CommentOnPost(viewModelComment.VotedPostId, viewModelComment.Body, userId, userName, userPoints);
-            if (comment == null)
+            var serviceComment = await _votedPostsService.CommentOnPost(comment.VotedPostId, comment.Body, userId, userName, userPoints);
+            if (serviceComment == null)
             {
                 return BadRequest();
             }
-            var viewComment = _dataConverter.Convert(comment);
+            var viewComment = _dataConverter.Convert(serviceComment);
 
             return new ObjectResult(viewComment);
         }

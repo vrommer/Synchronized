@@ -41,11 +41,20 @@
                     @Html.Raw(Model.Question.Body)
                 </div>
             </div>
+            <div class="question-tags">
+                <input class="synched-tags" name="tags" id="tags" value=@Model.Question.Tags />
+            </div>
+            <div class="synched-meta">
+                @Html.DisplayFor(model => model.Question.PublisherName)
+                @Html.DisplayFor(model => model.Question.DatePosted)
+            </div>
             @if (SignInManager.IsSignedIn(User))
             {
-                <a asp-page="/Questions/Edit" asp-route-id="@Model.Question.Id" class="btn btn-link synched-edit">Edit</a>
-                <button type="button" class="btn btn-link synched-flag">Flag</button>
-                <button type="button" class="btn btn-link synched-delete">Delete</button>
+                <div class="synched-q-options">
+                    <a asp-page="/Questions/Edit" asp-route-id="@Model.Question.Id" class="btn btn-link synched-edit">Edit</a>
+                    <button type="button" class="btn btn-link synched-flag">Flag</button>
+                    <button type="button" class="btn btn-link synched-delete">Delete</button>
+                </div>
             }
             else
             {
@@ -53,10 +62,6 @@
                 <a asp-page="/Account/Login" class="btn btn-link">Flag</a>
                 <a asp-page="/Account/Login" class="btn btn-link">Delete</a>
             }
-            <div class="synched-meta">
-                @Html.DisplayFor(model => model.Question.PublisherName)
-                @Html.DisplayFor(model => model.Question.DatePosted)
-            </div>
             @if (Model.Question.Comments != null && Model.Question.Comments.Count() > 0)
             {                
                 <div class="synched-comments">
@@ -118,6 +123,7 @@
                     @if (answer.Accapted)
                     {
                         <div id="accapted" class="answer-number">@counter.</div>
+                        <img src="~/pictures/GreenV.png" height="30" />
                     }
                     else
                     {

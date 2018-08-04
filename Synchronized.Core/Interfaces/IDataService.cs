@@ -11,5 +11,6 @@ namespace Synchronized.Core.Interfaces
         Task<T> GetById(string Id);
         Task<PaginatedList<T>> GetPage(int pageNumber, int pageSize, string sortOrder, string filter);
         Task<bool> Update(T entity);
+
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Synchronized.Domain
 {
@@ -9,7 +8,7 @@ namespace Synchronized.Domain
         public DateTime DatePosted { get; set; }
         public string PublisherId { get; set; }
         public string Body { get; set; }
-
         public ApplicationUser Publisher { get; set; }
+
     }
 }

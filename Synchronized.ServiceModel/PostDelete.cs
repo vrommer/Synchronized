@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Synchronized.ServiceModel
+﻿namespace Synchronized.ServiceModel
 {
     public class PostDelete
     {

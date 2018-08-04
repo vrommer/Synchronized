@@ -4,7 +4,7 @@
             .find("+ .user-active-posts")
             .show()
             .animate({
-                height: "250px"
+                height: "160px"
             }, 500);
     }
 

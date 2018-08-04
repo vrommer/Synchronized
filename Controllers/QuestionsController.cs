@@ -116,12 +116,5 @@ namespace Synchronized.Controllers
             tags.ForEach(t => tagNames.Add(t.Name));
             return new ObjectResult(tagNames);
         }
-
-        // GET: /api/Questions/Test
-        [HttpGet]       
-        public IActionResult Test()
-        {
-            return new ObjectResult("Success!");
-        }
     }
 }

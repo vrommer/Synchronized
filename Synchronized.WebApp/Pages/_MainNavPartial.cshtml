@@ -20,7 +20,7 @@
         {
             <li class="navbar-brand"><a asp-page="/Account/Login" class="nav-link">Ask</a></li>
         }
-        @if (SignInManager.IsSignedIn(User) && User.IsInRole(Constants.EDITOR))
+        @if (SignInManager.IsSignedIn(User) && (User.IsInRole(Constants.EDITOR)|| User.IsInRole(Constants.MODERATOR)))
         {
             <li class="navbar-brand"><a asp-page="/Questions/Review" class="nav-link">Review</a></li>
         }        

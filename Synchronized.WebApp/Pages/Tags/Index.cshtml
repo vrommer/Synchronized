@@ -66,24 +66,26 @@
     var prevDisabled = !Model.Tags.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.Tags.HasNextPage ? "disabled" : "";
 }
-<a asp-page="/Tags/Index" asp-route-pageNumber="@(Model.Tags.PageIndex - 1)"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
-@*TODO: Add the "maxPages" with a setter and getter to the Questions page object*@
-@for (var i = 1; i <= Model.CurrentPage; i++)
-{
-    <a asp-page="/Tags/Index" asp-route-pageNumber="@i"
-       class="btn btn-default">
-        @i
+
+<div id="paging">
+    <a asp-page="/Tags/Index" asp-route-pageNumber="@(Model.Tags.PageIndex - 1)"
+       class="btn btn-default @prevDisabled">
+        Previous
     </a>
-}
-<a asp-page="/Tags/Index" asp-route-pageNumber="@(Model.Tags.PageIndex + 1)"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>
+    @*TODO: Add the "maxPages" with a setter and getter to the Questions page object*@
+    @for (var i = 1; i <= Model.CurrentPage; i++)
+    {
+        <a asp-page="/Tags/Index" asp-route-pageNumber="@i"
+           class="btn btn-default">
+            @i
+        </a>
+    }
+    <a asp-page="/Tags/Index" asp-route-pageNumber="@(Model.Tags.PageIndex + 1)"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>
 
-
+</div>
 @section Scripts {
     <script src="~/js/tags.js"></script>
 }

@@ -498,7 +498,7 @@ namespace Synchronized.Core.Utilities
 
         public List<QuestionTag> Convert(string tags)
         {
-            var questionTags = _domainModelFactory.GetInstance<List<QuestionTag>>(); 
+            var questionTags = _domainModelFactory.GetOfType<List<QuestionTag>>(); 
             var tageNamesArray = tags.Split(',');
             for (int i = 0; i < tageNamesArray.Length; i++)
             {

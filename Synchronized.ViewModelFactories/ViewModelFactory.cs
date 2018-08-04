@@ -82,8 +82,10 @@ namespace Synchronized.ViewModelFactories
 
         public UserViewModel GetUser()
         {
-            var user = new UserViewModel();
-            user.ActivePosts = new List<QuestionForHomePage>();
+            var user = new UserViewModel
+            {
+                ActivePosts = new List<QuestionForHomePage>()
+            };
             return user;
         }
 

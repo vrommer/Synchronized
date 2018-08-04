@@ -1,6 +1,4 @@
-﻿using Synchronized.Domain;
-using System;
-using System.Text;
+﻿using System.Text;
 
 namespace Synchronized.Domain
 {
@@ -8,7 +6,6 @@ namespace Synchronized.Domain
     {
         public string UserId { get; set; }
         public string QuestionId { get; set; }
-
         public ApplicationUser User { get; set; }
         public Question Question { get; set; }
 

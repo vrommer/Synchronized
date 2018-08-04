@@ -1,4 +1,9 @@
 
+html {
+    position: relative;
+    min-height: 100%;
+}
+
 /* Page Header 
 -----------------*/
 
@@ -76,6 +81,10 @@
 #synched-answer .jqte{
     border: none;
 }
+
+/*#synched-ask {
+    margin-bottom: 100px;
+}*/
 
 /* Tags 
 ---------------*/
@@ -167,7 +176,7 @@
     display: none;
     height: 0;
     overflow: auto;
-    margin: 0 auto;
+    margin: 0 auto 110px;
     border: 1px solid rgba(0, 0, 0, 0.125);
 }
 
@@ -252,6 +261,14 @@ article.question {
 
 /* Single question
 ---------------*/
+.question-tags {
+    float: left;
+}
+
+.synched-q-options {
+    clear: both;
+    display: block;
+}
 
 #synched-answers-header {
     margin-top: 40px;
@@ -321,6 +338,22 @@ article.question {
     float: right;
     padding: 7px 13px;
 }
+
+#paging {
+    margin: 20px 0 60px;
+}
+
+/* Footer
+-------------*/
+footer {
+    width: 100%;
+    height: 200px;
+    background: #e2e2e2;
+    color: #717171;
+    position: relative;
+    bottom: 0;
+}
+
 
 /* General
 -------------*/

@@ -12,7 +12,7 @@ using Synchronized.SharedLib;
 
 namespace Synchronized.Core
 {
-    public class VotedPostsService : PostsService<Domain.VotedPost, ServiceModel.VotedPost>, IVotedPostService
+    public class VotedPostsService : PostsService<VotedPost, ServiceModel.VotedPost>, IVotedPostService
     {
         private IQuestionsRepository _questionsRepo;
 

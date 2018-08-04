@@ -6,11 +6,12 @@ namespace Synchronized.Domain.Factories.Interfaces
 {
     public interface IDomainModelFactory
     {
-        T GetInstance<T>();
+        T GetOfType<T>();
         Question GetQuestion();
         List<Question> GetQuestionsList();
         Answer GetAnswer();
         Comment GetComment();
         QuestionTag GetQuestionTag();
+    
     }
 }

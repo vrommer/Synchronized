@@ -62,7 +62,7 @@ namespace Synchronized.Core
             {
                 Utils.MinimizeContent(_parser, questions);
             }
-            var questionsPage = _factory.GetQuestionsList(questions, _repo.GetCount(), pageIndex, pageSize);
+            var questionsPage = _factory.GetQuestionsPage(questions, _repo.GetCount(), pageIndex, pageSize);
             return questionsPage;
         }
 
@@ -208,14 +208,14 @@ namespace Synchronized.Core
                     await _userManager.AddToRoleAsync(user, Constants.MODERATOR);
                 }
                 userIsInRole = await _userManager.IsInRoleAsync(user, Constants.EDITOR);
-                if (!userIsInRole)
+                if (userIsInRole)
                 {
-                    await _userManager.AddToRoleAsync(user, Constants.EDITOR);
+                    await _userManager.RemoveFromRoleAsync(user, Constants.EDITOR);
                 }
                 userIsInRole = await _userManager.IsInRoleAsync(user, Constants.VOTER);
-                if (!userIsInRole)
+                if (userIsInRole)
                 {
-                    await _userManager.AddToRoleAsync(user, Constants.VOTER);
+                    await _userManager.RemoveFromRoleAsync(user, Constants.VOTER);
                 }
             }
             else if (Constants.EDITOR_MINIMUM_RANK <= user.Points)
@@ -231,9 +231,9 @@ namespace Synchronized.Core
                     await _userManager.AddToRoleAsync(user, Constants.EDITOR);
                 }
                 userIsInRole = await _userManager.IsInRoleAsync(user, Constants.VOTER);
-                if (!userIsInRole)
+                if (userIsInRole)
                 {
-                    await _userManager.AddToRoleAsync(user, Constants.VOTER);
+                    await _userManager.RemoveFromRoleAsync(user, Constants.VOTER);
                 }
             }
             else if (Constants.VOTER_MINIMUM_RANK <= user.Points)
@@ -391,7 +391,7 @@ namespace Synchronized.Core
             var domainQuestions = await ((IQuestionsRepository)_repo).GetReviewPage(pageIndex, pageSize);
             var questions = _converter.Convert(domainQuestions);
             Utils.MinimizeContent(_parser, questions);
-            var questionsPage = _factory.GetQuestionsList(questions, ((IQuestionsRepository)_repo).GetReviewCount(), pageIndex, pageSize);
+            var questionsPage = _factory.GetQuestionsPage(questions, ((IQuestionsRepository)_repo).GetReviewCount(), pageIndex, pageSize);
             return questionsPage;
         }
     } 
