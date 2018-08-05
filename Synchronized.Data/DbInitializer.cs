@@ -31,11 +31,11 @@ namespace Synchronized.Data
         static Random rand = new Random();
         static int totalViews = 2000;
         static int totalVotes = 5000;
-        static int numOfQuestions = 1000;
+        static int numOfQuestions = 5000;
         static int pageSize = 100;
         static int numOfPages = numOfQuestions/pageSize;
-        static int numOfAnswers = 2000;
-        static int numOfComments = 2000;
+        static int numOfAnswers = 7000;
+        static int numOfComments = 10000;
 
         //static int totalViews = 0;
         //static int totalVotes = 0;
@@ -209,53 +209,57 @@ namespace Synchronized.Data
             for (int i = 0; i < numOfQuestions; i++)
             {
                 var publisherId = UserIds[rand.Next(UserIds.Count)];
-                questions.Add(new Question
+                var question = new Question
                 {
-                    Title = "The title of the Question",
-                    Body = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
-                    "Fusce massa libero, hendrerit non risus a, sollicitudin venenatis tellus. Cras in enim lectus. " +
-                    "Nunc nisi metus, condimentum vel urna eget, rutrum feugiat est. Curabitur eget dui eu sapien " +
-                    "dictum vulputate vitae eu diam. Suspendisse iaculis, lorem in semper pharetra, felis dui ultrices " +
-                    "massa, volutpat rutrum sem nisi nec velit. Donec interdum convallis massa at interdum. Mauris luctus " +
-                    "tellus arcu, vitae porttitor leo finibus sed. Suspendisse ante augue, mattis sit amet laoreet in, sodales " +
-                    "id libero. Cras in dictum dui, ut tempor lectus. Pellentesque enim tellus, accumsan non malesuada aliquet, " +
-                    "posuere ac lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos." +
-                    "</p>\n<p>Proin sed dictum erat. Proin interdum lacus in nisl consequat maximus. Morbi aliquet vehicula " +
-                    "magna ut pellentesque. In auctor justo pulvinar commodo volutpat. Suspendisse risus lectus, accumsan " +
-                    "et pellentesque nec, efficitur vel urna. Etiam ante turpis, fermentum quis lorem ut, dapibus iaculis " +
-                    "elit. Proin ut ex sed erat lobortis euismod in at turpis. Aliquam aliquet ante non ipsum lacinia ornare. " +
-                    "Donec in eros non urna semper bibendum. Nunc vehicula cursus ex, nec viverra odio fermentum ut. Praesent rhoncus " +
-                    "efficitur scelerisque.</p>\n<p>Curabitur quis aliquam eros. Nam sed risus sed tellus dignissim euismod non in " +
-                    "enim. Mauris ac semper elit. Proin ornare aliquam ligula, et sagittis quam ultricies vitae. Duis fringilla " +
-                    "euismod tincidunt. Etiam consequat leo a nulla eleifend, et dignissim lacus finibus. Vestibulum nulla massa, " +
-                    "dignissim ac eleifend eleifend, scelerisque auctor neque. Maecenas feugiat, ligula at ultrices laoreet, sem massa " +
-                    "efficitur risus, at ullamcorper nisi quam a dui. Etiam et lectus quis mauris scelerisque ultricies id a orci." +
-                    " Suspendisse porta felis et diam semper aliquam.</p>\n    <p>Aliquam sit amet est in mauris efficitur " +
-                    "convallis. Praesent vitae volutpat odio. Maecenas hendrerit, mi commodo imperdiet ornare, justo neque " +
-                    "elementum sem, eu pharetra nibh neque non dui. Curabitur blandit semper enim at tincidunt. In tellus " +
-                    "nisi, eleifend ac sem vel, iaculis consequat ipsum. Sed tellus urna, ultricies vel justo ac, volutpat " +
-                    "sollicitudin mi. Sed sollicitudin lacus in lorem mattis fringilla. Quisque varius rutrum justo " +
-                    "elementum venenatis. Curabitur ac nibh ac nibh dictum maximus. Mauris lacinia nulla cursus " +
-                    "neque pulvinar, semper fermentum ligula sollicitudin. Nunc tellus nibh, scelerisque sed posuere " +
-                    "ut, feugiat in neque.</p>\n<p>Cras luctus neque non lacus blandit, ut laoreet justo condimentum. " +
-                    "Vestibulum venenatis luctus mauris quis condimentum. Maecenas suscipit quam ac dolor mattis, " +
-                    "ut dictum mi tincidunt. Etiam posuere quam augue, a tempor odio congue ut. Praesent est enim" +
-                    ", sollicitudin sed ornare id, euismod at eros. Proin tincidunt sed ex sit amet pulvinar. Sed " +
-                    "blandit leo vel ex mollis malesuada. Sed volutpat, leo non sagittis malesuada, lectus enim " +
-                    "bibendum turpis, id eleifend nisi velit ut libero. Quisque non metus nec nulla tincidunt " +
-                    "dignissim. Fusce orci ipsum, faucibus et blandit eu, consequat id ipsum. Maecenas bibendum, " +
-                    "est nec dapibus euismod, turpis magna tristique leo, in lobortis ligula metus nec metus. " +
-                    "Nam libero turpis, ultricies quis leo at, dictum fermentum diam.</p>",
+                    Body = "<span style=\"color: rgb(114, 114, 114); font - family: " +
+                    "-apple - system, BlinkMacSystemFont, &quot; Segoe UI&quot;, Roboto, " +
+                    "&quot; Helvetica Neue&quot;, Arial, sans - serif, &quot; Apple Color " +
+                    "Emoji & quot;, &quot; Segoe UI Emoji & quot;, &quot; Segoe UI Symbol " +
+                    "& quot; ; font - size: 16px; \">This is the body of the question. The body" +
+                    " of the question is created using reach text editor, and it is formatted " +
+                    "to HTML in background. Available styles are Normal and Code. This is used " +
+                    "to separate code from other text. In the future, it may be available to " +
+                    "create a visual representation for code.</span><p style=\"margin - bottom: " +
+                    "1rem; color: rgb(114, 114, 114); font - family: -apple - system, " +
+                    "BlinkMacSystemFont, &quot; Segoe UI&quot;, Roboto, &quot; Helvetica Neue&quot;" +
+                    ", Arial, sans - serif, &quot; Apple Color Emoji & quot;, &quot; Segoe UI Emoji" +
+                    " & quot;, &quot; Segoe UI Symbol & quot; ; font - size: 16px; \"><br></p><p" +
+                    " style=\"margin - bottom: 1rem; color: rgb(114, 114, 114); font - family:" +
+                    " -apple - system, BlinkMacSystemFont, &quot; Segoe UI&quot;, Roboto, &quot;" +
+                    " Helvetica Neue&quot;, Arial, sans - serif, &quot; Apple Color Emoji & quot;," +
+                    " &quot; Segoe UI Emoji & quot;, &quot; Segoe UI Symbol & quot; ; font - size:" +
+                    " 16px; \">Below is the section of tags. When asking a question, an auto-complete" +
+                    " is available for tags. If tag is not in autocomplete it may not be inserted" +
+                    " into the field. This is client side validation, which of course could be" +
+                    " overridden. To add a tag user may select a tag and than press enter for the" +
+                    " tag to be added.</p>",
                     //Points = rand.Next(maxPoints),
                     PublisherId = publisherId,
                     Subscriptions = new List<Subscription>()
-                    {                        
+                    {
                         new Subscription()
                         {
                             UserId = publisherId
                         }
                     }
-                });
+                };
+                if (i == 0)
+                {
+                    question.Title = "This is the 1st Question.";
+                }
+                else if (i == 1)
+                {
+                    question.Title = "This is the 2nd Question.";
+                }
+                else if (i == 2)
+                {
+                    question.Title = "This is the 3rd Question.";
+                }
+                else
+                {
+                    question.Title = String.Format("This is the {0}th Question", i);
+                }
+                questions.Add(question);
             }
 
             questions.ForEach(q => context.Set<Question>().Add(q));
@@ -393,13 +397,12 @@ namespace Synchronized.Data
             context.SaveChanges();
             context.Tags.ToList().ForEach(t => tagIds.Add(t.Id));
 
-            Thread.Sleep(30000);
+            //Thread.Sleep(30000);
 
             /***********************************************************************
             * QuestionTags
             ***********************************************************************/
             HashSet<int> integers;
-            int questionsListPointer;
             for (int i = 0; i < numOfPages; i++)
             {
                 var questionsList = await context.Posts.OfType<Question>()
@@ -424,9 +427,9 @@ namespace Synchronized.Data
                             TagId = tagIds[tagsListPointer]
                         };
                         context.QusetionTags.Add(questionTag);
-                        context.SaveChanges();
                     }
                 }
+                context.SaveChanges();
             }
 
             //var questionsList = await context.Posts.OfType<Question>().ToListAsync();

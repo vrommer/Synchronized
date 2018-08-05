@@ -58,9 +58,11 @@
             }
             else
             {
-                <a asp-page="/Account/Login" class="btn btn-link">Edit</a>
-                <a asp-page="/Account/Login" class="btn btn-link">Flag</a>
-                <a asp-page="/Account/Login" class="btn btn-link">Delete</a>
+                <div class="synched-q-options">
+                    <a asp-page="/Account/Login" class="btn btn-link">Edit</a>
+                    <a asp-page="/Account/Login" class="btn btn-link">Flag</a>
+                    <a asp-page="/Account/Login" class="btn btn-link">Delete</a>
+                </div>
             }
             @if (Model.Question.Comments != null && Model.Question.Comments.Count() > 0)
             {                
