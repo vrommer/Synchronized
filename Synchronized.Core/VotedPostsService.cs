@@ -197,11 +197,26 @@ namespace Synchronized.Core
 
         private async Task DeletePost(VotedPost post, string userId)
         {
+
             post.DeleteVotes.Add(new DeleteVote
             {
                 UserId = userId
             });
-            await _repo.UpdateAsync(post);
+            if (post.DeleteVotes.Count >= 3)
+            {
+                if (post.GetType().Equals(typeof(Answer)))
+                {
+                    await _repo.DeleteAsync(post);
+                }
+                else
+                {
+                    await _repo.UpdateAsync(post);
+                }
+            }
+            else
+            {
+                await _repo.UpdateAsync(post);
+            }
         }
 
         public async Task<bool> FlagPost(string postId, string userId, int userPoints)

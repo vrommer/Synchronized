@@ -45,7 +45,7 @@
                 <input class="synched-tags" name="tags" id="tags" value=@Model.Question.Tags />
             </div>
             <div class="synched-meta">
-                @Html.DisplayFor(model => model.Question.PublisherName)
+                <a href="/Users/Details/@Model.Question.PublisherId" class="details-publisher-link">@Model.Question.PublisherName</a>
                 @Html.DisplayFor(model => model.Question.DatePosted)
             </div>
             @if (SignInManager.IsSignedIn(User))
@@ -80,8 +80,13 @@
                                 <a asp-page="/Account/Login" class="btn btn-link">Edit</a>
                                 <a asp-page="/Account/Login" class="btn btn-link">Delete</a>
                             }
+                            <div class="synched-comment-form">
+                                <div class="form-group">
+                                    <textarea class="form-control comment-body" rows="2"></textarea>
+                                </div>
+                            </div>
                             <div class="synched-meta">
-                                @comment.PublisherName
+                                <a href="/Users/Details/@comment.PublisherId" class="details-publisher-link">@comment.PublisherName</a>                                
                                 @comment.DatePosted
                             </div>
                         </div>
@@ -167,7 +172,7 @@
                     }
 
                     <div class="synched-meta">
-                        @answer.PublisherName
+                        <a href="/Users/Details/@answer.PublisherId" class="details-publisher-link">@answer.PublisherName</a>                                
                         @answer.DatePosted
                     </div>
                     @if (answer.Comments != null && answer.Comments.Count() > 0)
@@ -180,16 +185,16 @@
                                     <div>@comment.Body</div>
                                     @if (SignInManager.IsSignedIn(User))
                                     {
-                                        <button type="button" class="btn btn-link synched-edit">Edit</button>
+                                        @*<button type="button" class="btn btn-link synched-edit">Edit</button>*@
                                         <button type="button" class="btn btn-link synched-delete-comment">Delete</button>
                                     }
                                     else
                                     {
-                                        <a asp-page="/Account/Login" class="btn btn-link">Edit</a>
+                                        @*<a asp-page="/Account/Login" class="btn btn-link">Edit</a>*@
                                         <a asp-page="/Account/Login" class="btn btn-link">Delete</a>
                                     }
                                     <div class="synched-meta">
-                                        @comment.PublisherName
+                                        <a href="/Users/Details/@comment.PublisherId" class="details-publisher-link">@comment.PublisherName</a>                                
                                         @comment.DatePosted
                                     </div>
                                 </div>

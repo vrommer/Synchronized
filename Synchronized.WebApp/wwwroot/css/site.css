@@ -215,6 +215,12 @@ html {
     font-size: 1.2em;
 }*/
 
+.details-publisher-link,
+.details-publisher-link:hover {
+    text-decoration: none;
+    color: #727272;
+}
+
 .synched-home-content {
     text-align: center;
     margin: 40px 0;
