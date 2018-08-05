@@ -208,14 +208,14 @@ namespace Synchronized.Core
                     await _userManager.AddToRoleAsync(user, Constants.MODERATOR);
                 }
                 userIsInRole = await _userManager.IsInRoleAsync(user, Constants.EDITOR);
-                if (userIsInRole)
+                if (!userIsInRole)
                 {
-                    await _userManager.RemoveFromRoleAsync(user, Constants.EDITOR);
+                    await _userManager.AddToRoleAsync(user, Constants.EDITOR);
                 }
                 userIsInRole = await _userManager.IsInRoleAsync(user, Constants.VOTER);
-                if (userIsInRole)
+                if (!userIsInRole)
                 {
-                    await _userManager.RemoveFromRoleAsync(user, Constants.VOTER);
+                    await _userManager.AddToRoleAsync(user, Constants.VOTER);
                 }
             }
             else if (Constants.EDITOR_MINIMUM_RANK <= user.Points)
@@ -231,9 +231,9 @@ namespace Synchronized.Core
                     await _userManager.AddToRoleAsync(user, Constants.EDITOR);
                 }
                 userIsInRole = await _userManager.IsInRoleAsync(user, Constants.VOTER);
-                if (userIsInRole)
+                if (!userIsInRole)
                 {
-                    await _userManager.RemoveFromRoleAsync(user, Constants.VOTER);
+                    await _userManager.AddToRoleAsync(user, Constants.VOTER);
                 }
             }
             else if (Constants.VOTER_MINIMUM_RANK <= user.Points)
