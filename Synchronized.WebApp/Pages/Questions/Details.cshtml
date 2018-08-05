@@ -51,7 +51,7 @@
             @if (SignInManager.IsSignedIn(User))
             {
                 <div class="synched-q-options">
-                    <a asp-page="/Questions/Edit" asp-route-id="@Model.Question.Id" class="btn btn-link synched-edit">Edit</a>
+                    <a asp-page="/Questions/Edit" asp-route-id="@Model.Question.Id" class="btn btn-link synched-edit-comment">Edit</a>
                     <button type="button" class="btn btn-link synched-flag">Flag</button>
                     <button type="button" class="btn btn-link synched-delete">Delete</button>
                 </div>
@@ -69,22 +69,23 @@
                     {
                         <hr />
                         <div class="comment-content" id="@comment.Id">
-                            <div>@comment.Body</div>
+                            <div class="comment-body">@comment.Body</div>
+                            <div class="synched-edit-comment-form">
+                                <div class="form-group">
+                                    <textarea class="form-control edit-comment-body" rows="2"></textarea>
+                                </div>
+                            </div>
                             @if (SignInManager.IsSignedIn(User))
                             {
-                                <button type="button" class="btn btn-link synched-edit">Edit</button>
+                                <button type="button" class="btn btn-link synched-edit-comment">Edit</button>
                                 <button type="button" class="btn btn-link synched-delete-comment">Delete</button>
+                                <button type="button" class="btn btn-link synched-update-comment">Update</button>
                             }
                             else
                             {
                                 <a asp-page="/Account/Login" class="btn btn-link">Edit</a>
                                 <a asp-page="/Account/Login" class="btn btn-link">Delete</a>
                             }
-                            <div class="synched-comment-form">
-                                <div class="form-group">
-                                    <textarea class="form-control comment-body" rows="2"></textarea>
-                                </div>
-                            </div>
                             <div class="synched-meta">
                                 <a href="/Users/Details/@comment.PublisherId" class="details-publisher-link">@comment.PublisherName</a>                                
                                 @comment.DatePosted
@@ -156,7 +157,7 @@
                         {
                             <button type="button" class="btn btn-link synched-accept">Accept Answer</button>
                         }
-                        <a asp-page="/Questions/Edit" asp-route-id="@answer.Id" class="btn btn-link synched-edit">Edit</a>
+                        <a asp-page="/Questions/Edit" asp-route-id="@answer.Id" class="btn btn-link synched-edit-comment">Edit</a>
                         <button type="button" class="btn btn-link synched-flag">Flag</button>
                         <button type="button" class="btn btn-link synched-delete">Delete</button>
                     }
@@ -182,15 +183,21 @@
                             {
                                 <div class="comment-content" id="@comment.Id">
                                     <hr />
-                                    <div>@comment.Body</div>
+                                    <div class="comment-body">@comment.Body</div>
+                                    <div class="synched-edit-comment-form">
+                                        <div class="form-group">
+                                            <textarea class="form-control edit-comment-body" rows="2"></textarea>
+                                        </div>
+                                    </div>
                                     @if (SignInManager.IsSignedIn(User))
                                     {
-                                        @*<button type="button" class="btn btn-link synched-edit">Edit</button>*@
+                                        <button type="button" class="btn btn-link synched-edit-comment">Edit</button>
                                         <button type="button" class="btn btn-link synched-delete-comment">Delete</button>
+                                        <button type="button" class="btn btn-link synched-update-comment">Update</button>
                                     }
                                     else
                                     {
-                                        @*<a asp-page="/Account/Login" class="btn btn-link">Edit</a>*@
+                                        <a asp-page="/Account/Login" class="btn btn-link">Edit</a>
                                         <a asp-page="/Account/Login" class="btn btn-link">Delete</a>
                                     }
                                     <div class="synched-meta">

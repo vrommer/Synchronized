@@ -5,6 +5,7 @@ using Synchronized.SharedLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Synchronized.Data
@@ -391,6 +392,8 @@ namespace Synchronized.Data
             }
             context.SaveChanges();
             context.Tags.ToList().ForEach(t => tagIds.Add(t.Id));
+
+            Thread.Sleep(30000);
 
             /***********************************************************************
             * QuestionTags

@@ -41,9 +41,10 @@ $(() => {
 
     for (var id in allComments) {
         $(`#${allComments[id].id} .synched-delete-comment`).on("click", deleteComment.bind(allComments[id]))
+        $(`#${allComments[id].id} .synched-edit-comment`).on("click", editComment.bind(allComments[id]));
     }
 
-    $(".synched-comment").on("click", showComment);
+    $(".synched-comment").on("click", showComment);    
 
     $("#synched-answer textarea").jqte({
         formats: [
@@ -136,11 +137,30 @@ $(() => {
     }
 
     function showComment() {
-        $(this).find("+ .synched-comment-form").show()
-        .animate({
-            height: "80px",
-            width: "100%"
-        }, 500);
+        $(this).find("+ .synched-comment-form")
+            .show()
+            .animate({
+                height: "120px",
+                width: "100%"
+            }, 500);
+    }
+
+    function editComment() {
+        var parent = $(`#${this.id}`);
+        var commentBody = parent.find(".comment-body");
+        var commentText = commentBody.text();
+        var editForm = parent.find(".synched-edit-comment-form");
+        var editBtn = parent.find(".synched-edit-comment");
+        var deleteBtn = parent.find(".synched-delete-comment");
+        var updateBtn = parent.find(".synched-update-comment");
+
+        editBtn.hide();
+        deleteBtn.hide();
+        updateBtn.show();
+
+        commentBody.hide();
+        editForm.show();
+        editForm.find("textarea").show().text(commentText);
     }
 
     function reloadPage() {

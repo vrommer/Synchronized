@@ -333,6 +333,20 @@ article.question {
     display: inline;
 }
 
+.synched-update-comment {
+    display: none;
+}
+
+.synched-edit-comment-form {
+    display:none;
+    height: 120px;
+    width: 100%;
+}
+
+.edit-comment-body {
+    height: 120px;
+}
+
 .synched-comment-form {
     display: none;
     width: 0;
