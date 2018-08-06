@@ -34,6 +34,7 @@ namespace Synchronized.UI.Utilities
             user.ImageUri = String.Copy(from.ImageUri);
             user.Name = String.Copy(from.Name);
             user.Email = String.Copy(from.Email);
+            user.JoiningDate = from.JoiningDate;
             user.Points = from.Points;
             if (from.Roles != null)
             {

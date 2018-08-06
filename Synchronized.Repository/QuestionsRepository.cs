@@ -182,7 +182,7 @@ namespace Synchronized.Repository
             HashSet<Question> returnList = new HashSet<Question>();
             var votedPosts = await _context.Set<VotedPost>()
                 .Where(p => p.Review)
-                .OrderByDescending(q => q.ReviewDate)
+                .OrderBy(q => q.ReviewDate)
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

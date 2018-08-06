@@ -31,7 +31,7 @@
             <div id="app-user-info">
                 <h5>@Model.ViewUser.Name</h5>
                 <div>@Model.ViewUser.Address</div>
-                <div>Member since:</div>
+                <div>Member since: @String.Format("{0:dd/MM/yyyy}", Model.ViewUser.JoiningDate)</div>
                 @*<div>Label1, Label2</div>*@
                 <div>Role: @Model.ViewUser.MajorRole</div>
             </div>

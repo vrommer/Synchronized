@@ -1,5 +1,6 @@
 ﻿using Synchronized.SharedLib;
 using Synchronized.ViewModel.QuestionsViewModels;
+using System;
 using System.Collections.Generic;
 
 namespace Synchronized.ViewModel.UsersViewModels
@@ -13,6 +14,7 @@ namespace Synchronized.ViewModel.UsersViewModels
         public int Points { get; set; }
         public string Email { get; set; }
         public string Roles { get; set; }
+        public DateTime JoiningDate { get; set; }
         public string MajorRole
         {
             get

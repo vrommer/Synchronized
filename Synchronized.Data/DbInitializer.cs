@@ -31,11 +31,11 @@ namespace Synchronized.Data
         static Random rand = new Random();
         static int totalViews = 2000;
         static int totalVotes = 5000;
-        static int numOfQuestions = 5000;
+        static int numOfQuestions = 2000;
         static int pageSize = 100;
         static int numOfPages = numOfQuestions/pageSize;
-        static int numOfAnswers = 7000;
-        static int numOfComments = 10000;
+        static int numOfAnswers = 3000;
+        static int numOfComments = 5000;
 
         //static int totalViews = 0;
         //static int totalVotes = 0;
@@ -139,34 +139,12 @@ namespace Synchronized.Data
                 }
             }
 
-            string password = "Abcd@1234";
-
-            //bool roleExists = await roleManager.RoleExistsAsync(roleName);
-
-            //var joseph = new ApplicationUser {
-            //    Email = "joseph@example.com",
-            //    EmailConfirmed = true,
-            //    UserName = "joseph",
-            //    Points = 4000,
-            //    ImageUri = "/pictures/user_default.png"
-            //};
-
-            //var result = await userManager.CreateAsync(joseph, password);
-
-            //bool userIsInRole = await userManager.IsInRoleAsync(joseph, Constants.MODERATOR);
-
-            //if (result.Succeeded && !userIsInRole)
-            //{
-            //    result = await userManager.AddToRoleAsync(joseph, Constants.MODERATOR);
-            //}
-
-            //UserIds.Add(joseph.Id);
-
             /***********************************************************************
              * Users
              ***********************************************************************/
 
             var users = new List<ApplicationUser>();
+            string password = "Abcd@1234";
             for (int i = 1; i < userNames.Length; i++)
             {
                 var user = new ApplicationUser
@@ -279,21 +257,10 @@ namespace Synchronized.Data
                 Question target = context.Posts.OfType<Question>().Where(q => q.Id == questionIds[pointer]).Include(q => q.Publisher).Include(q => q.Answers).ToArray()[0];
                 Answer a = new Answer
                 {
-                    Body = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
-                    "Fusce massa libero, hendrerit non risus a, sollicitudin venenatis tellus. Cras in enim lectus. " +
-                    "Nunc nisi metus, condimentum vel urna eget, rutrum feugiat est. Curabitur eget dui eu sapien " +
-                    "dictum vulputate vitae eu diam. Suspendisse iaculis, lorem in semper pharetra, felis dui ultrices " +
-                    "massa, volutpat rutrum sem nisi nec velit. Donec interdum convallis massa at interdum. Mauris luctus " +
-                    "tellus arcu, vitae porttitor leo finibus sed. Suspendisse ante augue, mattis sit amet laoreet in, sodales " +
-                    "id libero. Cras in dictum dui, ut tempor lectus. Pellentesque enim tellus, accumsan non malesuada aliquet, " +
-                    "posuere ac lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos." +
-                    "</p>\n<p>Proin sed dictum erat. Proin interdum lacus in nisl consequat maximus. Morbi aliquet vehicula " +
-                    "magna ut pellentesque. In auctor justo pulvinar commodo volutpat. Suspendisse risus lectus, accumsan " +
-                    "et pellentesque nec, efficitur vel urna. Etiam ante turpis, fermentum quis lorem ut, dapibus iaculis " +
-                    "elit. Proin ut ex sed erat lobortis euismod in at turpis. Aliquam aliquet ante non ipsum lacinia ornare. " +
-                    "Donec in eros non urna semper bibendum. Nunc vehicula cursus ex, nec viverra odio fermentum ut. Praesent rhoncus " +
-                    "efficitur scelerisque.</p>\n<p>Curabitur quis aliquam eros. Nam sed risus sed tellus dignissim euismod non in " +
-                    "enim. Mauris ac semper elit. Proin ornare aliquam ligula, et sagittis quam ultricies vitae. Duis fringilla ",
+                    Body = "This is the body of the answer to the question. Like the body of the answer, it is also created using a reach text editor. " +
+                    "The editor options are standard reach text editor's options such as those found in popular text editor's like word, and therefore are not documented. " +
+                    "Their documentation and use are widely spread This text editor is jQuery based text editor named jquery TE. Unfortunately, this text editor does not " +
+                    "implement basic keyboard navigation options such as support for CTRL+ARROW or CTRL+SHIFT+ARROW.",
                     IsAccepted = !target.Answered() && rand.Next(2) > 0 ? true : false,
                     //Points = rand.Next(maxPoints),
                     PublisherId = publisherId,
@@ -321,6 +288,7 @@ namespace Synchronized.Data
                 }
                 context.SaveChanges();
             }
+            //context.SaveChanges();
 
             context.Posts.OfType<Answer>().ToList().ForEach(a => answerIds.Add(a.Id));
 
@@ -366,12 +334,7 @@ namespace Synchronized.Data
                 }
                 comments.Add(new Comment
                 {
-                    Body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
-                    "Fusce massa libero, hendrerit non risus a, sollicitudin venenatis tellus. Cras in enim lectus. " +
-                    "Nunc nisi metus, condimentum vel urna eget, rutrum feugiat est. Curabitur eget dui eu sapien " +
-                    "dictum vulputate vitae eu diam. Suspendisse iaculis, lorem in semper pharetra, felis dui ultrices " +
-                    "massa, volutpat rutrum sem nisi nec velit. Donec interdum convallis massa at interdum. Mauris luctus " +
-                    "tellus arcu, vitae porttitor leo finibus sed.",
+                    Body = "Questions and Answers can also have comments. Comments may be deleted or edited by users who have the required permissions. Questions and answers may have many comments. ",
                     PostId = postId, 
                     PublisherId = publisherId
                 });
@@ -393,8 +356,8 @@ namespace Synchronized.Data
                 };
                 //context.SaveChanges();
                 context.Tags.Add(tag);
+                context.SaveChanges();
             }
-            context.SaveChanges();
             context.Tags.ToList().ForEach(t => tagIds.Add(t.Id));
 
             //Thread.Sleep(30000);
@@ -429,8 +392,8 @@ namespace Synchronized.Data
                         context.QusetionTags.Add(questionTag);
                     }
                 }
-                context.SaveChanges();
             }
+            context.SaveChanges();
 
             //var questionsList = await context.Posts.OfType<Question>().ToListAsync();
             //var numQuestions = questionIds.Count;
@@ -594,8 +557,8 @@ namespace Synchronized.Data
                     }
                     context.Update(answer);
                 }
-                context.SaveChanges();
-            }            
+            }
+            context.SaveChanges();
             foreach (Vote v in questionVotes)
             {
                 context.Votes.Add(v);

@@ -96,6 +96,10 @@ html {
     overflow-y: hidden;
 }
 
+.tag-details {
+    height: 125px;
+}
+
 /* Users 
 ---------------*/
 .synched-user-card {

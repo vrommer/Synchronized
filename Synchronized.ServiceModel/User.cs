@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Synchronized.ServiceModel.Interfaces;
 using System.Collections.Generic;
+using System;
 
 namespace Synchronized.ServiceModel
 {
@@ -15,6 +16,7 @@ namespace Synchronized.ServiceModel
         public bool NewSubscriber { get; set; }
         public List<string> Roles { get; set; }
         public List<Question> Questions { get; set; }
+        public DateTime JoiningDate { get; set; }
 
         public Task Update()
         {

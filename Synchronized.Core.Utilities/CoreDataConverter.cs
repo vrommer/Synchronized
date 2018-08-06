@@ -238,6 +238,7 @@ namespace Synchronized.Core.Utilities
             serviceUser.Address = from.Address != null ? String.Copy(from.Address): "";
             serviceUser.ImageUri = from.ImageUri != null ? String.Copy(from.ImageUri): "";
             serviceUser.Points = from.Points;
+            serviceUser.JoiningDate = from.JoiningDate;
             if (from.Subscriptions != null)
             {
                 foreach (Domain.Subscription s in from.Subscriptions)

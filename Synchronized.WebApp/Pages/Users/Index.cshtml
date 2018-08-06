@@ -8,7 +8,7 @@
 @section Sort {
     <nav class="nav nav-pills flex-column flex-sm-row synched-sort">
         <a class="flex-sm-fill text-sm-center nav-link" asp-page="/Users/Index" asp-route-sortOrder="@Model.NameSort">Nickname</a>
-        <a class="flex-sm-fill text-sm-center nav-link" asp-page="/Users/Index" asp-route-sortOrder="@Model.DateSort">Date posted</a>
+        <a class="flex-sm-fill text-sm-center nav-link" asp-page="/Users/Index" asp-route-sortOrder="@Model.DateSort">Joining Date</a>
         <a class="flex-sm-fill text-sm-center nav-link" asp-page="/Users/Index" asp-route-sortOrder="@Model.PointsSort">Points</a>
     </nav>
 }
@@ -51,7 +51,6 @@
                                         <li class="list-group-item app-usercard-item">
                                             <div>@modelArray[counter].MajorRole</div>
                                             <div>@modelArray[counter].Points</div>
-                                            <div>label1 label2 label3</div>
                                         </li>
                                     </ul>
                                     <div class="card-footer"></div>
