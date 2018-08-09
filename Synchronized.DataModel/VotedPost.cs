@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Synchronized.Domain
 {
+    /// <summary>
+    /// This class represents a VotedPost in the Database.
+    /// </summary>
     public abstract class VotedPost: Post 
     {
         public bool Review { get; set; }

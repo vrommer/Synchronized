@@ -2,6 +2,9 @@
 
 namespace Synchronized.Domain
 {
+    /// <summary>
+    /// This class represents a QuestionView in the Database.
+    /// </summary>
     public class QuestionView
     {
         public string UserId { get; set; }

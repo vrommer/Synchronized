@@ -1,5 +1,8 @@
 ﻿namespace Synchronized.Domain
 {
+    /// <summary>
+    /// This class represents a QuestionTag Entity in the Database.
+    /// </summary>
     public class QuestionTag
     {
         public string QuestionId { get; set; }

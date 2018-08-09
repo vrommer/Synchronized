@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace Synchronized.Domain.Factories
 {
+    /// <summary>
+    /// A concrete Factory for the Domain Model.
+    /// </summary>
     public class DomainModelFactory : IDomainModelFactory
     {
         public T GetOfType<T>()

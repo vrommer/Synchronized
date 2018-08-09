@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Synchronized.Domain
 {
+    /// <summary>
+    /// This class represents a Question in the Database.
+    /// </summary>
     public class Question : VotedPost
     {
 

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Synchronized.Domain
 {
+    /// <summary>
+    /// This class represents the Tag Entity in the Database.
+    /// </summary>
     public class Tag: IEntity
     {
         public string Id { get; set; }

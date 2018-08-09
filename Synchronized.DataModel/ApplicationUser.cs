@@ -4,7 +4,9 @@ using System.Collections.Generic;
 
 namespace Synchronized.Domain
 {
-    // Add profile data for application users by adding properties to the ApplicationUser class
+    /// <summary>
+    /// This class represents the ApplicationUser Entity. Also, this is the IdentityUser for EF Core.
+    /// </summary>
     public class ApplicationUser : IdentityUser, IEntity
     {
         public int Points { get; set; }

@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Synchronized.Domain
 {
+    /// <summary>
+    /// This class represents the PostFlag Database Entity.
+    /// </summary>
     public class PostFlag
     {
         public string Id { get; set; }

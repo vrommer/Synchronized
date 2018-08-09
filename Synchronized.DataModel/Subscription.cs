@@ -2,6 +2,9 @@
 
 namespace Synchronized.Domain
 {
+    /// <summary>
+    /// This class represents a Subscription of a User for a Question.
+    /// </summary>
     public class Subscription
     {
         public Question Question { get; set; }

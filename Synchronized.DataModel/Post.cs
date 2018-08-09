@@ -2,6 +2,9 @@
 
 namespace Synchronized.Domain
 {
+    /// <summary>
+    /// This class represents a Post in the Database.
+    /// </summary>
     public abstract class Post : IEntity
     {
         public string Id { get; set; }
