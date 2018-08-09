@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Synchronized.ServiceModel
 {
+    /// <summary>
+    /// This class represents a Question on the Business Layer. The Question is also a QuestionPublisher.
+    /// </summary>
     public class Question: VotedPost, IQuestionPublisher
     {
         public string Title { get; set; }
@@ -14,14 +17,13 @@ namespace Synchronized.ServiceModel
         public ICollection<string> ViewerIds{ get; set; }
         public bool IsAnswered { get; set; }
         public List<IQuestionSubscriber> Subscribers { get; set; }
-        public static readonly IEmailSender _emailSender = new EmailSender();
         public ICollection<Answer> Answers { get; set; }
 
         public async Task Notify()
         {
             foreach (IQuestionSubscriber s in Subscribers)
             {
-                await _emailSender.SendEmailAsync(s.Email, "subject", "message");
+                await s.Update();
             }
         }
 

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Synchronized.ServiceModel
 {
+    /// <summary>
+    /// This class represents a VotedPost in the Business Layer.
+    /// </summary>
     public class VotedPost: Post
     {
         public int UpVotes { get; set; }

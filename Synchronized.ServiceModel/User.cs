@@ -2,9 +2,14 @@
 using Synchronized.ServiceModel.Interfaces;
 using System.Collections.Generic;
 using System;
+using Synchronized.SharedLib.Interfaces;
+using Synchronized.SharedLib.Services;
 
 namespace Synchronized.ServiceModel
 {
+    /// <summary>
+    /// This class represents a User in the Business Layer. The user is also a QuestionSubscriber.
+    /// </summary>
     public class User: IQuestionSubscriber
     {
         public string Id { get; set; }
@@ -17,10 +22,11 @@ namespace Synchronized.ServiceModel
         public List<string> Roles { get; set; }
         public List<Question> Questions { get; set; }
         public DateTime JoiningDate { get; set; }
+        public static readonly IEmailSender _emailSender = new EmailSender();
 
-        public Task Update()
+        public async Task Update()
         {
-            throw new System.NotImplementedException();
+            await _emailSender.SendEmailAsync(Email, "subject", "message");
         }
     }
 }

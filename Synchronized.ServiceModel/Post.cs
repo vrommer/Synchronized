@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Synchronized.ServiceModel
 {
+    /// <summary>
+    /// This class represents a Post in the Business Layer.
+    /// </summary>
     public class Post
     {
         public string Id { get; set; }

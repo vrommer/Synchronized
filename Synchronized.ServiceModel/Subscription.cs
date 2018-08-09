@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Synchronized.ServiceModel
 {
+    /// <summary>
+    /// This class represents a Subscription in the Business Layer.
+    /// </summary>
     public class Subscription
     {
         public string UserId { get; set; }
