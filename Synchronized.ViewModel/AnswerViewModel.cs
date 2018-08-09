@@ -15,7 +15,6 @@ namespace Synchronized.ViewModel
         public string QuestionPublisherId { get; set; }
         public int Points { get; set; }
         public bool Accapted { get; set; }
-
         public ICollection<CommentViewModel> Comments { get; set; }
     }
 }

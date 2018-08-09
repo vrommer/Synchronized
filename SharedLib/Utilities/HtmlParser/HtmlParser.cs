@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UtilsLib.HtmlUtils.HtmlParser.ParserStates;
-using Newtonsoft.Json;
 
 namespace UtilsLib.HtmlUtils.HtmlParser
 {
@@ -16,7 +15,7 @@ namespace UtilsLib.HtmlUtils.HtmlParser
         // Your Custom StateType
     }
 
-    public class HtmlParser : IHtmlUtils
+    public class HtmlParser : IHtmlParser
     {
 
         /*********************************************

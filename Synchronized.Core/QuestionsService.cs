@@ -18,6 +18,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Synchronized.Core
 {
+    /// <summary>
+    /// A service for working with Questions.
+    /// </summary>
     public class QuestionsService : PostsService<Question, ServiceModel.Question>, IQuestionsService
     {
         private UserManager<ApplicationUser> _userManager;

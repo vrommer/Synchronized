@@ -6,6 +6,9 @@ using System;
 
 namespace Synchronized.Core.Factories
 {
+    /// <summary>
+    /// A factory for creating items of the ServiceModel.
+    /// </summary>
     public class ServiceModelFactory : IServiceModelFactory
     {
         public Question GetQuestion()

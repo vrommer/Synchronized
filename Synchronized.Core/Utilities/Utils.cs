@@ -7,7 +7,7 @@ namespace Synchronized.Core.Utilites
 {
     public class Utils
     {
-        public static void MinimizeContent(IHtmlUtils parser, List<Question> questions)
+        public static void MinimizeContent(IHtmlParser parser, List<Question> questions)
         {
             foreach (Question q in questions)
             {

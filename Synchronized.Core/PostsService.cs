@@ -10,6 +10,11 @@ using Synchronized.SharedLib;
 
 namespace Synchronized.Core
 {
+    /// <summary>
+    /// This is a Generic PostsService.
+    /// </summary>
+    /// <typeparam name="TEntity">User defined.</typeparam>
+    /// <typeparam name="TServiceModel">User defined.</typeparam>
     public class PostsService<TEntity, TServiceModel> : DataService<TEntity, TServiceModel>, IPostsService<TServiceModel> 
         where TServiceModel : Post
         where TEntity : Domain.Post

@@ -11,6 +11,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Synchronized.Core
 {
+    /// <summary>
+    /// This is a generic DataService. 
+    /// </summary>
+    /// <typeparam name="TEntity">User defined class</typeparam>
+    /// <typeparam name="TServiceModel">User defined class</typeparam>
     public class DataService<TEntity, TServiceModel> : IDataService<TServiceModel>
         where TEntity : class, IEntity
         where TServiceModel : class

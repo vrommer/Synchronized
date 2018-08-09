@@ -13,6 +13,10 @@ using Synchronized.ServiceModel.Interfaces;
 
 namespace Synchronized.Core.Utilities
 {
+    /// <summary>
+    /// This Class represents a Concrete Converter from Types of Domain.Model to types of ServiceModel and from types of ServiceModel to types of Domain.Model.
+    /// This Class implements methods that Convert between model in the Database Layer to Model in the Core Layer.
+    /// </summary>
     public class CoreDataConverter : IDataConverter
     {
         private IServiceModelFactory _serviceModelFactory;

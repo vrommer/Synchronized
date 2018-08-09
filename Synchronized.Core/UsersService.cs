@@ -14,6 +14,9 @@ using System.Threading;
 
 namespace Synchronized.Core
 {
+    /// <summary>
+    /// A service for working with Users.
+    /// </summary>
     public class UsersService : DataService<ApplicationUser, User>, IUsersService
     {
         private UserManager<ApplicationUser> _userManager;

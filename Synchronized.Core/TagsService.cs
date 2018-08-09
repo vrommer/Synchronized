@@ -11,6 +11,9 @@ using Synchronized.SharedLib;
 
 namespace Synchronized.Core
 {
+    /// <summary>
+    /// A service for working with Tags.
+    /// </summary>
     public class TagsService : DataService<Domain.Tag, Tag>, ITagsService
     {
         private IUsersRepository _usersRepo;

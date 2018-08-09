@@ -12,6 +12,9 @@ using Synchronized.SharedLib;
 
 namespace Synchronized.Core
 {
+    /// <summary>
+    /// A service for working with VotedPosts.
+    /// </summary>
     public class VotedPostsService : PostsService<VotedPost, ServiceModel.VotedPost>, IVotedPostService
     {
         private IQuestionsRepository _questionsRepo;

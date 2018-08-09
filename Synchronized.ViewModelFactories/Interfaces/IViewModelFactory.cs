@@ -2,7 +2,6 @@
 using Synchronized.SharedLib.Utilities;
 using Synchronized.ViewModel;
 using Synchronized.ViewModel.QuestionsViewModels;
-using System;
 using Synchronized.ViewModel.TagsViewModels;
 using Synchronized.ViewModel.UsersViewModels;
 
@@ -12,7 +11,6 @@ namespace Synchronized.ViewModelFactories.Interfaces
     {
         // Generic method for creating any kind of object
         T GetOfType<T>();
-
         QuestionForHomePage GetQuestionForHomePage();
         QuestionForQuestionsPage GetQuestionForQuestionsPage();
         QuestionForDetailsPage GetQuestionForDetailsPage();
