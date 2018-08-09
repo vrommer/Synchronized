@@ -12,6 +12,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Synchronized.Repository.Repositories
 {
+    /// <summary>
+    /// A repository for working with ApplicationUsers in the Database.
+    /// </summary>
     public class UsersRepository : DataRepository<ApplicationUser>, IUsersRepository
     {
         private readonly UserStore<ApplicationUser> _userStore;

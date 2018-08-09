@@ -8,6 +8,9 @@ using System;
 
 namespace Synchronized.Repository
 {
+    /// <summary>
+    /// A generic repository for Working with Questions and Question related data in the context of Database.
+    /// </summary>
     public class QuestionsRepository : PostsRepository<Question>,  IQuestionsRepository
     {
         private DbSet<Tag> _tagsSet;

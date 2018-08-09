@@ -10,6 +10,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Synchronized.Repository
 {
+    /// <summary>
+    /// A generic repository for storing and retreiving data to and from the Database.
+    /// </summary>
+    /// <typeparam name="T">The type of data we wish to retreive.</typeparam>
     public class DataRepository<T> : IDataRepository<T> where T : class, IEntity
     {
         protected DbContext _context;

@@ -3,12 +3,14 @@ using Synchronized.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using Synchronized.Domain.Factories.Interfaces;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace Synchronized.Repository
 {
+    /// <summary>
+    /// A repository for working with Tags in the Database context.
+    /// </summary>
     public class TagsRepository : DataRepository<Tag>, ITagsRepository
     {
 

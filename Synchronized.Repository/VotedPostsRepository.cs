@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Synchronized.Repository
 {
+    /// <summary>
+    /// This class is for working with Voted Posts in the context of Database.
+    /// </summary>
     public class VotedPostsRepository: PostsRepository<VotedPost>, IVotedPostRepository
     {
         public VotedPostsRepository(DbContext context): base(context)
