@@ -1,12 +1,12 @@
 ﻿using Synchronized.ServiceModel;
 using Synchronized.SharedLib.Interfaces;
 using Synchronized.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Synchronized.UI.Utilities.Interfaces
 {
+    /// <summary>
+    /// This interface defines methods for converting from ServiceModel.VotedPost, EditViewModel and from EditViewModel to ServiceModel.VotedPost.
+    /// </summary>
     public interface IEditConverter: IDataConverter<VotedPost, EditViewModel>
     {
     }

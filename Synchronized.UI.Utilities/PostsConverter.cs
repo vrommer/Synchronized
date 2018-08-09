@@ -11,6 +11,9 @@ using Synchronized.Core.Factories.Interfaces;
 
 namespace Synchronized.UI.Utilities
 {
+    /// <summary>
+    /// This is a concrete Converter between ServiceModel Posts and ViewModel types.
+    /// </summary>
     public class PostsConverter : IPostsConverter
     {
         private IViewModelFactory _viewModelFacotry;
@@ -44,11 +47,6 @@ namespace Synchronized.UI.Utilities
                 var question = Convert(q);
                 questions.Add(question);
             }
-
-            //from.ForEach(q => {
-            //    var question = Convert(q);
-            //    questions.Add(question);
-            //});
 
             return questions;
         }

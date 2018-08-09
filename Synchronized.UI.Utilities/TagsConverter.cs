@@ -1,7 +1,6 @@
 ﻿using Synchronized.UI.Utilities.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Synchronized.ServiceModel;
 using Synchronized.ViewModel.TagsViewModels;
 using Synchronized.ViewModelFactories.Interfaces;
@@ -9,6 +8,9 @@ using Synchronized.Core.Factories.Interfaces;
 
 namespace Synchronized.UI.Utilities
 {
+    /// <summary>
+    /// This is a concrete Converter for converting between ServiceModel Tags and ViewModel types.
+    /// </summary>
     public class TagsConverter : ITagsConverter
     {
         private IViewModelFactory _viewModelFactory;

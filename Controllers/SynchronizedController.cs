@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Synchronized.Controllers
 {
+    /// <summary>
+    /// This is a Controller base Class in the Synchronized context. It has basic functionality that is inherited by all Synchronized Controllers.
+    /// </summary>
     public class SynchronizedController: Controller
     {
         protected readonly IPostsConverter _dataConverter;

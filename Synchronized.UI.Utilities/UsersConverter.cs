@@ -9,6 +9,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Synchronized.UI.Utilities
 {
+    /// <summary>
+    /// This is a concrete Converter for converting between ServiceModel Users and ViewModel types.
+    /// </summary>
     public class UsersConverter : IUsersConverter
     {
 

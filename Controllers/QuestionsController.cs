@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 
 namespace Synchronized.Controllers
 {
+    /// <summary>
+    /// This API Controller creates API methods for manipulating Questions and Answers.
+    /// Also, this Controller provides a Service for getting the Tags autocomplete.
+    /// </summary>
     public class QuestionsController: SynchronizedController
     {
         private IQuestionsService _questionsService;

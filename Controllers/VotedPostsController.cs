@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Synchronized.Controllers
 {
+    /// <summary>
+    /// This controller creates a web API for manipulating Voted Posts.
+    /// </summary>
     public class VotedPostsController: SynchronizedController
     {
         private IVotedPostService _votedPostsService;
