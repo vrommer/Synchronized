@@ -10,7 +10,7 @@ using Synchronized.ServiceModel;
 namespace Synchronized.ViewServices
 {
     /// <summary>
-    /// This service provides functionality for working with questions
+    /// A concrete QuestionsService.
     /// </summary>
     public class QuestionsService : Interfaces.IQuestionsService
     {

@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Synchronized.ViewModel
 {
+    /// <summary>
+    /// This class contains Comment data for the presentation Layer.
+    /// </summary>
     public class CommentViewModel
     {
         public string Id { get; set; }

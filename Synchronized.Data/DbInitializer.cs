@@ -29,13 +29,13 @@ namespace Synchronized.Data
 
         static SynchedIdentityDbContext context;
         static Random rand = new Random();
-        static int totalViews = 2000;
-        static int totalVotes = 5000;
-        static int numOfQuestions = 2000;
-        static int pageSize = 100;
+        static int totalViews = 500;
+        static int totalVotes = 500;
+        static int numOfQuestions = 100;
+        static int pageSize = 20;
         static int numOfPages = numOfQuestions/pageSize;
-        static int numOfAnswers = 3000;
-        static int numOfComments = 5000;
+        static int numOfAnswers = 200;
+        static int numOfComments = 400;
 
         //static int totalViews = 0;
         //static int totalVotes = 0;
@@ -486,7 +486,6 @@ namespace Synchronized.Data
             {
                 var randomNumber = rand.Next(2);
                 var voteTypeIndicator = rand.Next(10);
-
                 var vote = new Vote
                 {
                     PostId = randomNumber > 0 ? questionIds[rand.Next(numOfQuestions)] : answerIds[rand.Next(numOfAnswers)],
@@ -503,6 +502,7 @@ namespace Synchronized.Data
                     };
                 }
                 questionVotes.Add(vote);
+
                 var postId = String.Copy(vote.PostId);
                 vote.PostId = null;
                 var voter = context.Set<ApplicationUser>().Where(u => u.Id.Equals(vote.VoterId)).SingleOrDefault();
@@ -515,10 +515,12 @@ namespace Synchronized.Data
                     question.Votes.Add(vote);
                     if (voteTypeIndicator > 0)
                     {
+                        question.SumVotes++;
                         question.Publisher.Points += Constants.QUESTION_UPVOTE_ASKER_BONUS;
                     }
                     else
                     {
+                        question.SumVotes--;
                         question.Publisher.Points += Constants.QUESTION_DOWNVOTE_AKSER_PENALTY;
                         if (voter.Id.Equals(question.PublisherId))
                         {
@@ -541,10 +543,12 @@ namespace Synchronized.Data
                     answer.Votes.Add(vote);
                     if (voteTypeIndicator > 0)
                     {
+                        answer.SumVotes++;
                         answer.Publisher.Points += Constants.ANSWER_UPVOTE_ANSWERER_BONUS;
                     }
                     else
                     {
+                        answer.SumVotes--;
                         answer.Publisher.Points += Constants.ANSWER_DOWNVOTE_ANSWERER_PNEALTY;
                         if (voter.Id.Equals(answer.PublisherId))
                         {

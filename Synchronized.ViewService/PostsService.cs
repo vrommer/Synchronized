@@ -9,6 +9,9 @@ using Synchronized.Core.Factories.Interfaces;
 
 namespace Synchronized.ViewServices
 {
+    /// <summary>
+    /// A concrete PostsService.
+    /// </summary>
     public class PostsService : IPostsService
     {
         private Core.Interfaces.IVotedPostService _postsService;

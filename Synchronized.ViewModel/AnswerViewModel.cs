@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Synchronized.ViewModel
 {
+    /// <summary>
+    /// This Class represents an Answer in the Presentation Context.
+    /// </summary>
     public class AnswerViewModel
     {
         public string Id { get; set; }

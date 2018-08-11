@@ -63,10 +63,10 @@ namespace Synchronized.Repository
                     questions = questions.OrderByDescending(q => q.QuestionViews.Count);
                     break;
                 case "Points":
-                    questions = questions.OrderBy(q => q.Votes.Count);
+                    questions = questions.OrderBy(q => q.SumVotes);
                     break;
                 case "points_desc":
-                    questions = questions.OrderByDescending(q => q.Votes.Count);
+                    questions = questions.OrderByDescending(q => q.SumVotes);
                     break;
                 default:
                     questions = questions.OrderByDescending(q => q.Answers.Count);

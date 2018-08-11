@@ -1,5 +1,8 @@
-﻿using System;
+﻿using SharedLib.Infrastructure.Constants;
+using Synchronized.SharedLib;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Synchronized.Domain
 {
@@ -14,6 +17,6 @@ namespace Synchronized.Domain
         public ICollection<Vote> Votes { get; set; }
         public ICollection<PostFlag> PostFlags { get; set; }
         public ICollection<DeleteVote> DeleteVotes { get; set; }
-
+        public int SumVotes { get; set; }
     }
 }

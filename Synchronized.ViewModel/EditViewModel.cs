@@ -1,5 +1,8 @@
 ﻿namespace Synchronized.ViewModel
 {
+    /// <summary>
+    /// This class contains data to be presented in the edit view.
+    /// </summary>
     public class EditViewModel
     {
         public string Id { get; set; }

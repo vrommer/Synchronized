@@ -9,6 +9,9 @@ using Synchronized.ViewModel.UsersViewModels;
 
 namespace Synchronized.ViewModelFactories
 {
+    /// <summary>
+    /// A concrete ViewModelFactoyr.
+    /// </summary>
     public class ViewModelFactory: IViewModelFactory
     {
         public QuestionForHomePage GetQuestionForHomePage()

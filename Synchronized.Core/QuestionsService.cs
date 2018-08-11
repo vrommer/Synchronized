@@ -81,16 +81,17 @@ namespace Synchronized.Core
                     VoterId = user.Id,
                     VoteType = (int)voteType
                 });
-                await _repo.UpdateAsync(question);
                 switch (voteType)
                 {
                     case VoteType.UpVote:
                         serviceQuestion.UpVotes++;
+                        question.SumVotes++;
                         question.Publisher.Points += Constants.QUESTION_UPVOTE_ASKER_BONUS;
                         break;
                     default:
                         serviceQuestion.DownVotes++;
                         question.Publisher.Points += Constants.QUESTION_DOWNVOTE_AKSER_PENALTY;
+                        question.SumVotes++;
                         if (user.Id.Equals(question.Publisher.Id))
                         {
                             user.Points += question.Publisher.Points + Constants.QUESTION_DOWNVOTE_VOTER_PENALTY;
@@ -101,6 +102,7 @@ namespace Synchronized.Core
                         }
                         break;
                 }
+                await _repo.UpdateAsync(question);
                 serviceQuestion.VoterIds.Add(user.Id);
                 await _repo.UpdateAsync(question.Publisher);
                 if (!user.Id.Equals(question.Publisher.Id)) { 

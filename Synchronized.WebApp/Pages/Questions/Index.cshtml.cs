@@ -21,7 +21,6 @@ namespace Synchronized.WebApp.Pages.Questions
         public string SortOrder { get; set; }
 
         private const int PAGE_SIZE = 20;
-        //private readonly IQuestionsService _service;
         private readonly IQuestionsService _localService;
         private readonly ILogger<IndexModel> _logger;
 

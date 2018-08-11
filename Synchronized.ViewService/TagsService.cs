@@ -9,7 +9,7 @@ using Synchronized.ViewModelFactories.Interfaces;
 namespace Synchronized.ViewServices
 {
     /// <summary>
-    /// This service provides functionality for working with tags.
+    /// A concrete TagsService.
     /// </summary>
     public class TagsService : ITagsService
     {    

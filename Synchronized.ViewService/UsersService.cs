@@ -8,6 +8,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Synchronized.ViewServices
 {
+    /// <summary>
+    /// A concrete UsersService.
+    /// </summary>
     public class UsersService : IUsersService
     {
         private int pageSize = 20;

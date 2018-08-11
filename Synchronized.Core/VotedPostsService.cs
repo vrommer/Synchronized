@@ -9,6 +9,7 @@ using SharedLib.Infrastructure.Constants;
 using System.Linq.Expressions;
 using Microsoft.Extensions.Logging;
 using Synchronized.SharedLib;
+//using Synchronized.ServiceModel;
 
 namespace Synchronized.Core
 {
@@ -311,7 +312,6 @@ namespace Synchronized.Core
             serviceQuestion.Subscribe(user);
             updatedQuestion = _converter.Convert(serviceQuestion);
             _repo.UpdateAsync(updatedQuestion);
-        }
+        }       
     }
-
 }

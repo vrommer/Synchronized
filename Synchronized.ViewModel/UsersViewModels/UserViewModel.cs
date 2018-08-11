@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace Synchronized.ViewModel.UsersViewModels
 {
+    /// <summary>
+    /// This Class represents a User in the Presentation Context.
+    /// </summary>
     public class UserViewModel
     {
         public string Id { get; set; }

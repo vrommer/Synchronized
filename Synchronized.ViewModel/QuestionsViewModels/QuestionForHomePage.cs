@@ -1,5 +1,8 @@
 ﻿namespace Synchronized.ViewModel.QuestionsViewModels
 {
+    /// <summary>
+    /// This Class represents a Question in the Home View Context.
+    /// </summary>
     public class QuestionForHomePage
     {
         public string Id { get; set; }

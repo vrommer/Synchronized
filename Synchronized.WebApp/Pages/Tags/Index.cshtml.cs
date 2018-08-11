@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Synchronized.SharedLib.Utilities;
 using Synchronized.ViewModel.TagsViewModels;
@@ -18,8 +17,6 @@ namespace Synchronized.WebApp.Pages.Tags
 
         private readonly ITagsService _tagsService;
         private readonly ILogger<IndexModel> _logger;
-        private readonly UserManager<Domain.ApplicationUser> _userManager;
-
 
         public IndexModel(
             ITagsService tagsService,
