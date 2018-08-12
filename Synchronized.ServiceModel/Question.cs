@@ -1,6 +1,4 @@
 ﻿using Synchronized.ServiceModel.Interfaces;
-using Synchronized.SharedLib.Interfaces;
-using Synchronized.SharedLib.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

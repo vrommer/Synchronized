@@ -1,8 +1,5 @@
-﻿using SharedLib.Infrastructure.Constants;
-using Synchronized.SharedLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Synchronized.Domain
 {

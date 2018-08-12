@@ -1,5 +1,4 @@
 ﻿using Synchronized.SharedLib.Interfaces;
-using System;
 
 namespace Synchronized.Core.Utilities.Interfaces
 {
