@@ -1,4 +1,9 @@
 
+html {
+    position: relative;
+    min-height: 100%;
+}
+
 /* Page Header 
 -----------------*/
 
@@ -18,8 +23,12 @@
 
 .synched-message-container {
     margin-top: 40px;
-    padding-bottom: 10px;
+    padding: 10px;
     background: linear-gradient(#eaeaea, white);
+}
+
+.app-user-details > .card-header, .app-user-details > .card-footer {
+    height: 55px;
 }
 
 .synched-message {
@@ -39,6 +48,7 @@
 /* Ask
 ---------*/
 
+#synched-edit,
 #synched-ask,
 #synched-answer {
     margin: 40px;
@@ -48,25 +58,33 @@
     box-shadow: 10px 10px 30px grey;
 }
 
+#synched-edit .tagsinput,
 #synched-ask .tagsinput,
 #synched-answer .jqte_tool_label {
     overflow-y: hidden;
 }
 
+#synched-edit .jqte_tool_label,
 #synched-ask .jqte_tool_label,
 #synched-answer .jqte_tool_label{
     box-sizing: unset;
 }
 
+#synched-edit .jqte_editor,
 #synched-ask .jqte_editor,
 #synched-answer .jqte_editor{
     height: 300px;
 }
 
+#synched-edit .jqte,
 #synched-ask .jqte,
 #synched-answer .jqte{
     border: none;
 }
+
+/*#synched-ask {
+    margin-bottom: 100px;
+}*/
 
 /* Tags 
 ---------------*/
@@ -78,22 +96,123 @@
     overflow-y: hidden;
 }
 
+.synched-tag-card .card-body {
+    overflow: hidden;
+}
+
+.tag-details {
+    height: 125px;
+}
+
 /* Users 
 ---------------*/
 .synched-user-card {
-    margin-top: 40px;
+    margin-top: 40px;   
+}
+
+.synched-user-card ul {
+    height: 200px;
+}
+
+.synched-user-card > ul.list-group {
+    background: -moz-linear-gradient(-45deg, #f1eded 0%, #ede9e9 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(-45deg, #f1eded 0%,#ede9e9 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(135deg, #f1eded 0%,#ede9e9 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f1eded', endColorstr='#ede9e9',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
+.synched-user-card a {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.synched-user-card a:hover {
+    text-decoration: none;
+}
+
+.app-user-image {
+    height: 70px;
+}
+
+.user-header-details {
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: top;
+}
+
+.app-usercard-item {
+    background-color: transparent;
+    border: none;
+}
+
+
+.app-user-details {
+    width: 36rem;
+    margin: 0 auto;
+}
+
+#app-user-image,
+#app-user-info,
+#app-user-rating {
+    display: inline-block;
+}
+
+#app-user-image,
+#app-user-info {
+    float: left;
+}
+
+#app-user-info {
+    margin-left: 15px;
+}
+
+#app-user-rating {
+    float: right;
+}
+
+#app-about-user {
+    display: block !important;
+}
+
+#app-edit-user {
+    font-size: 0.8em;
+    float: right;
+}
+
+.user-active-posts {
+    width: 36rem;
+    padding: 5px 10px;
+    display: none;
+    height: 0;
+    overflow: auto;
+    margin: 0 auto 110px;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.active-posts-container {
+    position: relative;
+}
+
+.active-posts-container a, 
+.active-posts-container a:hover, 
+.active-posts-container a:active {
+    text-decoration: none;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.active-posts-container > button {
+    width: 36rem;
+    margin: 5px auto;
 }
 
 /* Questions 
 ---------------*/
-
 .details-date,
 .details-points,
 .details-points + i,
 .details-answers,
 .details-answers + i,
 .details-views,
-.details-views + i{
+.details-views + i {
     font-size: 1.2em;
 }
 
@@ -103,6 +222,12 @@
 .details-views {
     font-size: 1.2em;
 }*/
+
+.details-publisher-link,
+.details-publisher-link:hover {
+    text-decoration: none;
+    color: #727272;
+}
 
 .synched-home-content {
     text-align: center;
@@ -150,6 +275,14 @@ article.question {
 
 /* Single question
 ---------------*/
+.question-tags {
+    float: left;
+}
+
+.synched-q-options {
+    clear: both;
+    display: block;
+}
 
 #synched-answers-header {
     margin-top: 40px;
@@ -186,6 +319,10 @@ article.question {
     cursor: pointer;
 }
 
+#accapted {
+    background: linear-gradient(#cbe896, white) !important;
+}
+
 .answer-number {
     font-size: 1.7em;
     background: linear-gradient(#eaeaea, white);
@@ -204,6 +341,20 @@ article.question {
     display: inline;
 }
 
+.synched-update-comment {
+    display: none;
+}
+
+.synched-edit-comment-form {
+    display:none;
+    height: 120px;
+    width: 100%;
+}
+
+.edit-comment-body {
+    height: 120px;
+}
+
 .synched-comment-form {
     display: none;
     width: 0;
@@ -215,6 +366,22 @@ article.question {
     float: right;
     padding: 7px 13px;
 }
+
+#paging {
+    margin: 20px 0 60px;
+}
+
+/* Footer
+-------------*/
+footer {
+    width: 100%;
+    height: 200px;
+    background: #e2e2e2;
+    color: #717171;
+    position: relative;
+    bottom: 0;
+}
+
 
 /* General
 -------------*/

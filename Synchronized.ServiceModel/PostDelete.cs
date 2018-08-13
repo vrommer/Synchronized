@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Synchronized.ServiceModel
+﻿namespace Synchronized.ServiceModel
 {
+    /// <summary>
+    /// This class represents a Delete Vote in the BusinessLayer.
+    /// </summary>
     public class PostDelete
     {
         public string UserId { get; set; }

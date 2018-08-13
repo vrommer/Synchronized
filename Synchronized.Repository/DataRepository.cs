@@ -1,19 +1,31 @@
 ﻿using Synchronized.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Synchronized.Domain;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace Synchronized.Repository
 {
+    /// <summary>
+    /// A generic repository for storing and retreiving data to and from the Database.
+    /// </summary>
+    /// <typeparam name="T">The type of data we wish to retreive.</typeparam>
     public class DataRepository<T> : IDataRepository<T> where T : class, IEntity
     {
         protected DbContext _context;
         protected DbSet<T> _set;
+        protected ILogger<Object> _logger;
+
+        public DataRepository(DbContext context, ILogger<DataRepository<T>> logger)
+        {
+            _context = context;
+            _set = context.Set<T>();
+            _logger = logger;
+        }
 
         public DataRepository(DbContext context)
         {
@@ -21,17 +33,28 @@ namespace Synchronized.Repository
             _set = context.Set<T>();
         }
 
-        public Task AddAsync(T entity)
+        public virtual async Task<string> AddAsync(T entity)
         {
-            throw new NotImplementedException();
+            _set.Add(entity);
+            try
+            {
+                await _context.SaveChangesAsync();
+            } 
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                return "";
+            }
+            return entity.Id;
         }
 
-        public Task DeleteAsync(string entityId)
+        public async Task DeleteAsync(T entity)
         {
-            throw new NotImplementedException();
+            _context.Remove(entity);
+            await _context.SaveChangesAsync();
         }
 
-        public IQueryable<T> GetBy(Expression<Func<T, bool>> predicate)
+        public virtual IQueryable<T> GetBy(Expression<Func<T, bool>> predicate)
         {
             IQueryable<T> results = _set.AsNoTracking()
                 .Where(predicate);
@@ -43,19 +66,20 @@ namespace Synchronized.Repository
             throw new NotImplementedException();
         }
 
-        public int GetCount()
+        public virtual int GetCount()
         {
             return _set.Count();
         }
 
-        public virtual List<T> GetPage(int pageNumber, int pageSize, string searchTerm, string filter)
+        public virtual List<T> GetPage(int pageNumber, int pageSize, string searchTerm, string sortOrder)
         {
             throw new NotImplementedException();
         }
 
-        public Task UpdateAsync(T Entity)
+        public virtual async Task UpdateAsync<TEntity>(TEntity Entity) where TEntity: class
         {
-            throw new NotImplementedException();
+            _context.Update(Entity);
+            await _context.SaveChangesAsync();
         }
     }
 }

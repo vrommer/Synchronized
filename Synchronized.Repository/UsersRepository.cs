@@ -5,23 +5,25 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Threading;
 using System.Collections.Generic;
-using Synchronized.Data;
 using System.Linq;
 using System;
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Synchronized.Repository.Repositories
 {
-    public class UsersRepository : IUsersRepository, IUserStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>, IUserRoleStore<ApplicationUser>, 
-        IUserSecurityStampStore<ApplicationUser>, IUserEmailStore<ApplicationUser>, IQueryableUserStore<ApplicationUser>, 
-        IUserLoginStore<ApplicationUser>, IUserTwoFactorStore<ApplicationUser>, IUserLockoutStore<ApplicationUser>, IUserPhoneNumberStore<ApplicationUser>
+    /// <summary>
+    /// A repository for working with ApplicationUsers in the Database.
+    /// </summary>
+    public class UsersRepository : DataRepository<ApplicationUser>, IUsersRepository
     {
         private readonly UserStore<ApplicationUser> _userStore;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UsersRepository(DbContext context)
+        public UsersRepository(DbContext context, RoleManager<IdentityRole> roleManager, ILogger<UsersRepository> logger): base(context, logger)
         {
             _userStore = new UserStore<ApplicationUser>(context);
+            _roleManager = roleManager;
         }
 
         public IQueryable<ApplicationUser> Users => ((IQueryableUserStore<ApplicationUser>)_userStore).Users;
@@ -36,9 +38,9 @@ namespace Synchronized.Repository.Repositories
             return ((IUserLoginStore<ApplicationUser>)_userStore).AddLoginAsync(user, login, cancellationToken);
         }
 
-        public Task AddToRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
+        public async Task AddToRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
         {
-            return ((IUserRoleStore<ApplicationUser>)_userStore).AddToRoleAsync(user, roleName, cancellationToken);
+            await ((IUserRoleStore<ApplicationUser>)_userStore).AddToRoleAsync(user, roleName, cancellationToken);
         }
 
         public Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken)
@@ -181,14 +183,14 @@ namespace Synchronized.Repository.Repositories
             return _userStore.IncrementAccessFailedCountAsync(user, cancellationToken);
         }
 
-        public Task<bool> IsInRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
+        public async Task<bool> IsInRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
         {
-            return ((IUserRoleStore<ApplicationUser>)_userStore).IsInRoleAsync(user, roleName, cancellationToken);
+            return await ((IUserRoleStore<ApplicationUser>)_userStore).IsInRoleAsync(user, roleName, cancellationToken);
         }
 
-        public Task RemoveFromRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
+        public async Task RemoveFromRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
         {
-            return ((IUserRoleStore<ApplicationUser>)_userStore).RemoveFromRoleAsync(user, roleName, cancellationToken);
+            await ((IUserRoleStore<ApplicationUser>)_userStore).RemoveFromRoleAsync(user, roleName, cancellationToken);
         }
 
         public Task RemoveLoginAsync(ApplicationUser user, string loginProvider, string providerKey, CancellationToken cancellationToken)
@@ -267,25 +269,28 @@ namespace Synchronized.Repository.Repositories
         }
 
         #region IDataRepository implementation
-        public IQueryable<ApplicationUser> GetBy(Expression<Func<ApplicationUser, bool>> predicate)
-        {
-            throw new NotImplementedException();
-        }
+        //public override IQueryable<ApplicationUser> GetBy(Expression<Func<ApplicationUser, bool>> predicate)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public IQueryable<ApplicationUser> GetPage(int pageIndex, int pageSize)
         {
             return _userStore.Users.AsNoTracking().Skip((pageIndex - 1) * pageSize).Take(pageSize);
         }
     
-        public ApplicationUser GetById(string userId)
+        public async override Task<ApplicationUser> GetById(string userId)
         {
             //return _userStore.Users.AsNoTracking().Include(u => u.Tags).SingleOrDefault(u => u.Id.Equals(userId));
-            return _userStore.Users.AsNoTracking().SingleOrDefault(u => u.Id.Equals(userId));
+            return await _userStore
+                .Users
+                .AsNoTracking()
+                .SingleOrDefaultAsync(u => u.Id.Equals(userId));
         }
         #endregion
 
         #region IUSersRepository implementation
-        public async Task<int> GetCount()
+        public async new Task<int> GetCount()
         {
             return await _userStore.Users.CountAsync();
         }
@@ -296,9 +301,10 @@ namespace Synchronized.Repository.Repositories
             return await GetPage(pageIndex, pageSize).ToListAsync();
         }
 
-        public async Task AddAsync(ApplicationUser entity)
+        public override async Task<string> AddAsync(ApplicationUser entity)
         {
             await _userStore.CreateAsync(entity);
+            return entity.Id;
         }
 
         public void Update(ApplicationUser user)
@@ -309,6 +315,66 @@ namespace Synchronized.Repository.Repositories
         public Task<ApplicationUser> GetByIdAsync(string itemId)
         {
             throw new NotImplementedException();
+        }
+
+        async Task<ApplicationUser> IDataRepository<ApplicationUser>.GetById(string entityId)
+        {
+            var user = await _set.AsNoTracking()
+                .Where(u => u.Id.Equals(entityId))
+                .Include(u => u.Subscriptions)
+                    .ThenInclude(s => s.Question)
+                .FirstOrDefaultAsync();
+            return user;
+        }
+
+        public override List<ApplicationUser> GetPage(int pageIndex, int pageSize, string sortOrder, string filter)
+        {
+            _logger.LogInformation("Entering GetPage.");
+            var users = GetBy(q => q.UserName.Contains(filter));
+
+            switch (sortOrder)
+            {
+                case "Date":
+                    users = users.OrderBy(u => u.JoiningDate.ToString());
+                    break;
+                case "date_desc":
+                    users = users.OrderByDescending(u => u.JoiningDate.ToString());
+                    break;
+                case "Nickname":
+                    users = users.OrderBy(u => u.UserName);
+                    break;
+                case "nicknamse_desc":
+                    users = users.OrderByDescending(u => u.UserName);
+                    break;
+                case "Points":
+                    users = users.OrderBy(u => u.Points);
+                    break;
+                case "points_desc":
+                    users = users.OrderByDescending(u => u.Points);
+                    break;
+                default:
+                    users = users.OrderByDescending(u => u.UserName);
+                    break;
+            }
+
+            users = users.Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize);
+
+            var usersList = users.ToList();
+            usersList.ForEach(u => {
+                _logger.LogDebug("User --->\n\t\tAddress: {0}\n" +
+                    "\t\tEmail: {1}\n" +
+                    "\t\tName: {2}\n" +
+                    "\t\tPoints: {3}", u.Address, u.Email, u.UserName, u.Points);
+            });
+            _logger.LogInformation("Leaving GetPage.");
+
+            return usersList;
+        }
+
+        int IDataRepository<ApplicationUser>.GetCount()
+        {
+            return _set.Count();
         }
 
         #endregion

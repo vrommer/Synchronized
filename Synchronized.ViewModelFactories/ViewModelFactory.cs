@@ -4,9 +4,14 @@ using Synchronized.ViewModel;
 using Synchronized.ViewModel.QuestionsViewModels;
 using Synchronized.ViewModelFactories.Interfaces;
 using System;
+using Synchronized.ViewModel.TagsViewModels;
+using Synchronized.ViewModel.UsersViewModels;
 
 namespace Synchronized.ViewModelFactories
 {
+    /// <summary>
+    /// A concrete ViewModelFactoyr.
+    /// </summary>
     public class ViewModelFactory: IViewModelFactory
     {
         public QuestionForHomePage GetQuestionForHomePage()
@@ -66,6 +71,37 @@ namespace Synchronized.ViewModelFactories
         public List<CommentViewModel> GetComments()
         {
             return new List<CommentViewModel>();
+        }
+
+        public TagViewModel GetTag()
+        {
+            return new TagViewModel();
+        }
+
+        public List<TagViewModel> GetTags()
+        {
+            return new List<TagViewModel>();
+        }
+
+        public UserViewModel GetUser()
+        {
+            var user = new UserViewModel
+            {
+                ActivePosts = new List<QuestionForHomePage>()
+            };
+            return user;
+        }
+
+        public EditViewModel GetEditViewModel()
+        {
+            return new EditViewModel();
+        }
+
+        public T GetOfType<T>()
+        {
+            Type t = typeof(T);
+            object obj = Activator.CreateInstance(t);
+            return (T)obj;
         }
     }
 }

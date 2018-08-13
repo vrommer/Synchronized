@@ -1,25 +1,58 @@
 ﻿@page "{id}"
+
+@using Microsoft.AspNetCore.Identity
+@using Synchronized.Domain
+@using Synchronized.UI.Utilities
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
 @model Synchronized.WebApp.Pages.Users.DetailsModel
 @{
     ViewData["Title"] = "Users";
 }
 
+@{
+    var user = await Utils.GetUserAsync(HttpContext, UserManager);
+}
+
 <h2>Details</h2>
 
-<div>
-    <h4>User</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.ApplicationUser.UserName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ApplicationUser.UserName)
-        </dd>
-
-    </dl>
+<div class="card app-user-details">
+    <div class="card-header">
+        @if (user != null && user.Id.Equals(Model.ViewUser.Id))
+        {
+            <div id="app-edit-user"><a href="#">edit</a></div>
+        }        
+    </div>
+    <div class="card-body">
+        <div>
+            <div id="app-user-image"><img src="@Model.ViewUser.ImageUri" /></div>
+            <div id="app-user-info">
+                <h5>@Model.ViewUser.Name</h5>
+                <div>@Model.ViewUser.Address</div>
+                <div>Member since: @String.Format("{0:dd/MM/yyyy}", Model.ViewUser.JoiningDate)</div>
+                @*<div>Label1, Label2</div>*@
+                <div>Role: @Model.ViewUser.MajorRole</div>
+            </div>
+            <div id="app-user-rating">@Model.ViewUser.Points</div>
+        </div>        
+    </div>
+    <div class="card-footer">
+        <div id="app-about-user"><h5>About</h5></div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Back to List", "Index")
-</p>
+<div class="container active-posts-container">    
+    <button id="active-posts-button" type="button" class="btn btn-secondary btn-lg btn-block">Active Posts (@Model.ViewUser.ActivePosts.Count)</button>
+    <div class="user-active-posts">
+        @foreach (var item in Model.ViewUser.ActivePosts)
+        {
+            <h4><a asp-page="/Questions/Details" asp-route-id="/@item.Id">@item.Title</a></h4>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @*@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}*@
+    <script src="~/js/user-details.js"></script>
+}

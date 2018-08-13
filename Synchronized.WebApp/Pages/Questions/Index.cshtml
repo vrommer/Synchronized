@@ -12,12 +12,6 @@
         <a class="flex-sm-fill text-sm-center nav-link" asp-page="/Questions/Index" asp-route-sortOrder="@Model.PointsSort">Points</a>
     </nav>
 }
-
-@{
-    var prevDisabled = !Model.Questions.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.Questions.HasNextPage ? "disabled" : "";
-}
-
 <section>
     <div class="container">
         @{
@@ -82,19 +76,26 @@
     <script src="~/js/questions.js" asp-append-version="true"></script>
 }
 
-<a asp-page="/Questions/Index" asp-route-pageNumber="@(Model.Questions.PageIndex - 1)"
-   asp-route-sortOrder="@Model.SortOrder" class="btn btn-default @prevDisabled">
-    Previous
-</a>
-@*TODO: Add the "maxPages" with a setter and getter to the Questions page object*@
-@for (var i = 1; i <= Model.CurrentPage; i++)
-{
-    <a asp-page="/Questions/Index" asp-route-pageNumber="@i"
-        asp-route-sortOrder="@Model.SortOrder" class="btn btn-default">
-        @i
-    </a>
+@{
+    var prevDisabled = !Model.Questions.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Questions.HasNextPage ? "disabled" : "";
 }
-<a asp-page="/Questions/Index" asp-route-pageNumber="@(Model.Questions.PageIndex + 1)"
-   asp-route-sortOrder="@Model.SortOrder" class="btn btn-default">
-    Next
-</a>
+
+<div id="paging">
+    <a asp-page="/Questions/Index" asp-route-pageNumber="@(Model.Questions.PageIndex - 1)"
+       asp-route-sortOrder="@Model.SortOrder" class="btn btn-default @prevDisabled">
+        Previous
+    </a>
+    @*TODO: Add the "maxPages" with a setter and getter to the Questions page object*@
+    @for (var i = 1; i <= Model.CurrentPage; i++)
+    {
+        <a asp-page="/Questions/Index" asp-route-pageNumber="@i"
+           asp-route-sortOrder="@Model.SortOrder" class="btn btn-default">
+            @i
+        </a>
+    }
+    <a asp-page="/Questions/Index" asp-route-pageNumber="@(Model.Questions.PageIndex + 1)"
+       asp-route-sortOrder="@Model.SortOrder" class="btn btn-default @nextDisabled">
+        Next
+    </a>
+</div>

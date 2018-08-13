@@ -1,33 +1,34 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Synchronized.Core.Interfaces;
+using Microsoft.Extensions.Logging;
 using Synchronized.Domain;
-using System.Collections.Generic;
+using Synchronized.UI.Utilities;
+using Synchronized.ViewModel.QuestionsViewModels;
+using Synchronized.ViewServices.Interfaces;
 using System.Threading.Tasks;
 
 namespace Synchronized.WebApp.Pages.Questions
 {
     public class AskModel : PageModel
     {
-        private IQuestionsServiceOld _questionsService;
-        private ITagsService _tagsService;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private IQuestionsService _service;
+        private ILogger<DetailsModel> _logger;
+        private UserManager<ApplicationUser> _userManager;
 
-        public AskModel(IQuestionsServiceOld questionsService,
-            ITagsService tagsService,
-            UserManager<ApplicationUser> userManager)
+        public AskModel(
+            IQuestionsService service,
+            ILogger<DetailsModel> logger,
+            UserManager<ApplicationUser> userManager
+        )
         {
-            _questionsService = questionsService;
-            _tagsService = tagsService;
+            _service = service;
+            _logger = logger;
             _userManager = userManager;
         }
 
         [BindProperty]
-        public Question Question { get; set; }
-
-        [BindProperty]
-        public string TagNames { get; set; }
+        public AskViewModel Question { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -35,24 +36,14 @@ namespace Synchronized.WebApp.Pages.Questions
             {
                 return Page();
             }
-            ApplicationUser usr = await GetCurrentUserAsync();
-
-            Question.QuestionTags = new List<QuestionTag>();
-            Question.PublisherId = usr.Id;
-
-            string[] TageNamesArray = TagNames.Split(',');
-            for (int i=0; i<TageNamesArray.Length; i++)
+            var userId = await Utils.GetUserIdAsync(HttpContext, _userManager);
+            
+            var questionId = await _service.AskQuestion(Question, userId);
+            if (string.IsNullOrWhiteSpace(questionId))
             {
-                Tag tag = await _tagsService.FindTagByName(TageNamesArray[i]);
-                Question.QuestionTags.Add(new QuestionTag {
-                    TagId = tag.Id
-                });
+                return RedirectToPage("/Index");
             }
-
-            await _questionsService.CreateAsync(Question);
-            return RedirectToPage("/Index");
+            return RedirectToPage("/Questions/Details", new { id = questionId });
         }
-
-        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
     }
 }

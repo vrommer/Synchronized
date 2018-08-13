@@ -1,11 +1,93 @@
 ﻿@page
-@model Synchronized.WebApp.Pages.Questions.ReviewModel
+@model ReviewModel
 @{
     ViewData["Title"] = "Review";
 }
 
-<h2>Review</h2>
+<section>
+    <div class="container">
+        @{
+            var counter = 1;
+            foreach (var item in Model.Questions)
+            {
+                <article class="question">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="synched-question-title">
+                                <h3><a asp-page="/Questions/Details" asp-route-id="/@item.Id">@item.Title</a></h3>
+                            </div>
+                            <div class="question-content">
+                                @Html.Raw(item.Body)
+                                @if (!string.IsNullOrEmpty(item.Tags))
+                                {
+                                    <div>
+                                        @{
+                                            var name = "tags-" + counter;
+                                            counter++;
+                                        }
+                                        <input class="synched-tags" name=@name id=@name value=@item.Tags />
+                                        <div class="synched-publisher">
+                                            <a href="/Users/Details/@item.PublisherId">@item.PublisherName</a>
+                                        </div>
+                                    </div>
+                                            }
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="details-date">
+                                @String.Format("{0:dd/MM/yyyy}", item.DatePosted)
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            @if (item.IsAnswered)
+                            {
+                                <div class="details-answers answered">@item.AnswersCount</div>
+                            }
+                            else
+                            {
+                                <div class="details-answers">@item.AnswersCount</div>
+                            }
+                            <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="details-views">@item.ViewsCount</div><i class="fa fa-eye" aria-hidden="true"></i>
+                        </div>
+                        <div class="details-points col-md-1">
+                            <div class="details-points">@item.Points</div><i class="fa fa-star-o" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </article>
+                                            }
+        }
+    </div>
+</section>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/questions.js" asp-append-version="true"></script>
 }
+
+@{
+    var prevDisabled = !Model.Questions.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Questions.HasNextPage ? "disabled" : "";
+}
+
+<div id="paging">
+    <a asp-page="/Questions/Review" asp-route-pageNumber="@(Model.Questions.PageIndex - 1)"
+       asp-route-sortOrder="@Model.SortOrder" class="btn btn-default @prevDisabled">
+        Previous
+    </a>
+    @*TODO: Add the "maxPages" with a setter and getter to the Questions page object*@
+    @for (var i = 1; i <= Model.CurrentPage; i++)
+    {
+        <a asp-page="/Questions/Review" asp-route-pageNumber="@i"
+           asp-route-sortOrder="@Model.SortOrder" class="btn btn-default">
+            @i
+        </a>
+    }
+    <a asp-page="/Questions/Review" asp-route-pageNumber="@(Model.Questions.PageIndex + 1)"
+       asp-route-sortOrder="@Model.SortOrder" class="btn btn-default @nextDisabled">
+        Next
+    </a>
+</div>

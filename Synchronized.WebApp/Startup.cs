@@ -14,13 +14,16 @@ using System;
 using StructureMap;
 using Synchronized.WebApp.Services;
 using Microsoft.Extensions.Logging;
-using Synchronized.ViewServices.Interfaces;
 using Synchronized.Repository.Interfaces;
 using Synchronized.Core.Interfaces;
 using Synchronized.Core.Factories.Interfaces;
-using Synchronized.UI.Utilities;
 using Synchronized.UI.Utilities.Interfaces;
 using Synchronized.ViewModelFactories.Interfaces;
+using Synchronized.Core;
+using Synchronized.Repository;
+using Synchronized.Domain.Factories.Interfaces;
+using Synchronized.SharedLib;
+using Synchronized.WebApp.Requirements;
 
 namespace Synchronized.WebApp
 {
@@ -42,7 +45,7 @@ namespace Synchronized.WebApp
                 .AddDefaultTokenProviders();
 
             //_.For<DbContext>().Use(new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true")).Transient();
-            services.AddScoped<DbContext>(s => new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true"));
+            services.AddScoped<DbContext>(s => new SynchedIdentityDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true"));
 
             //services.AddDbContext<SynchronizedDbContext>(b =>
             //{
@@ -59,6 +62,12 @@ namespace Synchronized.WebApp
             services.AddMvc()
                 .AddRazorPagesOptions(options =>
                 {
+                    options.Conventions.AuthorizePage("/Questions/Review", "RequireEditorRole");
+                    options.Conventions.AuthorizePage("/Questions/Edit", "RequireEditorRole");
+                    options.Conventions.AuthorizePage("/Tags/Create", "RequireEditorRole");
+                })
+                .AddRazorPagesOptions(options =>
+                {
                     options.Conventions.AuthorizeFolder("/Account/Manage");
                     options.Conventions.AuthorizePage("/Account/Logout");
                 })
@@ -66,6 +75,17 @@ namespace Synchronized.WebApp
                     options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireSignedInRole", policy => policy.RequireRole(Constants.SIGNED_USER));
+                options.AddPolicy("RequireVoterRole", policy => policy.RequireRole(Constants.VOTER));
+                options.AddPolicy("RequireEditorRole", policy => policy.RequireRole(Constants.EDITOR));
+                options.AddPolicy("RequireModeratorRole", policy => policy.RequireRole(Constants.MODERATOR));
+
+                options.AddPolicy("HasEnoughPointsToEdit", policy => 
+                    policy.Requirements.Add(new NumberOfPointsRequirement(Constants.EDIT_POINST)));
+            });
 
 
             // Register no-op EmailSender used by account confirmation and password reset during development
@@ -95,6 +115,8 @@ namespace Synchronized.WebApp
 
             app.UseAuthentication();
 
+            //app.UseHttpsRedirection();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -105,6 +127,7 @@ namespace Synchronized.WebApp
                     name: "api",
                     template: "api/{controller}/{action}");
             });
+
         }
         
         private IServiceProvider ConfigureIoC(IServiceCollection services)
@@ -116,16 +139,28 @@ namespace Synchronized.WebApp
                 _.Scan(x =>
                 {
                     x.TheCallingAssembly();
+                    x.AssemblyContainingType<IPostsConverter>();
                     x.AssemblyContainingType<IEmailSender>();
                     x.AssemblyContainingType<IQuestionsRepository>();
                     x.AssemblyContainingType<IQuestionsService>();
-                    x.AssemblyContainingType<ILocalService>();
+                    x.AssemblyContainingType<ServiceModel.Post>();
+                    x.AssemblyContainingType<Post>();
+                    x.AssemblyContainingType<ViewServices.Interfaces.IQuestionsService>();
                     x.AssemblyContainingType<IServiceModelFactory>();
                     x.AssemblyContainingType<IViewModelFactory>();
+                    x.AssemblyContainingType<IDomainModelFactory>();
                     x.WithDefaultConventions();
                     x.LookForRegistries();
                 });
-                _.For<IDataConverter>().Use<DataConverter>();
+                //_.For<IPostsConverter>().Use<DataConverter>();
+                _.For<IPostsService<ServiceModel.Comment>>().Use<PostsService<Comment, ServiceModel.Comment>>();
+                _.For<IVotedPostService>().Use<VotedPostsService>();
+                _.For<IVotedPostRepository>().Use<VotedPostsRepository>();
+                _.For<IPostsService<ServiceModel.VotedPost>>().Use<PostsService<VotedPost, ServiceModel.VotedPost>>();
+                _.For<IPostsRepository<Comment>>().Use<PostsRepository<Comment>>();
+                _.For<IDataRepository<VotedPost>>().Use<PostsRepository<VotedPost>>();
+                _.For<IPostsRepository<VotedPost>>().Use<PostsRepository<VotedPost>>();
+                //_.For<ITagsConverter>().Use<TagsConverter>();
                 _.Populate(services);
             });
             return container.GetNestedContainer().GetInstance<IServiceProvider>();

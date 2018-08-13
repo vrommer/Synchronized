@@ -1,34 +1,31 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Synchronized.Core.Interfaces;
-using Synchronized.Domain;
+using Synchronized.ViewModel.UsersViewModels;
+using Synchronized.ViewServices.Interfaces;
+using Synchronized.WebApp.Conventions;
+using System.Threading.Tasks;
 
 namespace Synchronized.WebApp.Pages.Users
 {
     public class DetailsModel : PageModel
     {
-        public ApplicationUser ApplicationUser { get; set; }
+        public UserViewModel ViewUser { get; set; }
 
-        public int CurrentPage { get; set; }
-        public string SearchString { get; set; }
-        public string SortOrder { get; set; }
-
-        private readonly IUsersServiceOld _service;
-        private readonly ILogger<DetailsModel> _logger;
+        private readonly IUsersService _service;
+        private readonly ILogger<IndexModel> _logger;
 
         public DetailsModel(
-            IUsersServiceOld service,
-            ILogger<DetailsModel> logger
+            IUsersService service,
+            ILogger<IndexModel> logger
         )
         {
             _service = service;
             _logger = logger;
-            CurrentPage = 1;
         }
 
-        public void OnGet(string id)
+        public async Task OnGetAsync([MustBeInQueryParameterConvention]string id)
         {
-            ApplicationUser = _service.FindById(id);
+            ViewUser = await _service.GetDetailsPage(id);
         }
     }
 }

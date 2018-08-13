@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharedLib\Synchronized.SharedLib.csproj" />
     <ProjectReference Include="..\Synchronized.Core\Synchronized.Core.csproj" />
     <ProjectReference Include="..\Synchronized.UI.Utilities\Synchronized.UI.Utilities.csproj" />
     <ProjectReference Include="..\Synchronized.ViewModelFactories\Synchronized.ViewModelFactories.csproj" />

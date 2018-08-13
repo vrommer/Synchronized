@@ -11,7 +11,7 @@ using System;
 
 namespace Synchronized.Data.Migrations
 {
-    [DbContext(typeof(SynchronizedDbContext))]
+    [DbContext(typeof(SynchedIdentityDbContext))]
     [Migration("20180520183754_Create Database")]
     partial class CreateDatabase
     {

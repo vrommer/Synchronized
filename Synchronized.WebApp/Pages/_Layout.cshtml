@@ -9,6 +9,7 @@
         <link href="~/node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
         <link href="~/node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
         <link href="~/lib/jQuery-Tags-Input-1.3.6/dist/jquery.tagsinput.min.css" rel="stylesheet" />
+        <link href="~/lib/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" />
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment exclude="Development">
@@ -16,6 +17,7 @@
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />        
         <link href="~/lib/jQuery-Tags-Input-1.3.6/dist/jquery.tagsinput.min.css" rel="stylesheet" />
+        <link href="~/lib/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />  
     </environment>
     @RenderSection("Styles", required: false)
@@ -52,12 +54,15 @@
         </div>
     </div> 
 
+
     <environment include="Development">
         <script src="~/node_modules/jquery/dist/jquery.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
         <script src="~/node_modules/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/lib/jQuery-Tags-Input-1.3.6/dist/jquery.tagsinput.min.js"></script>
+        <script src="~/lib/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
         <script src="~/js/synchedLib.js"></script>
+        <script src="~/js/general.js"></script>
     </environment>
     <environment exclude="Development">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"
@@ -74,7 +79,9 @@
                 integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
         </script>
         <script src="~/lib/jQuery-Tags-Input-1.3.6/dist/jquery.tagsinput.min.js"></script>
+        <script src="~/lib/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
         <script src="~/js/synchedLib.js"></script>
+        <script src="~/js/general.js"></script>
     </environment>
 
     @RenderSection("Scripts", required: false)
@@ -84,12 +91,11 @@
             @RenderBody()
         </div>
     </section>
-
-    <div class="container">
-        <footer>
-            <p>&copy; 2018 - @ViewData["Title"]</p>
-        </footer>
-    </div>
+    @*<footer>
+        <div class="container">
+            <p>&copy; 2018 - Synchronized</p>
+        </div>
+    </footer>*@
    
 </body>
 </html>

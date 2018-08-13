@@ -4,12 +4,16 @@ using System.Text;
 
 namespace Synchronized.Domain
 {
+    /// <summary>
+    /// This class represents the PostFlag Database Entity.
+    /// </summary>
     public class PostFlag
     {
+        public string Id { get; set; }
         public string UserId { get; set; }
         public string PostId { get; set; }
 
-        public Post Post { get; set; }
+        public VotedPost Post { get; set; }
         public ApplicationUser User { get; set; }
 
         public override int GetHashCode()

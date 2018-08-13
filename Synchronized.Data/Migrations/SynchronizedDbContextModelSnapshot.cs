@@ -11,7 +11,7 @@ using System;
 
 namespace Synchronized.Data.Migrations
 {
-    [DbContext(typeof(SynchronizedDbContext))]
+    [DbContext(typeof(SynchedIdentityDbContext))]
     partial class SynchronizedDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -269,14 +269,11 @@ namespace Synchronized.Data.Migrations
 
             modelBuilder.Entity("Synchronized.Domain.Tag", b =>
                 {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<string>("Id");
 
                     b.Property<DateTime>("DateAdded");
 
                     b.Property<string>("Description");
-
-                    b.Property<string>("Name");
 
                     b.Property<string>("PublisherId");
 
@@ -405,7 +402,7 @@ namespace Synchronized.Data.Migrations
 
             modelBuilder.Entity("Synchronized.Domain.DeleteVote", b =>
                 {
-                    b.HasOne("Synchronized.Domain.Post", "Post")
+                    b.HasOne("Synchronized.Domain.VotedPost", "Post")
                         .WithMany("DeleteVotes")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -425,7 +422,7 @@ namespace Synchronized.Data.Migrations
 
             modelBuilder.Entity("Synchronized.Domain.PostFlag", b =>
                 {
-                    b.HasOne("Synchronized.Domain.Post", "Post")
+                    b.HasOne("Synchronized.Domain.VotedPost", "Post")
                         .WithMany("PostFlags")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade);

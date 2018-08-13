@@ -21,13 +21,12 @@ namespace Synchronized.WebApp.Pages.Questions
         public string SortOrder { get; set; }
 
         private const int PAGE_SIZE = 20;
-        //private readonly IQuestionsService _service;
-        private readonly ILocalService _localService;
+        private readonly IQuestionsService _localService;
         private readonly ILogger<IndexModel> _logger;
 
         public IndexModel(
             //IQuestionsService service,
-            ILocalService localService,
+            IQuestionsService localService,
             ILogger<IndexModel> logger
             )
         {
@@ -39,6 +38,7 @@ namespace Synchronized.WebApp.Pages.Questions
         public async Task OnGetAsync([MustBeInQueryParameterConvention]int? pageNumber, [MustBeInQueryParameterConvention]string sortOrder = null,
             [MustBeInQueryParameterConvention]string searchString = null)
         {
+            _logger.LogInformation("Starting OnGetAsync");
             SearchString = searchString ?? "";
             SortOrder = sortOrder ?? "";
             DateSort = sortOrder == "Date" ? "date_desc" : "Date";
@@ -48,8 +48,8 @@ namespace Synchronized.WebApp.Pages.Questions
 
             CurrentPage = pageNumber ?? (CurrentPage == 0 ? 1 : CurrentPage);
 
-            //Questions = await _service.GetQuestionsIndexPage(CurrentPage, PAGE_SIZE, sortOrder, SearchString);
-            Questions = await _localService.GetQuestionsIndexPageModel(CurrentPage, SortOrder, SearchString);
+            Questions = await _localService.GetQuestionsIndexPageModel(CurrentPage, SearchString, SortOrder);
+            _logger.LogInformation("Exiting OnGetAsync");
         }
     }
 }

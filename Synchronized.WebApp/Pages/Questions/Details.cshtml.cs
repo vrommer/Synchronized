@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Synchronized.ServiceModel;
+using Synchronized.UI.Utilities;
+using Synchronized.ViewModel;
 using Synchronized.ViewModel.QuestionsViewModels;
 using Synchronized.ViewServices.Interfaces;
 using System.Threading.Tasks;
@@ -11,49 +12,32 @@ namespace Synchronized.WebApp.Pages.Questions
 {
     public class DetailsModel : PageModel
     {
-        //public Question Question { get; set; }
         public QuestionForDetailsPage Question { get; set; }
+        public string UserId { get; set; }
 
-        //private IQuestionsService _questionsService;
         private readonly ILogger<DetailsModel> _logger;
-        ILocalService _localService;
+        IQuestionsService _questionsService;
         private readonly UserManager<Domain.ApplicationUser> _userManager;
 
         public DetailsModel(
-            //IQuestionsService questionsService,
-            ILocalService localService,
+            IQuestionsService questionsService,
             ILogger<DetailsModel> logger,
             UserManager<Domain.ApplicationUser> userManager
-            )
+        )
         {
-            _localService = localService;
+            _questionsService = questionsService;
             _logger = logger;
             _userManager = userManager;
         }
 
         public async Task OnGetAsync(string id)
         {
-            //Model.ApplicationUser user = await GetCurrentUserAsync();
-            Question = await _localService.GetQuestionDetailsPageModel(id);
-            //QuestionViewModel = new DetailsViewModel(Question);
-
-            //if ( user!=null && !Question.QuestionViews.Contains(new QuestionView
-            //{
-            //    UserId = user.Id,
-            //    QuestionId = Question.Id
-            //}))
-            //{
-            //    // EF Core will not track entity with key
-            //    Question.QuestionViews.Add(new QuestionView {
-            //        //Question = Question,
-            //        User = user
-            //    });
-            //    _questionsService.Update(Question);
-            //}
+            UserId = await Utils.GetUserIdAsync(HttpContext, _userManager);
+            Question = await _questionsService.GetQuestionDetailsPageModel(id, UserId);
         }
 
         [BindProperty]
-        public Answer Answer { get; set; }
+        public AnswerViewModel Answer { get; set; }
 
         public async Task<IActionResult> OnPostAsync(string id)
         {
@@ -61,17 +45,10 @@ namespace Synchronized.WebApp.Pages.Questions
             {
                 return Page();
             }
-            var usr = await GetCurrentUserAsync();
+            var userId = await Utils.GetUserIdAsync(HttpContext, _userManager);
+            await _questionsService.AnswerQuestion(Answer, userId, id);
 
-            //Question = _questionsService.FindQuestionById(id);
-            //Answer.PublisherId = usr.Id;
-
-            //Question.Answers.Add(Answer);
-
-            //_questionsService.UpdateQuestion(Question);
             return RedirectToPage("/Questions/Details", new { id = id });
         }
-
-        private Task<Domain.ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
     }
 }

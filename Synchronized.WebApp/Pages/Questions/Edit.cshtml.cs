@@ -1,59 +1,45 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Synchronized.Core.Interfaces;
-using Synchronized.Domain;
-using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using Synchronized.ViewModel;
+using Synchronized.ViewServices.Interfaces;
+using System;
 using System.Threading.Tasks;
 
 namespace Synchronized.WebApp.Pages.Questions
 {
     public class EditModel : PageModel
     {
-        private IQuestionsServiceOld _questionsService;
-        private ITagsService _tagsService;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private IPostsService _service;
+        private ILogger<DetailsModel> _logger;
 
-        public EditModel(IQuestionsServiceOld questionsService,
-            ITagsService tagsService,
-            UserManager<ApplicationUser> userManager)
+        public EditModel(
+            IPostsService service,
+            ILogger<DetailsModel> logger
+        )
         {
-            _questionsService = questionsService;
-            _tagsService = tagsService;
-            _userManager = userManager;
+            _service = service;
+            _logger = logger;
+        }
+        [BindProperty]
+        public EditViewModel Post { get; set; }
+
+        public async Task OnGetAsync(string id)
+        {
+            Post = await _service.GetPostForEdit(id);
         }
 
-        [BindProperty]
-        public Question Question { get; set; }
-
-        [BindProperty]
-        public string TagNames { get; set; }
-
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string id, string questionId)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-            ApplicationUser usr = await GetCurrentUserAsync();
+            Post.Id = String.Copy(id);
+            Post.QuestionId = String.Copy(questionId);
+            var postId = await _service.EditPost(Post);
 
-            Question.QuestionTags = new List<QuestionTag>();
-            Question.PublisherId = usr.Id;
-
-            string[] TageNamesArray = TagNames.Split(',');
-            for (int i = 0; i < TageNamesArray.Length; i++)
-            {
-                Tag tag = await _tagsService.FindTagByName(TageNamesArray[i]);
-                Question.QuestionTags.Add(new QuestionTag
-                {
-                    TagId = tag.Id
-                });
-            }
-
-            await _questionsService.CreateAsync(Question);
-            return RedirectToPage("/Index");
+            return RedirectToPage("/Questions/Details", new { id = postId });
         }
-
-        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
     }
 }

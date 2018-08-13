@@ -9,7 +9,7 @@
         <section>
             <div asp-validation-summary="All"></div>
             <form method="POST" id="synched-ask">
-                <h4>Ask your question.</h4>
+                <h4>Ask your question</h4>
                 <hr />
                 <div class="form-group">
                     <input asp-for="Question.Title" type="text" class="form-control" aria-describedby="questionTitle" placeholder="Title">
@@ -18,7 +18,7 @@
                     <textarea asp-for="Question.Body"></textarea>
                 </div>
                 <div class="form-group">
-                    <input asp-for="TagNames" type="text" class="form-control">
+                    <input asp-for="Question.Tags" type="text" class="form-control question-tags">
                 </div>
                 <button type="submit" class="btn btn-secondary">Submit</button>
             </form>
@@ -26,11 +26,12 @@
     </div>
 </div>
 
-@section Styles {
+@section Styles {    
     <link href="~/lib/jQuery-TE_v.1.4.0/jquery-te-1.4.0.css" rel="stylesheet" />
 }
 
 @section Scripts {    
     <script src="~/lib/jQuery-TE_v.1.4.0/uncompressed/jquery-te-1.4.0.js"></script>
-    <script src="~/js/ask.js"></script>
+    <script src="~/js/utils.js"></script>
+    <script src="~/js/ask.js"></script>    
 }

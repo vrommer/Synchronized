@@ -2,6 +2,9 @@
 
 namespace Synchronized.ViewModel.QuestionsViewModels
 {
+    /// <summary>
+    /// This Class represents a Question in the Questions Index View Context.
+    /// </summary>
     public class QuestionForQuestionsPage: QuestionForHomePage
     {
         public string Body { get; set; }

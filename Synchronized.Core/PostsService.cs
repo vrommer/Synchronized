@@ -1,25 +1,43 @@
-﻿using System;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Synchronized.Core.Interfaces;
+﻿using Synchronized.Core.Interfaces;
 using Synchronized.Repository.Interfaces;
 using Synchronized.Core.Utilities.Interfaces;
 using Synchronized.Core.Factories.Interfaces;
+using Synchronized.ServiceModel;
+using System.Threading.Tasks;
+using System;
+using Microsoft.Extensions.Logging;
+using Synchronized.SharedLib;
 
 namespace Synchronized.Core
 {
+    /// <summary>
+    /// This is a Generic PostsService.
+    /// </summary>
+    /// <typeparam name="TEntity">User defined.</typeparam>
+    /// <typeparam name="TServiceModel">User defined.</typeparam>
     public class PostsService<TEntity, TServiceModel> : DataService<TEntity, TServiceModel>, IPostsService<TServiceModel> 
-        where TServiceModel : ServiceModel.Post
+        where TServiceModel : Post
         where TEntity : Domain.Post
     {
 
-        public PostsService(IDataRepository<TEntity> repo, IServiceModelFactory factory, IDataConverter converter)  : base(repo, factory, converter) 
+        public PostsService(IPostsRepository<TEntity> repo, IServiceModelFactory factory, IDataConverter converter, ILogger<PostsService<TEntity, TServiceModel>> logger)  : base(repo, factory, converter, logger) 
         {
         }
 
-        public Task<ServiceModel.VotedPost> GetVotedPostBy(Expression<Func<ServiceModel.VotedPost, bool>> predicate)
+        public virtual async Task<bool> DeletePost(string postId, string userId, int userPoints)
         {
-            throw new NotImplementedException();
+            var post = await _repo.GetById(postId);
+            if (CanDelete(userId, userPoints))
+            {
+                await _repo.DeleteAsync(post);
+                return true;
+            }
+            return false;
+        }
+
+        private bool CanDelete(string userId, int userPoints)
+        {
+            return !String.IsNullOrWhiteSpace(userId) && Constants.DELETE_POINST <= userPoints;
         }
     }
 }

@@ -1,7 +1,31 @@
 ﻿@page
 @model IndexModel
+@using Synchronized.Domain
+@using Synchronized.SharedLib
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
 @{
     ViewData["Title"] = "Tags";
+}
+
+@if (SignInManager.IsSignedIn(User) && User.IsInRole(Constants.EDITOR))
+{
+    @section Sort {
+        <nav class="nav nav-pills flex-column flex-sm-row synched-sort">
+            <a class="flex-sm-fill text-sm-center nav-link" asp-page="/Tags/Create">Create new</a>
+        </nav>
+    }
+}
+
+@section Filter {
+    <div class="synched-users-search">
+        @{string searchTerm = null;}
+        <form asp-page="/Tags/Index" method="get" class="form-inline my-2 my-lg-0">
+            <input asp-for="@searchTerm" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+            <button class="btn btn-default my-2 my-sm-0" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+        </form>
+    </div>
 }
 
 @{
@@ -42,24 +66,26 @@
     var prevDisabled = !Model.Tags.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.Tags.HasNextPage ? "disabled" : "";
 }
-<a asp-page="/Tags/Index" asp-route-pageNumber="@(Model.Tags.PageIndex - 1)"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
-@*TODO: Add the "maxPages" with a setter and getter to the Questions page object*@
-@for (var i = 1; i <= Model.CurrentPage; i++)
-{
-    <a asp-page="/Tags/Index" asp-route-pageNumber="@i"
-       class="btn btn-default">
-        @i
+
+<div id="paging">
+    <a asp-page="/Tags/Index" asp-route-pageNumber="@(Model.Tags.PageIndex - 1)"
+       class="btn btn-default @prevDisabled">
+        Previous
     </a>
-}
-<a asp-page="/Tags/Index" asp-route-pageNumber="@(Model.Tags.PageIndex + 1)"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>
+    @*TODO: Add the "maxPages" with a setter and getter to the Questions page object*@
+    @for (var i = 1; i <= Model.CurrentPage; i++)
+    {
+        <a asp-page="/Tags/Index" asp-route-pageNumber="@i"
+           class="btn btn-default">
+            @i
+        </a>
+    }
+    <a asp-page="/Tags/Index" asp-route-pageNumber="@(Model.Tags.PageIndex + 1)"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>
 
-
+</div>
 @section Scripts {
     <script src="~/js/tags.js"></script>
 }

@@ -1,5 +1,4 @@
 ﻿@page
-@page
 @model Synchronized.WebApp.Pages.Questions.EditModel
 @{
     ViewData["Title"] = "Edit";
@@ -9,18 +8,23 @@
     <div class="offset-md-2 col-md-8">
         <section>
             <div asp-validation-summary="All"></div>
-            <form method="POST" id="synched-ask">
-                <h4>Ask your question.</h4>
+            <form method="POST" id="synched-edit" asp-route-id="@Model.Post.Id" asp-route-questionId="@Model.Post.QuestionId">
+                <h4>Edit</h4>
                 <hr />
+                @if (!String.IsNullOrWhiteSpace(Model.Post.Title)) { 
+                    <div class="form-group">
+                        <input asp-for="Post.Title" type="text" class="form-control" aria-describedby="questionTitle" placeholder="Title">
+                    </div>
+                }
                 <div class="form-group">
-                    <input asp-for="Question.Title" type="text" class="form-control" aria-describedby="questionTitle" placeholder="Title">
+                    <textarea asp-for="Post.Body"></textarea>
                 </div>
-                <div class="form-group">
-                    <textarea asp-for="Question.Body"></textarea>
-                </div>
-                <div class="form-group">
-                    <input asp-for="TagNames" type="text" class="form-control">
-                </div>
+                @if (!String.IsNullOrWhiteSpace(Model.Post.Tags))
+                {
+                    <div class="form-group">
+                        <input asp-for="Post.Tags" type="text" class="form-control">
+                    </div>
+                }
                 <button type="submit" class="btn btn-secondary">Submit</button>
             </form>
         </section>

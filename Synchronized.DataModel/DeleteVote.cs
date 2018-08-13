@@ -1,16 +1,16 @@
-﻿using Synchronized.Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 
 namespace Synchronized.Domain
 {
+    /// <summary>
+    /// This class represents The DeleteVote Database Entity.
+    /// </summary>
     public class DeleteVote
     {
         public string PostId { get; set; }
         public string UserId { get; set; }
 
-        public Post Post{ get; set; }
+        public VotedPost Post{ get; set; }
         public ApplicationUser User { get; set; }
 
         public override int GetHashCode()

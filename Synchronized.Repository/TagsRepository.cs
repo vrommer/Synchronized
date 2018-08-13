@@ -1,28 +1,37 @@
 ﻿using Synchronized.Domain;
 using Synchronized.Repository.Interfaces;
-using Synchronized.Repository.Repositories;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Synchronized.Repository
 {
-    public class TagsRepository : DataRepositoryOld<Tag>, ITagsRepository
+    /// <summary>
+    /// A repository for working with Tags in the Database context.
+    /// </summary>
+    public class TagsRepository : DataRepository<Tag>, ITagsRepository
     {
-        public TagsRepository(DbContext context) : base(context)
+
+        public TagsRepository(DbContext context, ILogger<TagsRepository> logger) : base(context, logger)
         {
         }
 
-        public async Task<Tag> FindTagByName(string name)
+        public async Task<List<Tag>> GetAllTags()
         {
-            return await GetBy(t => t.Name.Equals(name)).FirstOrDefaultAsync();
+            return await _set.ToListAsync();
         }
 
-        public async Task<List<Tag>> GetTagsPageAsync(int pageIndex, int pageSize)
+        public override List<Tag> GetPage(int pageIndex, int pageSize, string sortOrder, string searchTerm)
         {
-            return await GetPage(pageIndex, pageSize)
-                .Include(t => t.Publisher)
-                .ToListAsync();
+            var tags = GetBy(q => q.Id.Contains(searchTerm));
+
+            tags = tags.Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize);
+
+            var tagsList = tags.ToList();
+            return tagsList;
         }
     }
 }

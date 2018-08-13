@@ -14,12 +14,12 @@ $(function () {
         $('.synched-sort a').removeClass('active');
         $(this).addClass('active');
 
-    // TODO: Doesn't work. Try jQuery UI?'
-    }).on('mouseleave', function () {        
-        $(this).animate({ backgroundColor: "#eaeaea", }, 500);
+    // TODO: Ugly.
+    //}).on('mouseleave', function () {
+    //    $(this).animate({ backgroundColor: "#eaeaea", }, 500);
     });
 
     //$('.synched-sort a').mouseout(function () {
     //    $(this).animate({ marginTop: "-=20px", }, 500);
     //});
-})
+});

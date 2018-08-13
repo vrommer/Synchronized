@@ -3,6 +3,9 @@ using System.Text;
 
 namespace Synchronized.Domain
 {
+    /// <summary>
+    /// This class represents a Vote in the Database.
+    /// </summary>
     public class Vote
     {
         public string VoterId { get; set; }
