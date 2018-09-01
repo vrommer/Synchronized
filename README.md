@@ -1,6 +1,6 @@
 # Synchronized
 ## General
-A questions/answers management system in the spirit of stack overflow.  The Web Application of the system is created using MVC Core. The system uses EF Core as the ORM system. The security in ASP Core Identity. In order to run this on a mac or a linux machine some minor modifications should be made. The project adheres to OOP best practices including design patterns, seperation to micro services and more. The project also adheres to MVC Core best practices and EF Core best practices. In addition to the built in IoC container, the project leverages the use of StructureMap for dependency injection.
+A questions/answers management system in the spirit of stack overflow.  The Web Application of the system is created using MVC Core. The system uses EF Core as the ORM system. The security is implemented using ASP Core Identity. In order to run this on a mac or a linux machine some minor modifications should be made. The project adheres to OOP best practices including design patterns, seperation to micro services and more. The project also adheres to MVC Core best practices and EF Core best practices. In addition to the built in IoC container, the project leverages the use of StructureMap for dependency injection.
 ## How to run
 Currently may run only on a windows machine, since EF is configured to work with MS SQL Server on a localhost.
 * Clone
