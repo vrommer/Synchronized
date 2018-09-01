@@ -6,7 +6,7 @@ Currently may run only on a windows machine, since EF is configured to work with
 * Clone
 * Open in Visual Studio
 * Make sure all npm dependencies in Synchronized.WebApp are met
-* Run the project. A demo database should be created.
+* Run the project - A demo database should be created
 ## Capabilities
 The system currently supports the following capabilities:
 * User managemen - Signing In/Logging in
