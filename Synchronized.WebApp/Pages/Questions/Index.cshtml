@@ -22,7 +22,7 @@
                     <div class="row">
                         <div class="col-md-7">
                             <div class="synched-question-title">
-                                <h3><a asp-page="/Questions/Details" asp-route-id="/@item.Id">@item.Title</a></h3>
+                                <h3><a asp-page="/Questions/Details" asp-route-id="@item.Id">@item.Title</a></h3>
                             </div>
                             <div class="question-content">
                                 @Html.Raw(item.Body)

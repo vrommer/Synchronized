@@ -28,7 +28,8 @@ namespace Synchronized.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_connectionString);
+            //optionsBuilder.UseSqlServer(_connectionString);
+            optionsBuilder.UseNpgsql(_connectionString);
             optionsBuilder.EnableSensitiveDataLogging();
             base.OnConfiguring(optionsBuilder);
         }
@@ -47,7 +48,7 @@ namespace Synchronized.Data
             builder.Entity<Post>()
                 .Property(p => p.DatePosted)
                 .ValueGeneratedOnAdd()
-                .HasDefaultValueSql("GETDATE()");
+                .HasDefaultValueSql("NOW()");
 
             builder.Entity<Question>().HasBaseType<VotedPost>();
 
@@ -64,7 +65,7 @@ namespace Synchronized.Data
             builder.Entity<ApplicationUser>()
                 .Property(u => u.JoiningDate)
                 .ValueGeneratedOnAdd()
-                .HasDefaultValueSql("GETDATE()");
+                .HasDefaultValueSql("NOW()");
 
             // Many to many relationship between users and questio views
             builder.Entity<QuestionView>().HasKey(s => new { s.QuestionId, s.UserId });

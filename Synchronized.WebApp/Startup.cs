@@ -11,6 +11,9 @@ using Synchronized.Data;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using System;
+using System.Text;
+using System.Xml.Linq;
+using System.Linq;
 using StructureMap;
 using Synchronized.WebApp.Services;
 using Microsoft.Extensions.Logging;
@@ -44,14 +47,24 @@ namespace Synchronized.WebApp
                 .AddRoleStore<RolesRepository>()
                 .AddDefaultTokenProviders();
 
-            //_.For<DbContext>().Use(new SynchronizedDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true")).Transient();
-            services.AddScoped<DbContext>(s => new SynchedIdentityDbContext(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true"));
+            StringBuilder connStrBuilder = new StringBuilder();
 
-            //services.AddDbContext<SynchronizedDbContext>(b =>
-            //{
-            //    b.UseSqlServer(@"Server = (localdb)\mssqllocaldb; Database = SynchronizedData; Trusted_Connection = true");
-            //});
+            //Load xml
+            XDocument xdoc = XDocument.Load("credentials.properties.xml");
 
+            //Run query
+            var credentials = xdoc.Descendants("data").First();
+            
+            connStrBuilder.Append("Uid=")
+                .Append(credentials.Descendants("username").First().Value)
+                .Append(";Pwd=")
+                .Append(credentials.Descendants("password").First().Value)
+                .Append(";Host=")
+                .Append(credentials.Descendants("host").First().Value)
+                .Append(";Database=")
+                .Append(credentials.Descendants("database").First().Value);
+                
+            services.AddScoped<DbContext>(s => new SynchedIdentityDbContext(@connStrBuilder.ToString()));
             services.AddLogging(builder =>
             {
                 builder.AddConfiguration(Configuration.GetSection("Logging"))
