@@ -114,9 +114,9 @@ namespace Synchronized.Repository
             // Add sorted comments to question           
             question.Comments = await _context.Set<Comment>()
                 .AsNoTracking()
-                .Where(c => c.PostId == question.Id)
-                .OrderBy(c => c.DatePosted)
+                .Where(c => c.PostId == question.Id)               
                 .Include(c => c.Publisher)
+                .OrderBy(c => c.DatePosted)
                 .ToListAsync();
 
             question.Answers = await _context.Set<Answer>()
@@ -125,7 +125,10 @@ namespace Synchronized.Repository
                 .Include(a => a.Question)
                 .Include(a => a.Publisher)
                 .Include(a => a.Votes)
+                .OrderBy(a => a.DatePosted.ToString())
                 .ToListAsync();
+
+            //question.Answered = questions.OrderBy(q => q.DatePosted.ToString());
 
             foreach (Answer a in question.Answers)
             {
