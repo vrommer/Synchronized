@@ -34,6 +34,7 @@ $(() => {
         $(`#${id} .synched-action`).on("click", Act.bind(votedPosts[id]))
         $(`#${id} .synched-flag`).on("click", flagPost.bind(votedPosts[id]))
         $(`#${id} .comment-body`).on("keydown", submitComment.bind(votedPosts[id]));
+        $(`#${id} .edit-comment-body`).on("keydown", submitComment.bind(votedPosts[id]));
         $(`#${id} .synched-delete`).on("click", deleteVotedPost.bind(votedPosts[id]));
     }
 
