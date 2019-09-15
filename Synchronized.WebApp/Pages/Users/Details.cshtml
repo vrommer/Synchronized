@@ -47,7 +47,7 @@
     <div class="user-active-posts">
         @foreach (var item in Model.ViewUser.ActivePosts)
         {
-            <h4><a asp-page="/Questions/Details" asp-route-id="/@item.Id">@item.Title</a></h4>
+            <h4><a asp-page="/Questions/Details" asp-route-id="@item.Id">@item.Title</a></h4>
         }
     </div>
 </div>

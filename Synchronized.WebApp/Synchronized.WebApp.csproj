@@ -18,4 +18,12 @@
     <ProjectReference Include="..\Synchronized.ServiceModel\Synchronized.ServiceModel.csproj" />
     <ProjectReference Include="..\Synchronized.ViewService\Synchronized.ViewServices.csproj" />
   </ItemGroup>
+  <ItemGroup> 
+    <Content Include="credentials.properties.xml"> 
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
+    </Content> 
+    <Content Include="node_modules/**"> 
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
+    </Content> 
+  </ItemGroup>
 </Project>
