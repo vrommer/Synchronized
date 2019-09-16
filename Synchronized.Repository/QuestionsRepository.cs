@@ -173,6 +173,7 @@ namespace Synchronized.Repository
 
         public async Task<Comment> GetCommentById(string commentId)
         {
+            await Task.FromResult(false);
             throw new NotImplementedException();
         }
 

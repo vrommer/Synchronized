@@ -8,4 +8,9 @@ RUN apt-get install nodejs
 # Setup Project
 RUN git clone https://github.com/vrommer/Synchronized.git
 COPY credentials.properties.xml Synchronized/Synchronized.WebApp/.
-
+WORKDIR Synchronized/Synchronized.WebApp
+RUN npm install
+WORKDIR ..
+RUN dotnet publish
+WORKDIR Synchronized.WebApp/bin/Debug/netcoreapp2.1/publish/
+CMD dotnet Synchronized.WebApp.dll

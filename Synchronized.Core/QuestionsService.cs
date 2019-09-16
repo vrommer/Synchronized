@@ -318,6 +318,7 @@ namespace Synchronized.Core
                 return questionId;
             } catch (Exception e)
             {
+                this._logger.LogDebug(e.StackTrace);
                 return null;
             }
         }
