@@ -91,7 +91,7 @@ namespace Synchronized.Core
                     default:
                         serviceQuestion.DownVotes++;
                         question.Publisher.Points += Constants.QUESTION_DOWNVOTE_AKSER_PENALTY;
-                        question.SumVotes++;
+                        question.SumVotes--;
                         if (user.Id.Equals(question.Publisher.Id))
                         {
                             user.Points += question.Publisher.Points + Constants.QUESTION_DOWNVOTE_VOTER_PENALTY;
