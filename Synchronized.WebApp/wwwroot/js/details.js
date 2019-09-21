@@ -1,101 +1,200 @@
-﻿var answers = {};
+﻿class Details {
+    _answers = {};
+    _allComments = [];
 
-var allComments = [];
+    questionEvent = "Question";
+    answerEvent = "Answer";
+    commentAction = "Comment";
 
-$(() => {
-    $('input[id^=tags]').tagsInput({
-        'height': '50px',
-        'width': '400px',
-        'interactive': false,
-    });
+    handlers = new Map([
+        ["voteUpQuestion", this.voteUpQuestion],
+        ["voteDownQuestion", this.voteDownQuestion],
+        ["voteUpAnswer", this.voteUpAnswer],
+        ["voteDownAnswer", this.voteDownAnswer],
+        ["acceptAnswer", this.acceptAnswer],
+        ["editComment", this.editComment],
+        ["updateComment", this.updateComment],
+        ["deleteComment", this.deleteComment],
+        ["action", this.act],
+        ["flag", this.flagPost],
+        ["delete", this.deleteVotedPost]
+    ]);
 
-    $('.tag a').remove();
-    $('.tag').wrap('<a href="#"></a>');
-
-    var votedPosts = {};
-    votedPosts[questionViewModel.question.id] = questionViewModel.question;
-
-    for (var pointer in questionViewModel.answers) {
-        var answer = questionViewModel.answers[pointer];
-        $.merge(allComments, answer.comments);
-        votedPosts[answer.id] = answer;
+    constructor() {
+        this.init();
     }
 
-    for (var id in votedPosts) {
-        if (id !== question.id) {
-            $(`#${id} .vote-up-btn`).on("click", VoteUpAnswer.bind(votedPosts[id]))
-            $(`#${id} .vote-down-btn`).on("click", VoteDownAnswer.bind(votedPosts[id]))
-            $(`#${id} .synched-accept`).on("click", AcceptAnswer.bind(votedPosts[id]))
-        } else 
-        {
-            $(`#${id} .vote-up-btn`).on("click", VoteUpQuestion.bind(votedPosts[id]))
-            $(`#${id} .vote-down-btn`).on("click", VoteDownQuestion.bind(votedPosts[id]))
+    destructor() {
+
+    }
+
+    init() {
+        console.log("In init");
+        $(() => {
+
+            $('input[id^=tags]').tagsInput({
+                'height': '50px',
+                'width': '400px',
+                'interactive': false,
+            });
+
+            $('.tag a').remove();
+            $('.tag').wrap('<a href="#"></a>');
+
+            let votedPosts = {};
+            votedPosts[questionViewModel.question.id] = questionViewModel.question;
+
+            for (let pointer in questionViewModel.answers) {
+                let answer = questionViewModel.answers[pointer];
+                $.merge(this.allComments, answer.comments);
+                votedPosts[answer.id] = answer;
+            }            
+
+            $("#synched-question").on("click", event => {
+                event.stopPropagation();
+                let postId = $("#synched-question").attr("data-id");
+                this.handleUserAction({
+                    event: event,
+                    postId: postId,
+                    eventTarget: this.questionEvent
+                });
+            });
+
+            $("#synched-answers").on("click", event => {
+                event.stopPropagation();
+                let target = event.target;
+                while (target && target.dataset.type != "answer") {
+                    target = target.parentElement;
+                }
+                if (target && target.dataset.id) {
+                    this.handleUserAction({
+                        event: event,
+                        postId: target.dataset.id,
+                        eventTarget: this.answerEvent
+                    });
+                }
+            });
+            
+            $.merge(this.allComments, question.comments);
+            /**
+            
+                $(".synched-comment").on("click", showComment);    
+
+                ...
+
+                $(`#${id} .comment-body`).on("keydown", submitComment.bind(votedPosts[id]));
+                $(`#${id} .edit-comment-body`).on("keydown", submitComment.bind(votedPosts[id]));
+
+            */
+            $("#synched-answer textarea").jqte({
+                formats: [
+                    ["p", "Normal"],
+                    ["pre", "Code"]
+                ]
+            });
+        });
+    }
+
+    get answers() {
+        return this._answers;
+    }
+
+    get allComments() {
+        return this._allComments;
+    }
+
+    set answers(val) {
+        this._answers = val;
+    }
+
+    set allComments(val) {
+        this._allComments = val;
+    }
+
+    handleUserAction = (oArgs) => {
+        if (!oArgs) {
+            return;
         }
-        $(`#${id} .synched-action`).on("click", Act.bind(votedPosts[id]))
-        $(`#${id} .synched-flag`).on("click", flagPost.bind(votedPosts[id]))
-        $(`#${id} .comment-body`).on("keydown", submitComment.bind(votedPosts[id]));
-        $(`#${id} .edit-comment-body`).on("keydown", submitComment.bind(votedPosts[id]));
-        $(`#${id} .synched-delete`).on("click", deleteVotedPost.bind(votedPosts[id]));
-    }
+        let event = oArgs.event,
+            classes,
+            postId = oArgs.postId,
+            eventTarget = oArgs.eventTarget,
+            actionType,
+            fnAction;
+        console.log("handling for post: ", postId);
+        let target = event.target;
+        while (target && target.nodeName != "BUTTON") {
+            target = target.parentElement;
+        }       
 
-    $.merge(allComments, question.comments);
+        if (target) {
+            actionType = target.dataset.type;
+        }
 
-    for (var id in allComments) {
-        $(`#${allComments[id].id} .synched-delete-comment`).on("click", deleteComment.bind(allComments[id]))
-        $(`#${allComments[id].id} .synched-edit-comment`).on("click", editComment.bind(allComments[id]));
-    }
+        if (target && target.parentElement && target.parentElement.dataset.target == this.commentAction) {
+            actionType = this.commentAction;
+        } 
 
-    $(".synched-comment").on("click", showComment);    
+        if (!(actionType != "flag" && actionType != "delete" && actionType != "action")) {
+            fnAction = this.handlers.get(actionType)
+        }
 
-    $("#synched-answer textarea").jqte({
-        formats: [
-            ["p", "Normal"],
-            ["pre", "Code"]
-        ]
-    });
+        else if (actionType) {
+            fnAction = this.handlers.get(actionType + eventTarget);
+        }
 
-    function Act() {
+        if (fnAction) {
+            fnAction = fnAction.bind(this);
+            fnAction(oArgs);
+        }
+    }         
+
+    act() {
         window.location.href = '/Account/Login';
     }
 
-    function flagPost() {
-        return ajaxRequest("POST", "/api/VotedPosts/FlagPost", this.id)
+    flagPost(oArgs) {
+        return ajaxRequest("POST", "/api/VotedPosts/FlagPost", oArgs.postId)
             .then(() => { alert("Your flag has been accapted!"); })
             .catch(xhr => { alert("User not permitted to flag!"); });
     }
 
-    function VoteUpQuestion() {
-        VoteForPost("/api/Questions/VoteUpQuestion", this.id);
+    voteUpQuestion(oArgs) {
+        let questionId = oArgs.postId;
+        this.voteForPost("/api/Questions/VoteUpQuestion", questionId);
     }
 
-    function VoteDownQuestion() {
-        VoteForPost("/api/Questions/VoteDownQuestion", this.id);
+    voteDownQuestion(oArgs) {
+        let questionId = oArgs.postId;
+        this.voteForPost("/api/Questions/VoteDownQuestion", questionId);
     }
 
-    function VoteUpAnswer() {
-        VoteForPost("/api/Questions/VoteUpAnswer", this.id);
+    voteUpAnswer(oArgs) {
+        let answerId = oArgs.postId;
+        this.voteForPost("/api/Questions/VoteUpAnswer", answerId);
     }
 
-    function VoteDownAnswer() {
-        VoteForPost("/api/Questions/VoteDownAnswer", this.id);
+    voteDownAnswer(oArgs) {
+        let answerId = oArgs.postId;
+        this.voteForPost("/api/Questions/VoteDownAnswer", answerId);
     }
 
-    function AcceptAnswer() {
-        ajaxRequest("POST", "/api/Questions/AcceptAnswer", this)
-            .then(() => {                
-                location.reload(); 
+    acceptAnswer(oArgs) {
+        ajaxRequest("POST", "/api/Questions/AcceptAnswer", oArgs.postId)
+            .then(() => {
+                location.reload();
             })
             .catch(xhr => { console.log(xhr); });
     }
 
-    function VoteForPost(url, post) {
+    voteForPost(url, post) {
         ajaxRequest("POST", url, post)
-            .then(updatePostVotes)
-            .then(updatePointsInPage)
+            .then(this.updatePostVotes)
+            .then(this.updatePointsInPage)
             .catch(xhr => { alert("User not allowed to vote."); });
     }
 
-    function updatePostVotes(updatedPost) {
+    updatePostVotes(updatedPost) {
         return new Promise((resolve, reject) => {
             try {
                 questionViewModel.updatePostVotes(updatedPost);
@@ -106,11 +205,13 @@ $(() => {
         });
     }
 
-    function updatePointsInPage(updatedPost) {
+    updatePointsInPage(updatedPost) {
         return new Promise((resolve, reject) => {
             try {
-                $(`#${updatedPost.id} .synched-points`)
-                    .html(questionViewModel.posts[updatedPost.id].points);
+                let elem = $(`div[data-id=${updatedPost.id}] .synched-points`);
+                if (elem) {
+                    elem.html(questionViewModel.posts[updatedPost.id].points);
+                }
                 resolve(updatedPost);
             } catch (err) {
                 reject(err)
@@ -118,26 +219,26 @@ $(() => {
         });
     }
 
-    function submitComment(event) {
-        var keycode = (event.keyCode ? event.keyCode : event.which);
+    submitComment(event) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13' && event.ctrlKey) {
-            var commentForm = $(`#${this.id} .synched-comment-form`);
-            var commentBody = commentForm.find("textarea").val();
+            let commentForm = $(`#${this.id} .synched-comment-form`);
+            let commentBody = commentForm.find("textarea").val();
             ajaxRequest("POST", "/api/VotedPosts/CommentOnPost", { votedPostId: this.id, body: commentBody })
-                .then(reloadPage)              
+                .then(reloadPage)
                 .catch(function () { alert("User not alllowed to comment!") });
         }
     }
 
-    function newLine(e) {
+     newLine(e) {
         if (e.keyCode === 13 && e.ctrlKey) {
             $(this).val(function (i, val) {
                 return val + "\n";
             });
-        } 
+        }
     }
 
-    function showComment() {
+     showComment() {
         $(this).find("+ .synched-comment-form")
             .show()
             .animate({
@@ -146,14 +247,14 @@ $(() => {
             }, 500);
     }
 
-    function editComment() {
-        var parent = $(`#${this.id}`);
-        var commentBody = parent.find(".comment-body");
-        var commentText = commentBody.text();
-        var editForm = parent.find(".synched-edit-comment-form");
-        var editBtn = parent.find(".synched-edit-comment");
-        var deleteBtn = parent.find(".synched-delete-comment");
-        var updateBtn = parent.find(".synched-update-comment");
+     editComment(oArgs) {
+        let parent = $(`#${this.id}`);
+        let commentBody = parent.find(".comment-body");
+        let commentText = commentBody.text();
+        let editForm = parent.find(".synched-edit-comment-form");
+        let editBtn = parent.find(".synched-edit-comment");
+        let deleteBtn = parent.find(".synched-delete-comment");
+        let updateBtn = parent.find(".synched-update-comment");
 
         editBtn.hide();
         deleteBtn.hide();
@@ -164,19 +265,22 @@ $(() => {
         editForm.find("textarea").show().text(commentText);
     }
 
-    function reloadPage() {
+     reloadPage() {
         location.reload();
     }
 
-    function deleteVotedPost() {
+     deleteVotedPost() {
         return ajaxRequest("POST", "/api/VotedPosts/DeletePost", this.id)
             .then(() => { alert("Your vote has been accapted!") })
             .catch(() => { alert("User can't delete this post!") });
     }
 
-    function deleteComment() {
+     deleteComment() {
         return ajaxRequest("POST", "/api/Comments/DeletePost", this.id)
-            .then(reloadPage)              
+            .then(reloadPage)
             .catch(function () { alert("Failure!") });
     }
-});
+}
+
+const details = new Details();
+                

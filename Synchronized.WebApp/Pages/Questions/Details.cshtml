@@ -16,7 +16,7 @@
 </script>
 <section class="app-question">
     <h2>@Html.DisplayFor(model => model.Question.Title)</h2>
-    <div class="row" id="@Model.Question.Id">
+    <div class="row" id="synched-question" data-id="@Model.Question.Id">
         <div class="app-stats col-md-1">
             <div class="synched-points">
                 @Html.DisplayFor(model => model.Question.Points)
@@ -24,13 +24,13 @@
             <div class="synched-vote-buttons">
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    <button class="synched-vote-btn vote-up-btn"><i class="fa fa-plus-square"></i></button>
-                    <button class="synched-vote-btn vote-down-btn"><i class="fa fa-minus-square"></i></button>
+                    <button class="synched-vote-btn vote-up-btn" data-type="voteUp"><i class="fa fa-plus-square"></i></button>
+                    <button class="synched-vote-btn vote-down-btn" data-type="voteDown"><i class="fa fa-minus-square"></i></button>
                 }
                 else
                 {
-                    <button class="synched-vote-btn synched-action"><i class="fa fa-plus-square"></i></button>
-                    <button class="synched-vote-btn synched-action"><i class="fa fa-minus-square"></i></button>
+                    <button class="synched-vote-btn synched-action" data-type="act"><i class="fa fa-plus-square"></i></button>
+                    <button class="synched-vote-btn synched-action" data-type="act"><i class="fa fa-minus-square"></i></button>
                 }
                 
             </div>
@@ -52,8 +52,8 @@
             {
                 <div class="synched-q-options">
                     <a asp-page="/Questions/Edit" asp-route-id="@Model.Question.Id" class="btn btn-link synched-edit-comment">Edit</a>
-                    <button type="button" class="btn btn-link synched-flag">Flag</button>
-                    <button type="button" class="btn btn-link synched-delete">Delete</button>
+                    <button type="button" class="btn btn-link synched-flag" data-type="flag">Flag</button>
+                    <button type="button" class="btn btn-link synched-delete" data-type="delete">Delete</button>
                 </div>
             }
             else
@@ -70,7 +70,7 @@
                     @foreach (var comment in Model.Question.Comments)
                     {
                         <hr />
-                        <div class="comment-content" id="@comment.Id">
+                        <div class="comment-content" data-id="@comment.Id">
                             <div class="comment-body">@comment.Body</div>
                             <div class="synched-edit-comment-form">
                                 <div class="form-group">
@@ -79,9 +79,9 @@
                             </div>
                             @if (SignInManager.IsSignedIn(User))
                             {
-                                <button type="button" class="btn btn-link synched-edit-comment">Edit</button>
-                                <button type="button" class="btn btn-link synched-delete-comment">Delete</button>
-                                <button type="button" class="btn btn-link synched-update-comment">Update</button>
+                                <button type="button" class="btn btn-link synched-comment synched-edit-comment">Edit</button>
+                                <button type="button" class="btn btn-link synched-comment synched-delete-comment">Delete</button>
+                                <button type="button" class="btn btn-link synched-comment synched-update-comment">Update</button>
                             }
                             else
                             {
@@ -126,7 +126,7 @@
             int counter = 1;
             foreach (var answer in Model.Question.Answers)
             {
-            <div class="row synched-answer" id="@answer.Id">
+            <div class="row synched-answer" data-id="@answer.Id" data-type="answer">
                 <div class="app-stats col-md-1">
                     @if (answer.Accapted)
                     {
@@ -142,13 +142,13 @@
                     <div class="synched-points">@answer.Points</div>
                     @if (SignInManager.IsSignedIn(User))
                     {
-                        <button class="synched-vote-btn vote-up-btn"><i class="fa fa-plus-square"></i></button>
-                        <button class="synched-vote-btn vote-down-btn"><i class="fa fa-minus-square"></i></button>
+                        <button class="synched-vote-btn vote-up-btn" data-type="voteUp"><i class="fa fa-plus-square"></i></button>
+                        <button class="synched-vote-btn vote-down-btn" data-down="voteDown"><i class="fa fa-minus-square"></i></button>
                     }
                     else
                     {
-                        <button class="synched-vote-btn synched-action"><i class="fa fa-plus-square"></i></button>
-                        <button class="synched-vote-btn synched-action"><i class="fa fa-minus-square"></i></button>
+                        <button class="synched-vote-btn synched-action" data-type="action"><i class="fa fa-plus-square"></i></button>
+                        <button class="synched-vote-btn synched-action" data-type="action"><i class="fa fa-minus-square"></i></button>
                     }
                 </div>
                 <div class="col-md-10">
@@ -160,8 +160,8 @@
                             <button type="button" class="btn btn-link synched-accept">Accept Answer</button>
                         }
                         <a asp-page="/Questions/Edit" asp-route-id="@answer.Id" class="btn btn-link synched-edit-comment">Edit</a>
-                        <button type="button" class="btn btn-link synched-flag">Flag</button>
-                        <button type="button" class="btn btn-link synched-delete">Delete</button>
+                        <button type="button" class="btn btn-link synched-flag" data-type="flag">Flag</button>
+                        <button type="button" class="btn btn-link synched-delete" data-type="delete">Delete</button>
                     }
                     else
                     {
@@ -183,7 +183,7 @@
                         <div class="synched-comments">
                             @foreach (var comment in answer.Comments)
                             {
-                                <div class="comment-content" id="@comment.Id">
+                                <div class="comment-content" data-id="@comment.Id" data-type="Comment">
                                     <hr />
                                     <div class="comment-body">@comment.Body</div>
                                     <div class="synched-edit-comment-form">
@@ -193,9 +193,9 @@
                                     </div>
                                     @if (SignInManager.IsSignedIn(User))
                                     {
-                                        <button type="button" class="btn btn-link synched-edit-comment">Edit</button>
-                                        <button type="button" class="btn btn-link synched-delete-comment">Delete</button>
-                                        <button type="button" class="btn btn-link synched-update-comment">Update</button>
+                                        <button type="button" class="btn btn-link synched-comment synched-edit-comment" data-type="edit">Edit</button>
+                                        <button type="button" class="btn btn-link synched-comment synched-delete-comment" data-type="delete">Delete</button>
+                                        <button type="button" class="btn btn-link synched-comment synched-update-comment" data-type="update">Update</button>
                                     }
                                     else
                                     {
