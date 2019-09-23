@@ -70,7 +70,7 @@
                     @foreach (var comment in Model.Question.Comments)
                     {
                         <hr />
-                        <div class="comment-content" data-id="@comment.Id">
+                        <div class="comment-content" data-id="@comment.Id" data-target="Comment">
                             <div class="comment-body">@comment.Body</div>
                             <div class="synched-edit-comment-form">
                                 <div class="form-group">
@@ -102,11 +102,11 @@
             }
             @if (SignInManager.IsSignedIn(User))
             {
-                <button type="button" class="btn btn-link synched-comment">Leave a comment</button>
+                <button type="button" class="btn btn-link synched-comment" data-type="comment">Leave a comment</button>
             }
             else
             {
-                <button type="button" class="btn btn-link synched-action">Leave a comment</button>
+                <button type="button" class="btn btn-link synched-action" data-type="act">Leave a comment</button>
             }            
             <div class="synched-comment-form">
                 <div class="form-group">
@@ -157,7 +157,7 @@
                     {
                         @if ((!Model.Question.IsAnswered) && !String.IsNullOrWhiteSpace(Model.UserId) && (Model.UserId.Equals(Model.Question.PublisherId)))
                         {
-                            <button type="button" class="btn btn-link synched-accept">Accept Answer</button>
+                            <button type="button" class="btn btn-link synched-accept" data-type="accept">Accept Answer</button>
                         }
                         <a asp-page="/Questions/Edit" asp-route-id="@answer.Id" class="btn btn-link synched-edit-comment">Edit</a>
                         <button type="button" class="btn btn-link synched-flag" data-type="flag">Flag</button>
@@ -183,7 +183,7 @@
                         <div class="synched-comments">
                             @foreach (var comment in answer.Comments)
                             {
-                                <div class="comment-content" data-id="@comment.Id" data-type="Comment">
+                                <div class="comment-content" data-id="@comment.Id" data-target="Comment">
                                     <hr />
                                     <div class="comment-body">@comment.Body</div>
                                     <div class="synched-edit-comment-form">
@@ -218,12 +218,12 @@
                     {
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            <button type="button" class="btn btn-link synched-comment">Leave a comment</button>
+                            <button type="button" class="btn btn-link synched-comment" data-type="comment">Leave a comment</button>
                         }
                         else
                         {
-                            <button type="button" class="btn btn-link synched-action">Leave a comment</button>
-                        }                        
+                            <button type="button" class="btn btn-link synched-action" data-type="act">Leave a comment</button>
+                        }
                         <div class="synched-comment-form">
                             <div class="form-group">
                                 <textarea class="form-control comment-body" rows="2"></textarea>

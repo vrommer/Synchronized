@@ -56,7 +56,7 @@ namespace Synchronized.Data
                 "joseph", "Viktoriya", "Vadim", "Yossi", "Nati", "Isaac", "Oren", "Allen", "Nir", "Netta", "Katty", "Soffi", "Ira", "Marina", "Igal", "Juli", "Aprana", "Prasana", "Tigran", "Anton", "Sergey", "Dima", "Michael",
                 "Alex", "Kostya", "Max", "Lee", "Keren", "Dina", "Maayan", "Idan", "Adam", "Ari", "Arik", "Yariv", "Naor", "Oron", "Yevgeni", "Bruce", "Kim", "Joseph", "Ido", "Jack", "John", "Romeo",
                 "Roman", "Rita", "Irena", "Vladislav", "Rostislav", "Josh", "Kevin", "Devin", "Miika", "Luca", "Fabio", "Fredd", "Leon", "Arthur", "Boris", "David", "Eithan", "Stephany", "Christine", "Alon", "Alona", "Olga",
-                "Sharon", "Hellen", "Hulio", "Enrique", "Darwin", "Stephan", "Joe", "Hillary", "Barak", "Benjamin", "Ashton", "Alexa", "Cameron", "Kventin", "Guy", "Ahmed", "Muhammad", "Gadir", "Kamila", "Polina", "Pola", "Marga", "Sandra", "Alexa"
+                "Sharon", "Hellen", "Hulio", "Enrique", "Darwin", "Stephan", "Joe", "Hillary", "Barak", "Benjamin", "Ashton", "Cameron", "Kventin", "Guy", "Ahmed", "Muhammad", "Gadir", "Kamila", "Polina", "Pola", "Marga", "Sandra", "Alexa"
             };
 
             //string[] userNames =
@@ -152,25 +152,12 @@ namespace Synchronized.Data
                     Email = userNames[i] + "@example.com",
                     UserName = userNames[i],
                     ImageUri = "/pictures/user_default.png"
-                    //Points = rand.Next(maxPoints)
                 };
                 if (i <= 4)
                 {
                     user.Points = 4000;
                 }
-                //var roleNames = GetUserRole(user.Points);
                 var result = await userManager.CreateAsync(user, password);
-                //for (int j = 0; j < roleNames.Count; j++)
-                //{                    
-                //    if (result.Succeeded)
-                //    {
-                //        userIsInRole = await userManager.IsInRoleAsync(joseph, roleNames[j]);
-                //    }
-                //    if (result.Succeeded && !userIsInRole)
-                //    {
-                //        result = await userManager.AddToRoleAsync(user, roleNames[j]);
-                //    }
-                //}
                 if (result.Succeeded)
                 {
                     users.Add(user);
@@ -394,52 +381,7 @@ namespace Synchronized.Data
                 }
             }
             context.SaveChanges();
-
-            //var questionsList = await context.Posts.OfType<Question>().ToListAsync();
-            //var numQuestions = questionIds.Count;
-            //for (int i = 0; i < numQuestions; i++) 
-            //{
-            //    int numOfTagsForQuestion = rand.Next(minimumTagsInQuestion, maximumTagsInQuestion);
-            //    integers = new HashSet<int>();
-            //    for (int j = 1; j <= numOfTagsForQuestion; j++)
-            //    {
-            //        questionsListPointer = rand.Next(tagIds.Count);
-            //        while (integers.Contains(questionsListPointer))
-            //        {
-            //            questionsListPointer = rand.Next(tagIds.Count);
-            //        }
-            //        integers.Add(questionsListPointer);
-            //        var questionTag = new QuestionTag
-            //        {
-            //            QuestionId = questionsList[i].Id,
-            //            TagId = tagIds[questionsListPointer]
-            //        };
-            //        context.QusetionTags.Add(questionTag);
-            //        context.SaveChanges();
-            //    }
-            //}
-
-            //context.Posts.OfType<Question>().ToList().ForEach(q => {
-            //    int numOfTagsForQuestion = rand.Next(minimumTagsInQuestion, maximumTagsInQuestion);
-            //    integers = new HashSet<int>();
-            //    for (int j = 1; j <= numOfTagsForQuestion; j++)
-            //    {
-            //        questionsListPointer = rand.Next(tagIds.Count);
-            //        while (integers.Contains(questionsListPointer))
-            //        {
-            //            questionsListPointer = rand.Next(tagIds.Count);
-            //        }
-            //        integers.Add(questionsListPointer);
-            //        var questionTag = new QuestionTag
-            //        {
-            //            QuestionId = q.Id,
-            //            TagId = tagIds[questionsListPointer]
-            //        };
-            //        context.QusetionTags.Add(questionTag);
-            //        context.SaveChanges();
-            //    }
-            //});
-
+          
             /***********************************************************************
             * QuestionViews
             ***********************************************************************/
@@ -532,6 +474,7 @@ namespace Synchronized.Data
                         }
                     }
                     context.Update(question);
+                    context.SaveChanges();
                 }
                 else
                 {
@@ -560,9 +503,10 @@ namespace Synchronized.Data
                         }
                     }
                     context.Update(answer);
+                    context.SaveChanges();
                 }
             }
-            context.SaveChanges();
+            //context.SaveChanges();
             foreach (Vote v in questionVotes)
             {
                 context.Votes.Add(v);

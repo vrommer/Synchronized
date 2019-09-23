@@ -5,10 +5,12 @@
     questionEvent = "Question";
     answerEvent = "Answer";
     commentAction = "Comment";
+    votedPosts = {};
 
     handlers = new Map([
         ["voteUpQuestion", this.voteUpQuestion],
         ["voteDownQuestion", this.voteDownQuestion],
+        ["comment", this.showComment],
         ["voteUpAnswer", this.voteUpAnswer],
         ["voteDownAnswer", this.voteDownAnswer],
         ["acceptAnswer", this.acceptAnswer],
@@ -40,21 +42,20 @@
 
             $('.tag a').remove();
             $('.tag').wrap('<a href="#"></a>');
-
-            let votedPosts = {};
-            votedPosts[questionViewModel.question.id] = questionViewModel.question;
+            
+            this.votedPosts[questionViewModel.question.id] = questionViewModel.question;
 
             for (let pointer in questionViewModel.answers) {
                 let answer = questionViewModel.answers[pointer];
                 $.merge(this.allComments, answer.comments);
-                votedPosts[answer.id] = answer;
+                this.votedPosts[answer.id] = answer;
             }            
 
             $("#synched-question").on("click", event => {
                 event.stopPropagation();
                 let postId = $("#synched-question").attr("data-id");
                 this.handleUserAction({
-                    event: event,
+                    target: event.target,
                     postId: postId,
                     eventTarget: this.questionEvent
                 });
@@ -68,7 +69,7 @@
                 }
                 if (target && target.dataset.id) {
                     this.handleUserAction({
-                        event: event,
+                        target: event.target,
                         postId: target.dataset.id,
                         eventTarget: this.answerEvent
                     });
@@ -115,14 +116,40 @@
         if (!oArgs) {
             return;
         }
-        let event = oArgs.event,
-            classes,
-            postId = oArgs.postId,
+        let postId = oArgs.postId,
             eventTarget = oArgs.eventTarget,
             actionType,
+            fnAction,
+            target = oArgs.target;
+        while (target && target.nodeName != "BUTTON") {
+            target = target.parentElement;
+        }       
+
+        if (target) {
+            actionType = target.dataset.type;
+            oArgs.target = target;
+        }
+        
+        if (target && target.parentElement && target.parentElement.dataset.target == this.commentAction) {
+            oArgs.commentId = target.parentElement.dataset.id;
+            oArgs.actionType = target.dataset.id;
+            this.handleUserActionForComment(oArgs);
+        }
+
+        else {
+            this.handleUserActionForVotedPosts(oArgs);
+        }
+    }   
+
+    handleUserActionForVotedPosts(oArgs) {
+        if (!oArgs) {
+            return;
+        }
+        let postId = oArgs.postId,
+            eventTarget = oArgs.eventTarget,
+            actionType,
+            target = oArgs.target,
             fnAction;
-        console.log("handling for post: ", postId);
-        let target = event.target;
         while (target && target.nodeName != "BUTTON") {
             target = target.parentElement;
         }       
@@ -131,11 +158,7 @@
             actionType = target.dataset.type;
         }
 
-        if (target && target.parentElement && target.parentElement.dataset.target == this.commentAction) {
-            actionType = this.commentAction;
-        } 
-
-        if (!(actionType != "flag" && actionType != "delete" && actionType != "action")) {
+        if (!(actionType != "flag" && actionType != "delete" && actionType != "action" && actionType != "comment")) {
             fnAction = this.handlers.get(actionType)
         }
 
@@ -147,7 +170,18 @@
             fnAction = fnAction.bind(this);
             fnAction(oArgs);
         }
-    }         
+    }
+
+    handleUserActionForComment(oArgs) {
+        if (!oArgs) {
+            return;
+        }
+        let actionType = oArgs.actionType,
+            fnAction = this.handlers.get(actionType + this.commentAction);
+        if (fnAction) {
+            fnAction(oArgs);
+        }
+    }
 
     act() {
         window.location.href = '/Account/Login';
@@ -180,7 +214,7 @@
     }
 
     acceptAnswer(oArgs) {
-        ajaxRequest("POST", "/api/Questions/AcceptAnswer", oArgs.postId)
+        ajaxRequest("POST", "/api/Questions/AcceptAnswer", this.votedPosts[oArgs.postId])
             .then(() => {
                 location.reload();
             })
@@ -238,8 +272,8 @@
         }
     }
 
-     showComment() {
-        $(this).find("+ .synched-comment-form")
+    showComment(oArgs) {
+        $(oArgs.target).find("+ .synched-comment-form")
             .show()
             .animate({
                 height: "120px",
@@ -269,8 +303,8 @@
         location.reload();
     }
 
-     deleteVotedPost() {
-        return ajaxRequest("POST", "/api/VotedPosts/DeletePost", this.id)
+     deleteVotedPost(oArgs) {
+        return ajaxRequest("POST", "/api/VotedPosts/DeletePost", oArgs.postId)
             .then(() => { alert("Your vote has been accapted!") })
             .catch(() => { alert("User can't delete this post!") });
     }
