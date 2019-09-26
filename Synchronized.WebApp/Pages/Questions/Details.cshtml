@@ -35,7 +35,7 @@
                 
             </div>
         </div>
-        <div id="question-content" class="col-md-10">
+        <div id="@Model.Question.Id" class="question-content col-md-10">
             <div class="app-qcontent">
                 <div class="app-content-data">
                     @Html.Raw(Model.Question.Body)
@@ -79,9 +79,9 @@
                             </div>
                             @if (SignInManager.IsSignedIn(User))
                             {
-                                <button type="button" class="btn btn-link synched-comment synched-edit-comment">Edit</button>
-                                <button type="button" class="btn btn-link synched-comment synched-delete-comment">Delete</button>
-                                <button type="button" class="btn btn-link synched-comment synched-update-comment">Update</button>
+                                <button type="button" class="btn btn-link synched-comment synched-edit-comment" data-type="edit">Edit</button>
+                                <button type="button" class="btn btn-link synched-comment synched-delete-comment" data-type="update">Delete</button>
+                                <button type="button" class="btn btn-link synched-comment synched-update-comment" data-type="delete">Update</button>
                             }
                             else
                             {
@@ -126,7 +126,7 @@
             int counter = 1;
             foreach (var answer in Model.Question.Answers)
             {
-            <div class="row synched-answer" data-id="@answer.Id" data-type="answer">
+            <div id="@answer.Id" class="row synched-answer" data-id="@answer.Id" data-type="answer">
                 <div class="app-stats col-md-1">
                     @if (answer.Accapted)
                     {

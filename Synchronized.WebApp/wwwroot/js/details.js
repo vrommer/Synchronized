@@ -14,7 +14,7 @@
         ["voteUpAnswer", this.voteUpAnswer],
         ["voteDownAnswer", this.voteDownAnswer],
         ["acceptAnswer", this.acceptAnswer],
-        ["editComment", this.editComment],
+        ["editComment", this.doEditComment],
         ["updateComment", this.updateComment],
         ["deleteComment", this.deleteComment],
         ["action", this.act],
@@ -132,7 +132,7 @@
         
         if (target && target.parentElement && target.parentElement.dataset.target == this.commentAction) {
             oArgs.commentId = target.parentElement.dataset.id;
-            oArgs.actionType = target.dataset.id;
+            oArgs.actionType = actionType;
             this.handleUserActionForComment(oArgs);
         }
 
@@ -179,7 +179,7 @@
         let actionType = oArgs.actionType,
             fnAction = this.handlers.get(actionType + this.commentAction);
         if (fnAction) {
-            fnAction(oArgs);
+            fnAction.apply(this, [oArgs]);
         }
     }
 
@@ -264,7 +264,7 @@
         }
     }
 
-     newLine(e) {
+        newLine(e) {
         if (e.keyCode === 13 && e.ctrlKey) {
             $(this).val(function (i, val) {
                 return val + "\n";
@@ -273,43 +273,83 @@
     }
 
     showComment(oArgs) {
-        $(oArgs.target).find("+ .synched-comment-form")
-            .show()
-            .animate({
-                height: "120px",
-                width: "100%"
-            }, 500);
+        let elem = $(oArgs.target).find("+ .synched-comment-form");
+        if (!elem.is(':visible')) {
+            elem.show()
+                .animate({
+                    height: "120px",
+                    width: "100%"
+                }, 500);
+        } else {
+            elem.animate({
+                height: "0",
+                width: "0"
+            }, 500, () => { elem.hide(); });
+        }
     }
 
-     editComment(oArgs) {
-        let parent = $(`#${this.id}`);
-        let commentBody = parent.find(".comment-body");
-        let commentText = commentBody.text();
-        let editForm = parent.find(".synched-edit-comment-form");
-        let editBtn = parent.find(".synched-edit-comment");
-        let deleteBtn = parent.find(".synched-delete-comment");
-        let updateBtn = parent.find(".synched-update-comment");
+    doEditComment(oArgs) {
+        let target = $(oArgs.target),
+            comment = target.parent(),
+            commentBody = comment.find(".comment-body"),
+            commentText = commentBody.text(),
+            editForm = comment.find(".synched-edit-comment-form"),
+            updateBtn = comment.find(".synched-update-comment"),
+            oArguments = {
+                updateBtn: updateBtn,
+                commentBody: commentBody,
+                commentText: commentText,
+                editForm: editForm
+            };
+        if (!updateBtn.is(':visible')) {
+            this.showEditComment(oArguments);
+        } else {
+            this.hideEditComment(oArguments);
+        }         
+    }
 
-        editBtn.hide();
-        deleteBtn.hide();
+    showEditComment(oArgs) {
+        let updateBtn = oArgs.updateBtn,
+            commentBody = oArgs.commentBody,
+            commentText = oArgs.commentText,
+            editForm = oArgs.editForm,
+            textArea = editForm.find("textarea");
+
         updateBtn.show();
-
+        updateBtn.animate({
+           opacity: 1
+        }, { duration: 200, queue: false });
         commentBody.hide();
         editForm.show();
-        editForm.find("textarea").show().text(commentText);
+        textArea.show().text(commentText);
     }
 
-     reloadPage() {
+    hideEditComment(oArgs) {
+        let updateBtn = oArgs.updateBtn,
+            commentBody = oArgs.commentBody,
+            editForm = oArgs.editForm;
+
+        updateBtn.animate({
+           opacity: 0
+        }, { duration: 200, queue: false, complete: () =>  updateBtn.hide()});
+        updateBtn.css("opacity", "0");
+        commentBody.show();
+        editForm.hide();
+        editForm.find("textarea").hide().text("");
+    }
+
+
+    reloadPage() {
         location.reload();
     }
 
-     deleteVotedPost(oArgs) {
+    deleteVotedPost(oArgs) {
         return ajaxRequest("POST", "/api/VotedPosts/DeletePost", oArgs.postId)
             .then(() => { alert("Your vote has been accapted!") })
             .catch(() => { alert("User can't delete this post!") });
     }
 
-     deleteComment() {
+    deleteComment() {
         return ajaxRequest("POST", "/api/Comments/DeletePost", this.id)
             .then(reloadPage)
             .catch(function () { alert("Failure!") });

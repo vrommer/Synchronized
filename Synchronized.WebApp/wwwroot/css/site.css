@@ -343,11 +343,11 @@ article.question {
 
 .synched-update-comment {
     display: none;
+    opacity: 0;
 }
 
 .synched-edit-comment-form {
-    display:none;
-    height: 120px;
+    display:none;  
     width: 100%;
 }
 
