@@ -3,6 +3,7 @@ using Synchronized.Repository.Interfaces;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace Synchronized.Repository
 {
@@ -22,6 +23,25 @@ namespace Synchronized.Repository
                 .Where(p => p.Id == id)
                 .SingleOrDefaultAsync();
             return post;
+        }
+
+        public async override Task<bool> DeleteCommentAsync(string commentId)
+        {
+            var comment = new Comment()
+            {
+                Id = commentId
+            };
+            try
+            {
+                _context.Attach(comment);
+                _context.Remove(comment);
+                int x = await _context.SaveChangesAsync();
+                return x == 1;
+            } catch(DbUpdateException ex)
+            {
+                _logger.LogDebug(ex.StackTrace);
+                return false;
+            }
         }
     }
 }

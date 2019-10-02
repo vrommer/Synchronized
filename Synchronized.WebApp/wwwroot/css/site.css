@@ -341,17 +341,19 @@ article.question {
     display: inline;
 }
 
-.synched-update-comment {
+.synched-update-comment,
+.synched-submit-comment{
     display: none;
+    opacity: 0;
 }
 
-.synched-edit-comment-form {
-    display:none;
-    height: 120px;
+.synched-edit-comment-form {    
+    display:none;  
     width: 100%;
 }
 
 .edit-comment-body {
+    font-size: 0.9rem;
     height: 120px;
 }
 

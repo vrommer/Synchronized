@@ -52,7 +52,7 @@ namespace Synchronized.Core
 
         private async Task<PaginatedList<ServiceModel.Question>> GetQuestionsPage(int pageIndex, int pageSize, string searchString = null, string sortOrder = null)
         {
-            List<Question> domainQuestions; ;
+            List<Question> domainQuestions;
             if (sortOrder == null)
             {
                 domainQuestions = await ((IQuestionsRepository)_repo).GetPageAsync(pageIndex, pageSize);

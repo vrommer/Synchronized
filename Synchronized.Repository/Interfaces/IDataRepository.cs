@@ -61,6 +61,8 @@ namespace Synchronized.Repository.Interfaces
         /// Get the total database number of Entities in the Database
         /// </summary>
         /// <returns></returns>
-        int GetCount();        
+        int GetCount();
+
+        Task<bool> DeleteCommentAsync(string commentId);
     }
 }
