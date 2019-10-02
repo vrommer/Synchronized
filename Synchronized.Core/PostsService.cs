@@ -39,5 +39,21 @@ namespace Synchronized.Core
         {
             return !String.IsNullOrWhiteSpace(userId) && Constants.DELETE_POINST <= userPoints;
         }
+
+        public async Task<bool> DeleteComment(
+            string commentId,
+            string publisherId,
+            string votedPostPublisherId,
+            string userId
+        )
+        {
+            var canDelete = (userId.Equals(publisherId)
+                || userId.Equals(votedPostPublisherId));
+            if (canDelete)
+            {
+                return await _repo.DeleteCommentAsync(commentId);
+            }
+            return false;
+        }
     }
 }

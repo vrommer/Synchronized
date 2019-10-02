@@ -13,4 +13,8 @@
     <ProjectReference Include="..\Synchronized.ServiceModel\Synchronized.ServiceModel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="AnswerViewModel %28another copy%29.cs" />
+    <Compile Remove="AnswerViewModel %28copy%29.cs" />
+  </ItemGroup>
 </Project>

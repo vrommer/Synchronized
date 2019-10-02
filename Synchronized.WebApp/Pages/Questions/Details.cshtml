@@ -80,8 +80,8 @@
                             @if (SignInManager.IsSignedIn(User))
                             {
                                 <button type="button" class="btn btn-link synched-comment synched-edit-comment" data-type="edit">Edit</button>
-                                <button type="button" class="btn btn-link synched-comment synched-delete-comment" data-type="update">Delete</button>
-                                <button type="button" class="btn btn-link synched-comment synched-update-comment" data-type="delete">Update</button>
+                                <button type="button" class="btn btn-link synched-comment synched-delete-comment" data-type="delete">Delete</button>
+                                <button type="button" class="btn btn-link synched-comment synched-update-comment" data-type="update">Update</button>
                             }
                             else
                             {
@@ -102,7 +102,7 @@
             }
             @if (SignInManager.IsSignedIn(User))
             {
-                <button type="button" class="btn btn-link synched-comment" data-type="comment">Leave a comment</button>
+                <button type="button" class="btn btn-link synched-comment" data-type="comment">Leave a comment</button>                
             }
             else
             {
@@ -112,6 +112,7 @@
                 <div class="form-group">
                     <textarea class="form-control comment-body" rows="2"></textarea>
                 </div>
+                <button type="button" class="btn btn-link synched-comment synched-submit-comment" data-type="submit">Submit</button>
             </div>
         </div>
     </div>
@@ -218,7 +219,7 @@
                     {
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            <button type="button" class="btn btn-link synched-comment" data-type="comment">Leave a comment</button>
+                            <button type="button" class="btn btn-link synched-comment" data-type="comment">Leave a comment</button>                            
                         }
                         else
                         {
@@ -228,6 +229,7 @@
                             <div class="form-group">
                                 <textarea class="form-control comment-body" rows="2"></textarea>
                             </div>
+                            <button type="button" class="btn btn-link synched-comment synched-submit-comment" data-type="submit">Submit</button>
                         </div>
                     }  
                 </div>

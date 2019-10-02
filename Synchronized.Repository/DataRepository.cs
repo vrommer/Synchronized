@@ -18,7 +18,7 @@ namespace Synchronized.Repository
     {
         protected DbContext _context;
         protected DbSet<T> _set;
-        protected ILogger<Object> _logger;
+        protected ILogger<DataRepository<T>> _logger;
 
         public DataRepository(DbContext context, ILogger<DataRepository<T>> logger)
         {
@@ -80,6 +80,11 @@ namespace Synchronized.Repository
         {
             _context.Update(Entity);
             await _context.SaveChangesAsync();
+        }
+
+        public virtual Task<bool> DeleteCommentAsync(string commentId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

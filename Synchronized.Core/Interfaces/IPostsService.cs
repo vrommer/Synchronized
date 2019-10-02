@@ -19,5 +19,15 @@ namespace Synchronized.Core.Interfaces
         /// <param name="userPoints">The number of points of the user who wishes to delete the post./</param>
         /// <returns>Boolean indicator of whether the method has finished successfully.</returns>
         Task<bool> DeletePost(string postId, string userId, int userPoints);
+
+        /// <summary>
+        /// This method is for deleting comments
+        /// </summary>
+        /// <param name="commentId">The id of the comment</param>
+        /// <param name="publisherId">The id of the comment publisher</param>
+        /// <param name="votedPostPublisherId">Id of the comment parent post publisher</param>
+        /// <param name="userId">The current user</param>
+        /// <returns></returns>
+        Task<bool> DeleteComment(string commentId, string publisherId, string votedPostPublisherId, string userId);
     }
 }

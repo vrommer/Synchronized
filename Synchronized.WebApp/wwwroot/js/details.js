@@ -1,7 +1,9 @@
 ﻿class Details {
     _answers = {};
-    _allComments = [];
+    _comments = {};
+    _allComments = [];    
 
+    animatingComments = false;
     questionEvent = "Question";
     answerEvent = "Answer";
     commentAction = "Comment";
@@ -15,7 +17,6 @@
         ["voteDownAnswer", this.voteDownAnswer],
         ["acceptAnswer", this.acceptAnswer],
         ["editComment", this.doEditComment],
-        ["updateComment", this.updateComment],
         ["deleteComment", this.deleteComment],
         ["action", this.act],
         ["flag", this.flagPost],
@@ -47,7 +48,10 @@
 
             for (let pointer in questionViewModel.answers) {
                 let answer = questionViewModel.answers[pointer];
-                $.merge(this.allComments, answer.comments);
+                for (let comment of answer.comments) {
+                    this.comments[comment.id] = comment;
+                };
+                // $.merge(this.allComments, answer.comments);
                 this.votedPosts[answer.id] = answer;
             }            
 
@@ -57,6 +61,7 @@
                 this.handleUserAction({
                     target: event.target,
                     postId: postId,
+                    votedPostPublisherId: this.votedPosts[postId].publisherId,
                     eventTarget: this.questionEvent
                 });
             });
@@ -71,12 +76,16 @@
                     this.handleUserAction({
                         target: event.target,
                         postId: target.dataset.id,
+                        votedPostPublisherId: this.votedPosts[target.dataset.id].publisherId,
                         eventTarget: this.answerEvent
                     });
                 }
             });
             
-            $.merge(this.allComments, question.comments);
+            // $.merge(this.allComments, question.comments);
+            for (let comment of question.comments) {
+                this.comments[comment.id] = comment;
+            };
             /**
             
                 $(".synched-comment").on("click", showComment);    
@@ -104,12 +113,20 @@
         return this._allComments;
     }
 
+    get comments() {
+        return this._comments;
+    }
+
     set answers(val) {
         this._answers = val;
     }
 
     set allComments(val) {
         this._allComments = val;
+    }
+
+    set comments(val) {
+        this._comments = val;
     }
 
     handleUserAction = (oArgs) => {
@@ -253,18 +270,54 @@
         });
     }
 
-    submitComment(event) {
+    _submitComment(event) {        
+        let commentForm = $(event.target.parentElement),
+            commentBody = commentForm.find("textarea").val(),
+            containingPost = commentForm.parent().parent(),
+            containingPostId = containingPost[0].dataset.id;
+
+        ajaxRequest("POST", "/api/VotedPosts/CommentOnPost", {
+            votedPostId: containingPostId,
+            body: commentBody
+        }).then(() => {
+            this.reloadPage()
+        }).catch(() => alert("User not alllowed to comment!"));
+        /*
         let keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13' && event.ctrlKey) {
             let commentForm = $(`#${this.id} .synched-comment-form`);
             let commentBody = commentForm.find("textarea").val();
             ajaxRequest("POST", "/api/VotedPosts/CommentOnPost", { votedPostId: this.id, body: commentBody })
-                .then(reloadPage)
+                .then(this.reloadPage)
                 .catch(function () { alert("User not alllowed to comment!") });
         }
+        */
     }
 
-        newLine(e) {
+    submitComment = this._submitComment.bind(this);
+
+    updateComment(oArgs) {
+        let target = $(oArgs.target),
+            comment = target.parent(),
+            commentBody = comment.find(".comment-body"),
+            commentText = commentBody.text();
+        ajaxRequest("POST", "/api/VotedPosts/CommentOnPost", { commentId: oArgs.commentId, body: commentText })
+            .then(this.reloadPage)
+            .catch(function () { alert("User not alllowed to comment!") });
+    }
+
+    deleteComment(oArgs) {
+        let comment = this.comments[oArgs.commentId];
+        comment.votedPostPublisherId = oArgs.votedPostPublisherId;
+        return ajaxRequest("POST", "/api/VotedPosts/DeleteComment", this.comments[oArgs.commentId])
+            .then(() => {
+                comment = oArgs.target.parentElement;
+                comment.parentElement.removeChild(comment);
+            })
+            .catch(ex => { alert("Failure!") });
+    }
+
+    newLine(e) {
         if (e.keyCode === 13 && e.ctrlKey) {
             $(this).val(function (i, val) {
                 return val + "\n";
@@ -273,18 +326,32 @@
     }
 
     showComment(oArgs) {
-        let elem = $(oArgs.target).find("+ .synched-comment-form");
+        if (this.animatingComments) {
+            return;
+        }
+        this.animatingComments = true;
+        let elem = $(oArgs.target).find("+ .synched-comment-form"),
+            submitBtn = elem.find(".synched-submit-comment");
         if (!elem.is(':visible')) {
             elem.show()
                 .animate({
                     height: "120px",
                     width: "100%"
-                }, 500);
+                }, 500, () => {
+                        submitBtn.on("click", this.submitComment);
+                        this.showBtn(submitBtn);
+                        this.animatingComments = false;
+                    });
         } else {
             elem.animate({
                 height: "0",
                 width: "0"
-            }, 500, () => { elem.hide(); });
+            }, 500, () => {
+                    elem.hide();
+                    submitBtn.off("click", this.submitComment);
+                    this.hideBtn(submitBtn);
+                    this.animatingComments = false;
+                });
         }
     }
 
@@ -315,10 +382,7 @@
             editForm = oArgs.editForm,
             textArea = editForm.find("textarea");
 
-        updateBtn.show();
-        updateBtn.animate({
-           opacity: 1
-        }, { duration: 200, queue: false });
+        this.showBtn(updateBtn);
         commentBody.hide();
         editForm.show();
         textArea.show().text(commentText);
@@ -329,15 +393,25 @@
             commentBody = oArgs.commentBody,
             editForm = oArgs.editForm;
 
-        updateBtn.animate({
-           opacity: 0
-        }, { duration: 200, queue: false, complete: () =>  updateBtn.hide()});
+        this.hideBtn(updateBtn);
         updateBtn.css("opacity", "0");
         commentBody.show();
         editForm.hide();
         editForm.find("textarea").hide().text("");
     }
 
+    showBtn(btn) {
+        btn.show();
+        btn.animate({
+           opacity: 1
+        }, { duration: 200, queue: false });
+    }
+
+    hideBtn(btn) {
+        btn.animate({
+           opacity: 0
+        }, { duration: 200, queue: false, complete: () =>  btn.hide()});
+    }
 
     reloadPage() {
         location.reload();
@@ -347,12 +421,6 @@
         return ajaxRequest("POST", "/api/VotedPosts/DeletePost", oArgs.postId)
             .then(() => { alert("Your vote has been accapted!") })
             .catch(() => { alert("User can't delete this post!") });
-    }
-
-    deleteComment() {
-        return ajaxRequest("POST", "/api/Comments/DeletePost", this.id)
-            .then(reloadPage)
-            .catch(function () { alert("Failure!") });
     }
 }
 
