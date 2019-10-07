@@ -169,6 +169,7 @@ namespace Synchronized.WebApp
                 //_.For<IPostsConverter>().Use<DataConverter>();
                 _.For<HttpClient>().Use<HttpClient>();
                 _.For<IPostsService<ServiceModel.Comment>>().Use<PostsService<Comment, ServiceModel.Comment>>();
+                //_.For<IPostsService<ServiceModel.Post>>().Use<PostsService<Post, ServiceModel.Post>>();
                 _.For<IVotedPostService>().Use<VotedPostsService>();
                 _.For<IVotedPostRepository>().Use<VotedPostsRepository>();
                 _.For<IPostsService<ServiceModel.VotedPost>>().Use<PostsService<VotedPost, ServiceModel.VotedPost>>();

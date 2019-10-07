@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Synchronized.Core.Interfaces;
+using Synchronized.ServiceModel;
 using Synchronized.UI.Utilities.Interfaces;
 using Synchronized.ViewModel;
 using System.Threading.Tasks;
@@ -14,14 +15,17 @@ namespace Synchronized.Controllers
     public class VotedPostsController: SynchronizedController
     {
         private IVotedPostService _votedPostsService;
+        private IPostsService<Comment> _commentsService;
 
         public VotedPostsController(
+            IPostsService<Comment> commentsService,
             IVotedPostService votedPostsService,
             IPostsConverter converter,
             ILogger<VotedPostsController> logger,
             UserManager<Domain.ApplicationUser> userManager
         ): base(converter, userManager, logger)
         {
+            _commentsService = commentsService;
             _votedPostsService = votedPostsService;
         }
 
@@ -73,6 +77,19 @@ namespace Synchronized.Controllers
             var viewComment = _dataConverter.Convert(serviceComment);
 
             return new ObjectResult(viewComment);
+        }
+
+        // Post: /api/VotedPosts/AddComment
+        public async Task<IActionResult> DeleteComment([FromBody] CommentViewModel comment)
+        {
+            var user = await GetUserAsync();
+            var userId = user != null ? user.Id : "";
+            var deleted = await _commentsService.DeleteComment(comment.Id, comment.PublisherId, comment.VotedPostPublisherId, userId);
+            if (!deleted)
+            {
+                return new BadRequestResult();
+            }
+            return Ok();
         }
     }
 }

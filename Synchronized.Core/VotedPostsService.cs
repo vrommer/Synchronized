@@ -303,15 +303,15 @@ namespace Synchronized.Core
             throw new NotImplementedException();
         }
 
-        private void SubscribeUser(Question question, String userId)
-        {
-            Question updatedQuestion;
-            var serviceQuestion = _converter.Convert((question));
-            var user = _factory.GetUser();
-            user.Id = userId;
-            serviceQuestion.Subscribe(user);
-            updatedQuestion = _converter.Convert(serviceQuestion);
-            _repo.UpdateAsync(updatedQuestion);
-        }       
+        //private async Task SubscribeUser(Question question, String userId)
+        //{
+        //    Question updatedQuestion;
+        //    var serviceQuestion = _converter.Convert((question));
+        //    var user = _factory.GetUser();
+        //    user.Id = userId;
+        //    serviceQuestion.Subscribe(user);
+        //    updatedQuestion = _converter.Convert(serviceQuestion);
+        //    await _repo.UpdateAsync(updatedQuestion);
+        //}
     }
 }

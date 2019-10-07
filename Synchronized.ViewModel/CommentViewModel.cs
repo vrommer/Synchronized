@@ -13,5 +13,6 @@ namespace Synchronized.ViewModel
         public string PublisherName { get; set; }
         public string PublisherId { get; set; }
         public string VotedPostId { get; set; }
+        public string VotedPostPublisherId { get; set; }
     }
 }
