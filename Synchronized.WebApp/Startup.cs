@@ -27,6 +27,7 @@ using Synchronized.Repository;
 using Synchronized.Domain.Factories.Interfaces;
 using Synchronized.SharedLib;
 using Synchronized.WebApp.Requirements;
+using System.Net.Http;
 
 namespace Synchronized.WebApp
 {
@@ -166,6 +167,7 @@ namespace Synchronized.WebApp
                     x.LookForRegistries();
                 });
                 //_.For<IPostsConverter>().Use<DataConverter>();
+                _.For<HttpClient>().Use<HttpClient>();
                 _.For<IPostsService<ServiceModel.Comment>>().Use<PostsService<Comment, ServiceModel.Comment>>();
                 _.For<IVotedPostService>().Use<VotedPostsService>();
                 _.For<IVotedPostRepository>().Use<VotedPostsRepository>();
