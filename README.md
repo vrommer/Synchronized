@@ -1,6 +1,4 @@
 # Synchronized
-## Demo
-[Demo](http://178.128.141.217/)
 ## General
 A questions/answers management system in the spirit of stack overflow.  The Web Application of the system is created using MVC Core. The system uses EF Core as the ORM system. The security is implemented using ASP Core Identity.
 ## Capabilities
