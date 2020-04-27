@@ -20,10 +20,17 @@ namespace Synchronized.Core
     public class UsersService : DataService<ApplicationUser, User>, IUsersService
     {
         private UserManager<ApplicationUser> _userManager;
+        private int  _usersCount;
 
         public UsersService(IUsersRepository repo, UserManager<ApplicationUser> userManager, IServiceModelFactory factory, IDataConverter converter, ILogger<UsersService> logger) : base(repo, factory, converter, logger)
         {
             _userManager = userManager;
+            _usersCount = -1;
+        }
+
+        public int CountUser()
+        {
+            return _usersCount = _repo.GetCount();
         }
 
         public async override Task<User> GetById(string id)
@@ -45,7 +52,7 @@ namespace Synchronized.Core
                 coreUser.Roles = (System.Collections.Generic.List<string>) await ((IUsersRepository)_repo).GetRolesAsync(user, new CancellationToken());
                 coreUsers.Add(coreUser);                
             }
-            var usersPage = _factory.GetUsersPage(coreUsers, _repo.GetCount(), pageSize, pageIndex);
+            var usersPage = _factory.GetUsersPage(coreUsers, CountUser(), pageSize, pageIndex);
             usersPage.ForEach(u => {
                 _logger.LogDebug("User --->\n\t\tAddress: {0}\n" +
                     "\t\tEmail: {1}\n" +

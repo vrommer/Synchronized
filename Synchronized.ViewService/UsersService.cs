@@ -56,7 +56,7 @@ namespace Synchronized.ViewServices
         public async Task<PaginatedList<UserViewModel>> GetIndexPage(int pageIndex, string sortOrder, string searchTerm)
         {
             var users = await _usersService.GetUsersPage(pageIndex, pageSize, sortOrder, searchTerm);
-            var usersPage = _factory.GetPaginatedList<UserViewModel>(users.Count, pageIndex, pageSize);
+            var usersPage = _factory.GetPaginatedList<UserViewModel>(_usersService.CountUser(), pageIndex, pageSize);
             users.ForEach(u =>
             {                
                 usersPage.Add(_converter.Convert(u));

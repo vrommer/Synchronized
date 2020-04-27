@@ -122,7 +122,7 @@ namespace Synchronized.Core.Factories
 
         public PaginatedList<User> GetUsersPage(List<User> users, int count, int pageSize, int pageIndex)
         {
-            return new PaginatedList<User>(users, count, pageIndex, pageIndex);           
+            return new PaginatedList<User>(users, count, pageIndex, pageSize);           
         }
 
         public T GetOfType<T>()

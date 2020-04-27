@@ -32,5 +32,10 @@ namespace Synchronized.Core.Interfaces
         /// </summary>
         /// <param name="user">The user we wish to update roles for.</param>
         Task UpdateUserRoles(ApplicationUser user);
+
+
+        /// <summery>
+        /// Count the total number of users
+        int CountUser();
     }
 }
