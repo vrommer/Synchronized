@@ -1,6 +1,7 @@
 # Synchronized
 ## General
 A questions/answers management system in the spirit of stack overflow.  The Web Application of the system is created using MVC Core. The system uses EF Core as the ORM system. The security is implemented using ASP Core Identity.
+[Demo](http://3.10.116.37/)
 ## Capabilities
 The system currently supports the following capabilities:
 * User managemen - Signing In/Logging in
